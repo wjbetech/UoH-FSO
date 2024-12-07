@@ -7,8 +7,10 @@ participant JSONstore
 
 user->>browser: Write a new note and click "Save"
 browser->>server: HTTP POST new_note > { note: "..." }
-server->>JSONstore: Save note
-JSONstore->>server: Store tells server note was saved
-server->>browser: Status: 302
-browser->>browser: Update and re-render
+server->>JSONstore: Node.js handles saving note to DB
+JSONstore-->>server: Return success/failure
+server-->>browser: HTTP 302 (URL redirect))
+browser->>server: new HTTP GET request fires
+server-->>browser: Returns up to date <br> notes, main.css, main.js, data.json
+browser->>browser: Refreshes to show latest data
 ```
