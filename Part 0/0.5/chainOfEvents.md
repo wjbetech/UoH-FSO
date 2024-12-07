@@ -1,16 +1,20 @@
 ```mermaid
 sequenceDiagram
-participant user
 participant browser
 participant server
 participant JSONstore
 
-
-user->>browser: Write a new note and click "Save"
-browser->>server: HTTP POST /new_note_spa > { note: "..." } <br> Content-type: application/json
-server->>JSONstore: Node.js handles saving note to DB
-JSONstore-->>server: Return success/failure
-server-->>browser: Return status code 201 with response <br> {"message": "note created"}
-Note right of browser: Payload: <br>{content: "newest", date: "xxxx_xx_xx..."}
-browser->>browser: Re-render
+browser->>server: HTTP GET /spa
+server-->>browser: Return HTML (status 200)
+Note right of browser: HTML contains: <br> <link> to stylesheet @ /main.css <br> <script> to connect /spa.js
+browser->>server: HTTP GET /exampleapp/main.css
+server-->>browser: Return main.css (status 200)
+browser->>server: HTTP GET /exampleapp/spa.js
+server-->>browser: Return spa.js (status 200)
+Note right of browser: spa.js contains: <br> xhttp event handler to GET data.json
+browser->>server: HTTP GET /exampleapp/data.json
+server->>JSONstore: Retrieve notes from DB
+JSONstore-->>server: Return notes data
+server-->>browser: Return data.json (status 200)
+browser->>browser: redrawNotes func appends notes <br> to the page
 ```
