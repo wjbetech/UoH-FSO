@@ -3,16 +3,18 @@ import { Part } from "./Part";
 export const Content = ({ parts }) => {
   return (
     <div>
-      {parts.map((part) => {
-        return (
-          <Part
-            // this is a terrible key but it works for this demo
-            key={part.exercises}
-            part={part.part}
-            exercises={part.exercises}
-          />
-        );
-      })}
+      <Part
+        part={parts[0].part}
+        exercises={parts[0].exercises}
+      />
+      <Part
+        part={parts[1].part}
+        exercises={parts[1].exercises}
+      />
+      <Part
+        part={parts[2].part}
+        exercises={parts[2].exercises}
+      />
     </div>
   );
 };
