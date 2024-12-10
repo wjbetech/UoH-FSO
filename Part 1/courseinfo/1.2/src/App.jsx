@@ -1,42 +1,36 @@
-// We can bypass the <Content> element now since parts are separate objects
-// import { Content } from "./components/Content";
-
-// Instead just import the <Part> element - it matches the data anyways
-import { Part } from "./components/Part";
+import { Content } from "./components/Content";
 import { Header } from "./components/Header";
 import { Total } from "./components/Total";
 
 const App = () => {
   const course = "Half Stack application development";
-  const part1 = {
-    name: "Fundamentals of React",
-    exercises: 10
-  };
-  const part2 = {
-    name: "Using props to pass data",
-    exercises: 7
-  };
-  const part3 = {
-    name: "State of a component",
-    exercises: 14
-  };
+
+  // This is actually more or less what I did back in either 1.1 or 1.2
+  // I am not 100% sure whether I am being asked to use just the <Part> element
+  // or if I need to use <Part> and <Content>, so for now I will just do as I see fit
+  // (this isn't my first React rodeo but I am not dogmatic about practices)
+  const parts = [
+    {
+      name: "Fundamentals of React",
+      exercises: 10
+    },
+    {
+      name: "Using props to pass data",
+      exercises: 7
+    },
+    {
+      name: "State of a component",
+      exercises: 14
+    }
+  ];
 
   return (
     <div>
       <Header content={course} />
-      <Part
-        part={part1.name}
-        exercises={part1.exercises}
-      />
-      <Part
-        part={part2.name}
-        exercises={part2.exercises}
-      />
-      <Part
-        part={part3.name}
-        exercises={part3.exercises}
-      />
-      <Total total={part1.exercises + part2.exercises + part3.exercises} />
+      <Content parts={parts} />
+      {/* It looks like I have to dynamically render out this part */}
+      {/* You could do the maths logic outside of the return statement though! */}
+      <Total total={`${parts[0].exercises + parts[1].exercises + parts[2].exercises}`} />
     </div>
   );
 };
