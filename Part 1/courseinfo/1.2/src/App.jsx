@@ -3,34 +3,36 @@ import { Header } from "./components/Header";
 import { Total } from "./components/Total";
 
 const App = () => {
-  const course = "Half Stack application development";
+  const course = {
+    name: "Half Stack application development",
+    parts: [
+      {
+        name: "Fundamentals of React",
+        exercises: 10
+      },
+      {
+        name: "Using props to pass data",
+        exercises: 7
+      },
+      {
+        name: "State of a component",
+        exercises: 14
+      }
+    ]
+  };
 
-  // This is actually more or less what I did back in either 1.1 or 1.2
-  // I am not 100% sure whether I am being asked to use just the <Part> element
-  // or if I need to use <Part> and <Content>, so for now I will just do as I see fit
-  // (this isn't my first React rodeo but I am not dogmatic about practices)
-  const parts = [
-    {
-      name: "Fundamentals of React",
-      exercises: 10
-    },
-    {
-      name: "Using props to pass data",
-      exercises: 7
-    },
-    {
-      name: "State of a component",
-      exercises: 14
-    }
-  ];
+  // I cleaned this up - I thought I could drop the 0 argument
+  // but it started to give me very odd returns
+  // This could be defined on the object itself possibly or even handled in a
+  // separate utils file to stay really clean
+  const totalExercises = course.parts.reduce((total, part) => total + part.exercises, 0);
+  course.totalExercises = totalExercises;
 
   return (
     <div>
-      <Header content={course} />
-      <Content parts={parts} />
-      {/* It looks like I have to dynamically render out this part */}
-      {/* You could do the maths logic outside of the return statement though! */}
-      <Total total={`${parts[0].exercises + parts[1].exercises + parts[2].exercises}`} />
+      <Header content={course.name} />
+      <Content parts={course.parts} />
+      <Total total={course.totalExercises} />
     </div>
   );
 };
