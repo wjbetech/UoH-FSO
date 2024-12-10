@@ -1,38 +1,62 @@
-import { Content } from "./components/Content";
-import { Header } from "./components/Header";
-import { Total } from "./components/Total";
+// When you pass a child component, you can lump same child component props into an object
+// to save you having to add unnecessary logic
+// const Hello = ({ name, age }) => {
+//   const bornYear = () => new Date().getFullYear() - age;
+//
+//   return (
+//     <div>
+//       <p>
+//         Hello {name}, you are {age} years old!
+//       </p>
+//       <p>So, you were probably born in {bornYear()}.</p>
+//     </div>
+//   );
+// };
+//
+// const App = () => {
+//   return (
+//     <div>
+//       <h1>Greetings</h1>
+//       <Hello
+//         name="Maya"
+//         age={36}
+//       />
+//       <Hello
+//         name={"Peter"}
+//         age={10}
+//       />
+//     </div>
+//   );
+// };
+//
+// export default App;
+
+import { useState } from "react";
+import { Display } from "./components/Display";
+import { Button } from "./components/Button";
 
 const App = () => {
-  const course = {
-    name: "Half Stack application development",
-    parts: [
-      {
-        name: "Fundamentals of React",
-        exercises: 10
-      },
-      {
-        name: "Using props to pass data",
-        exercises: 7
-      },
-      {
-        name: "State of a component",
-        exercises: 14
-      }
-    ]
-  };
+  const [counter, setCounter] = useState(0);
 
-  // I cleaned this up - I thought I could drop the 0 argument
-  // but it started to give me very odd returns
-  // This could be defined on the object itself possibly or even handled in a
-  // separate utils file to stay really clean
-  const totalExercises = course.parts.reduce((total, part) => total + part.exercises, 0);
-  course.totalExercises = totalExercises;
+  const handleIncrement = () => setCounter(counter + 1);
+  const handleDecrement = () => setCounter(counter - 1);
+  const handleReset = () => setCounter(0);
 
   return (
     <div>
-      <Header content={course.name} />
-      <Content parts={course.parts} />
-      <Total total={course.totalExercises} />
+      <Display counter={counter} />
+      <Button
+        onClick={handleIncrement}
+        label="Increment"
+      />
+      <Button
+        onClick={handleDecrement}
+        label="Decrement"
+      />
+      <Button
+        onClick={handleReset}
+        label="Reset"
+      />
     </div>
   );
 };
