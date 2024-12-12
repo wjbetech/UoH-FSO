@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Button from "./components/Button";
+import { Display } from "./components/Display";
 
 const App = () => {
   const [value, setValue] = useState(10);
@@ -19,7 +20,7 @@ const App = () => {
   return (
     <>
       <div>
-        <span>{value}</span>
+        <Display value={value}></Display>
         <Button
           onClick={print("World!")}
           label="World!"
