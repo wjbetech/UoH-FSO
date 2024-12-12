@@ -6,32 +6,54 @@ const App = () => {
 
   const handleReset = () => setValue(0);
 
-  const hello = () => {
-    const handler = () => console.log("Hello world!");
-    return handler;
+  const print = (who) => {
+    return () => console.log(who);
+  };
+
+  const setValueTo = (value) => {
+    return () => {
+      setValue(value);
+    };
   };
 
   return (
-    <div>
-      <span>{value}</span>
+    <>
+      <div>
+        <span>{value}</span>
+        <Button
+          onClick={print("World!")}
+          label="World!"
+        />
 
-      {/* -- way #1 of handling resetting -- */}
-      {/* -- typically not very advisable for code readability */}
-      {/* <button onClick={() => setValue(0)}>reset to zero</button> */}
+        <Button
+          onClick={print("Hello, ")}
+          label="Hello"
+        />
 
-      {/* -- way #2 external handleReset -- */}
-      {/* -- preferable, also set up props to work with Button component */}
-      <Button
-        onClick={handleReset}
-        label="Reset"
-      />
-
-      {/* -- way #3 func returns func */}
-      <Button
-        onClick={hello()}
-        label="hello-button"
-      />
-    </div>
+        <Button
+          onClick={print("React")}
+          label="React"
+        />
+        <div>
+          <Button
+            onClick={setValueTo(value + 1)}
+            label="+1"
+          />
+          <Button
+            onClick={setValueTo(value - 1)}
+            label="-1"
+          />
+          <Button
+            onClick={setValueTo(1000)}
+            label="Set to 1000"
+          />
+          <Button
+            onClick={handleReset}
+            label="Reset"
+          />
+        </div>
+      </div>
+    </>
   );
 };
 
