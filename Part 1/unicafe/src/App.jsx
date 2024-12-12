@@ -20,9 +20,6 @@ function App() {
     setGoodPercent(totalVotes > 0 ? (good / totalVotes) * 100 : 0);
   }, [good, neutral, bad, totalVotes]);
 
-  // -- code for generating percent of votes that are "good"
-  // const percentGoodVotes = isNaN((good / totalVotes) * 100) ? 0 : (good / totalVotes) * 100
-
   return (
     <>
       <h1>Give Feedback!</h1>
