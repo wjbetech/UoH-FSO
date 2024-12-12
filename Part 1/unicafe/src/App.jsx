@@ -1,12 +1,27 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 function App() {
   // save clicks of each button to its own state
   const [good, setGood] = useState(0);
   const [neutral, setNeutral] = useState(0);
   const [bad, setBad] = useState(0);
+  const [totalVotes, setTotalVotes] = useState(0);
+  const [averageScore, setAverageScore] = useState(0);
+  const [goodPercent, setGoodPercent] = useState(0);
 
-  console.log(good, neutral, bad);
+  console.log(good, neutral, bad, totalVotes);
+
+  useEffect(() => {
+    let goodScore = good * 1;
+    let neutralScore = neutral * 0;
+    let badScore = bad * -1;
+    setTotalVotes(good + neutral + bad);
+    setAverageScore(totalVotes > 0 ? (goodScore + neutralScore + badScore) / (good + neutral + bad) : 0);
+    setGoodPercent(totalVotes > 0 ? (good / totalVotes) * 100 : 0);
+  }, [good, neutral, bad, totalVotes]);
+
+  // -- code for generating percent of votes that are "good"
+  // const percentGoodVotes = isNaN((good / totalVotes) * 100) ? 0 : (good / totalVotes) * 100
 
   return (
     <>
@@ -21,6 +36,11 @@ function App() {
         <p>Good: {good}</p>
         <p>Neutral: {neutral}</p>
         <p>Bad: {bad}</p>
+      </div>
+      <h3>Part 2:</h3>
+      <div>
+        <p>Average Score: {averageScore}</p>
+        <p>Good %: {goodPercent}</p>
       </div>
     </>
   );
