@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import Statistics from "./components/Statistics";
 
 function App() {
   // save clicks of each button to its own state
@@ -8,8 +9,6 @@ function App() {
   const [totalVotes, setTotalVotes] = useState(0);
   const [averageScore, setAverageScore] = useState(0);
   const [goodPercent, setGoodPercent] = useState(0);
-
-  console.log(good, neutral, bad, totalVotes);
 
   useEffect(() => {
     let goodScore = good * 1;
@@ -34,11 +33,11 @@ function App() {
         <p>Neutral: {neutral}</p>
         <p>Bad: {bad}</p>
       </div>
-      <h3>Part 2:</h3>
-      <div>
-        <p>Average Score: {averageScore}</p>
-        <p>Good %: {goodPercent}</p>
-      </div>
+      <h3>Part 2 (updated for Part 3):</h3>
+      <Statistics
+        averageScore={averageScore}
+        goodPercent={goodPercent}
+      />
     </>
   );
 }
