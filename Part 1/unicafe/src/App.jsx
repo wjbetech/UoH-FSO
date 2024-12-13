@@ -34,10 +34,14 @@ function App() {
         <p>Bad: {bad}</p>
       </div>
       <h3>Part 2 (updated for Part 3):</h3>
-      <Statistics
-        averageScore={averageScore}
-        goodPercent={goodPercent}
-      />
+      {totalVotes > 0 ? (
+        <Statistics
+          averageScore={averageScore}
+          goodPercent={goodPercent}
+        />
+      ) : (
+        <p>No feedback given</p>
+      )}
     </>
   );
 }
