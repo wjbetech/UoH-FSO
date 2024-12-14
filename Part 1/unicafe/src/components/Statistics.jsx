@@ -1,8 +1,16 @@
+import StatisticLine from "./StatisticLine";
+
 const Statistics = ({ averageScore, goodPercent }) => {
   return (
     <div>
-      <p>Average Score: {averageScore}</p>
-      <p>Good %: {goodPercent}</p>
+      <StatisticLine
+        text="Average Score: "
+        value={averageScore}
+      />
+      <StatisticLine
+        text="Good %: "
+        value={goodPercent}
+      />
     </div>
   );
 };
