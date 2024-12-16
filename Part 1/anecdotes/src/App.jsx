@@ -20,7 +20,7 @@ const App = () => {
   const [votes, setVotes] = useState(Array(anecdotes.length).fill(0));
 
   // debugger:
-  // console.log(selected, votes);
+  console.log(selected, votes);
 
   const handleLikeAnecdote = () => {
     const newVotes = [...votes];
@@ -32,14 +32,21 @@ const App = () => {
     setSelected(Math.floor(Math.random() * anecdotes.length));
   };
 
+  const mostVotedAnecdoteId = votes.indexOf(Math.max(...votes));
+  console.log(mostVotedAnecdoteId);
+
   return (
     <div>
-      <h3>{anecdotes[selected]}</h3>
+      <h1>Anecdotes:</h1>
+      <h3>{`"${anecdotes[selected]}"`}</h3>
       <p>This anecdote has {votes[selected]} likes</p>
       <div>
         <button onClick={handleLikeAnecdote}>Like</button>
         <button onClick={handleNewAnecdoteClick}>Next Anecdote</button>
       </div>
+      <h3>Most popular anecdote:</h3>
+      {/* make sure it doesn't default to idx zero anecdote */}
+      {votes.every((i) => i === 0) ? <p>No votes made yet!</p> : <h4>{`"${anecdotes[mostVotedAnecdoteId]}"`}</h4>}
     </div>
   );
 };
