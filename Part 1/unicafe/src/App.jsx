@@ -35,20 +35,39 @@ function App() {
         <button onClick={() => setBad(bad + 1)}>Bad</button>
       </div>
       <h3>Statistics:</h3>
-      <div>
-        <p>Good: {good}</p>
-        <p>Neutral: {neutral}</p>
-        <p>Bad: {bad}</p>
-      </div>
-      <h3>Part 2 (updated for Part 3):</h3>
-      {totalVotes > 0 ? (
-        <Statistics
-          averageScore={averageScore}
-          goodPercent={goodPercent}
-        />
-      ) : (
-        <p>No feedback given</p>
-      )}
+      <table>
+        <tbody>
+          <tr>
+            <td>Good</td>
+            <td>{good}</td>
+          </tr>
+          <tr>
+            <td>Neutral</td>
+            <td>{neutral}</td>
+          </tr>
+          <tr>
+            <td>Bad</td>
+            <td>{bad}</td>
+          </tr>
+        </tbody>
+        {totalVotes > 0 ? (
+          <Statistics
+            averageScore={averageScore.toFixed(2)}
+            goodPercent={goodPercent.toFixed(2)}
+          />
+        ) : (
+          <tbody>
+            <tr style={{ width: "100%" }}>
+              <td>Average Score: </td>
+              <td id="text-clip">No feedback given yet!</td>
+            </tr>
+            <tr style={{ width: "100%" }}>
+              <td>Good(%): </td>
+              <td id="text-clip">No feedback given yet!</td>
+            </tr>
+          </tbody>
+        )}
+      </table>
     </>
   );
 }
