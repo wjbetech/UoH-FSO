@@ -4,6 +4,7 @@ const App = () => {
   // I tested placing this outside of the actual App component function and
   // it still worked, so not 100% sure off the top of my head the implications of
   // defining it here vs outside the actual App component function
+  // -- might move to JSON file if the course doesn't do it, it hurts me
   const anecdotes = [
     "If it hurts, do it more often.",
     "Adding manpower to a late software project makes it later!",
@@ -16,6 +17,16 @@ const App = () => {
   ];
 
   const [selected, setSelected] = useState(0);
+  const [votes, setVotes] = useState(Array(anecdotes.length).fill(0));
+
+  // debugger:
+  // console.log(selected, votes);
+
+  const handleLikeAnecdote = () => {
+    const newVotes = [...votes];
+    newVotes[selected]++;
+    setVotes(newVotes);
+  };
 
   const handleNewAnecdoteClick = () => {
     setSelected(Math.floor(Math.random() * anecdotes.length));
@@ -23,8 +34,12 @@ const App = () => {
 
   return (
     <div>
-      <p>{anecdotes[selected]}</p>
-      <button onClick={handleNewAnecdoteClick}>New Anecdote</button>
+      <h3>{anecdotes[selected]}</h3>
+      <p>This anecdote has {votes[selected]} likes</p>
+      <div>
+        <button onClick={handleLikeAnecdote}>Like</button>
+        <button onClick={handleNewAnecdoteClick}>Next Anecdote</button>
+      </div>
     </div>
   );
 };
