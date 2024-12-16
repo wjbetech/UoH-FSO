@@ -34,29 +34,22 @@ function App() {
         <button onClick={() => setNeutral(neutral + 1)}>Neutral</button>
         <button onClick={() => setBad(bad + 1)}>Bad</button>
       </div>
-      <h3>Statistics:</h3>
-      <table>
-        <tbody>
-          <tr>
-            <td>Good</td>
-            <td>{good}</td>
-          </tr>
-          <tr>
-            <td>Neutral</td>
-            <td>{neutral}</td>
-          </tr>
-          <tr>
-            <td>Bad</td>
-            <td>{bad}</td>
-          </tr>
-        </tbody>
-        {totalVotes > 0 ? (
-          <Statistics
-            averageScore={averageScore.toFixed(2)}
-            goodPercent={goodPercent.toFixed(2)}
-          />
-        ) : (
+      {/* table for no votes yet */}
+      {totalVotes < 1 ? (
+        <table>
           <tbody>
+            <tr>
+              <td>Good</td>
+              <td>{good}</td>
+            </tr>
+            <tr>
+              <td>Neutral</td>
+              <td>{neutral}</td>
+            </tr>
+            <tr>
+              <td>Bad</td>
+              <td>{bad}</td>
+            </tr>
             <tr style={{ width: "100%" }}>
               <td>Average Score: </td>
               <td id="text-clip">No feedback given yet!</td>
@@ -66,10 +59,77 @@ function App() {
               <td id="text-clip">No feedback given yet!</td>
             </tr>
           </tbody>
-        )}
-      </table>
+        </table>
+      ) : (
+        <table>
+          <tbody>
+            <tr>
+              <td>Good</td>
+              <td>{good}</td>
+            </tr>
+            <tr>
+              <td>Neutral</td>
+              <td>{neutral}</td>
+            </tr>
+            <tr>
+              <td>Bad</td>
+              <td>{bad}</td>
+            </tr>
+            <Statistics
+              averageScore={averageScore.toFixed(2)}
+              goodPercent={goodPercent.toFixed(2)}
+            />
+          </tbody>
+        </table>
+      )}
     </>
   );
 }
 
 export default App;
+
+{
+  /* <table>
+      <tbody>
+        <tr>
+          <td>Good</td>
+          <td>{good}</td>
+        </tr>
+        <tr>
+          <td>Neutral</td>
+          <td>{neutral}</td>
+        </tr>
+        <tr>
+          <td>Bad</td>
+          <td>{bad}</td>
+        </tr>
+        <tr style={{ width: "100%" }}>
+          <td>Average Score: </td>
+          <td id="text-clip">No feedback given yet!</td>
+        </tr>
+        <tr style={{ width: "100%" }}>
+          <td>Good(%): </td>
+          <td id="text-clip">No feedback given yet!</td>
+        </tr>
+      </tbody>
+      {totalVotes > 0 ? (
+        <Statistics
+          averageScore={averageScore.toFixed(2)}
+          goodPercent={goodPercent.toFixed(2)}
+        />
+      ) : (
+        <tbody>
+          <tr style={{ width: "100%" }}>
+            <td>Average Score: </td>
+            <td id="text-clip">No feedback given yet!</td>
+          </tr>
+          <tr style={{ width: "100%" }}>
+            <td>Good(%): </td>
+            <td id="text-clip">No feedback given yet!</td>
+          </tr>
+        </tbody>
+      )}
+    </table>
+  )}
+</table> */
+}
