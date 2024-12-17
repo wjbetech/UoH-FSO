@@ -1,5 +1,9 @@
 import Course from "./components/Course";
 
+// comment for ease of git:
+// this file is unchanged from part2-4, I believe I did what it asked
+// when I was writing part2-4!
+
 const App = () => {
   const courses = [
     {
