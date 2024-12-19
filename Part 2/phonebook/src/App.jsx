@@ -34,6 +34,9 @@ const App = () => {
     //   setPersons([...persons, newNameObject]);
     //   setNewName("");
     // }
+
+    // NB Can also use .some() or .filter() to get similar/same functionality
+    // but remember to opt for performative methods!
   };
 
   return (
