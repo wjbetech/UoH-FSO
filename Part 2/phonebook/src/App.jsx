@@ -7,14 +7,33 @@ const App = () => {
   const [newName, setNewName] = useState("");
 
   const handleChange = (event) => {
-    console.log(newName);
     setNewName(event.target.value);
   };
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    setPersons([...persons, { name: newName }]);
+
+    // build our new name object
+    const newNameObject = {
+      name: newName
+    };
+
+    // METHOD 1 - return after finding duplicate name
+    if (persons.find((p) => p.name === newNameObject.name)) {
+      alert(`${newNameObject.name} is already in the phonebook!`);
+      return;
+    }
+    setPersons(persons.concat(newNameObject));
     setNewName("");
+
+    // METHOD 2 - if/else
+    // if (persons.find((p) => p.name === newNameObject.name)) {
+    //   alert(`${newNameObject.name} is already in the phonebook!`);
+    //   return;
+    // } else {
+    //   setPersons([...persons, newNameObject]);
+    //   setNewName("");
+    // }
   };
 
   return (
@@ -33,8 +52,8 @@ const App = () => {
         </div>
       </form>
       <h2>Numbers</h2>
-      {persons.map((person) => (
-        <div key={person.name}>
+      {persons.map((person, i) => (
+        <div key={i}>
           <p>{person.name}</p>
         </div>
       ))}
