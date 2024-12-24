@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import Person from "./components/Person";
+import Toast from "./components/Toast";
 import personService from "./services/persons";
 
 const App = () => {
@@ -8,6 +9,8 @@ const App = () => {
     name: "",
     number: ""
   });
+  const [toast, setToast] = useState(null);
+  const [error, setError] = useState(null);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -64,6 +67,12 @@ const App = () => {
 
     const newPersonResponse = await personService.addPerson(newPersonObject);
     setPersons(persons.concat(newPersonResponse));
+    // add a timeout message to say a person was added
+    setToast(`${newPersonResponse.name} successfully added!`);
+    setTimeout(() => {
+      setToast(null);
+    }, 5000);
+
     setNewPerson({ name: "", number: "" });
   };
 
@@ -97,9 +106,10 @@ const App = () => {
 
   return (
     <div>
-      <h2>Phonebook</h2>
+      <h1>Phonebook</h1>
+      {toast ? <Toast toast={toast} /> : ""}
       <form onSubmit={addPerson}>
-        <div style={{ display: "flex", flex: "flex-row", gap: "8px" }}>
+        <div className="form-group">
           <label htmlFor="name">Name: </label>
           <input
             name="name"
@@ -113,9 +123,12 @@ const App = () => {
             onChange={handleChange}
           />
         </div>
-        <div>
-          <button type="submit">add</button>
-        </div>
+        <button
+          className="form-button"
+          type="submit"
+        >
+          Add Person
+        </button>
       </form>
       <h2>Numbers</h2>
       {persons.map((person) => (

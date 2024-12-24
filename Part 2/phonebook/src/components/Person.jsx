@@ -1,8 +1,16 @@
 const Person = ({ person, handleDelete }) => {
   return (
-    <li>
-      {person.name} - {person.number} <button onClick={() => handleDelete(person.id)}>Delete</button>
-    </li>
+    <div className="person">
+      <li>
+        {person.name} - {person.number}
+      </li>
+      <button
+        className="delete-button"
+        onClick={() => handleDelete(person.id)}
+      >
+        Delete
+      </button>
+    </div>
   );
 };
 
