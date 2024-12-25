@@ -5,6 +5,8 @@ import personService from "./services/persons";
 import { v4 as uuidv4 } from "uuid";
 // import normalizeName from "./utils/textSanitizier";
 
+// just adding a comment for an easy commit to 2.17
+
 const App = () => {
   const [persons, setPersons] = useState([]);
   const [newPerson, setNewPerson] = useState({
