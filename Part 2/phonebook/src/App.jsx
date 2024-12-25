@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import Person from "./components/Person";
 import Toast from "./components/Toast";
 import personService from "./services/persons";
+import { v4 as uuidv4 } from "uuid";
+// import normalizeName from "./utils/textSanitizier";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
@@ -9,8 +11,11 @@ const App = () => {
     name: "",
     number: ""
   });
-  const [toast, setToast] = useState(null);
-  const [error, setError] = useState(null);
+  const [filterItem, setFilterItem] = useState("");
+  const [toast, setToast] = useState({
+    message: "",
+    status: ""
+  });
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -20,6 +25,12 @@ const App = () => {
     });
   };
 
+  const handleFilterChange = (event) => {
+    setFilterItem(event.target.value);
+  };
+
+  const filteredNames = persons.filter((p) => p.name.toLowerCase().includes(filterItem.toLowerCase()));
+
   useEffect(() => {
     const fetchPersons = async () => {
       const persons = await personService.getAllPeople();
@@ -28,23 +39,22 @@ const App = () => {
     fetchPersons();
   }, []);
 
+  const showToast = (message, status) => {
+    setToast({ message, status });
+    setTimeout(() => {
+      setToast({ message: "", status: "" });
+    }, 5000);
+  };
+
   const addPerson = async (event) => {
     event.preventDefault();
     const newPersonObject = {
       name: newPerson.name,
       number: newPerson.number,
-      // making these strings just because the code provided to start
-      // this task was using strings for ids
-      // -- this is actually a pretty bad solution for creating ids though
-      // because if you are deleting/creating entries you will quite quickly
-      // trip over items trying to have the same key
-      // -- easily fixed with uuid or even simple Math.random
-      id: new String(persons.length + 1)
+      id: uuidv4()
     };
 
-    // see if name already exists in phonebook
     if (persons.find((person) => person.name === newPersonObject.name)) {
-      // ask user if they want to replace the number with the new number provided
       if (
         !window.confirm(
           `${newPersonObject.name} is already added to the phonebook, replace the old number with a new one?`
@@ -52,62 +62,63 @@ const App = () => {
       ) {
         return;
       } else {
-        // find the existing object with the same name
         const personToUpdate = persons.find((person) => person.name === newPersonObject.name);
-        // create the object by spreading the old object but update the number
-        const updatedPerson = { ...personToUpdate, number: newPersonObject.number };
-        // pass the ID and new person object to the updatePerson service
-        personService.updatePerson(personToUpdate.id, updatedPerson);
-        // setPersons iterates over persons again and replaces the old person with new
-        // and leaves the rest as they were, "person"
-        setPersons(persons.map((person) => (person.id === personToUpdate.id ? updatedPerson : person)));
+        const updatedPerson = {
+          ...personToUpdate,
+          number: newPersonObject.number
+        };
+
+        try {
+          await personService.updatePerson(personToUpdate.id, updatedPerson);
+          setPersons(persons.map((person) => (person.id === personToUpdate.id ? updatedPerson : person)));
+          showToast(`${updatedPerson.name}'s number was updated!`, "success");
+        } catch {
+          showToast(
+            `${newPersonObject.name} has already been removed from the phonebook! Please check the phonebook and try again.`,
+            "error"
+          );
+          const updatedPersons = await personService.getAllPeople();
+          setPersons(updatedPersons);
+        }
         return;
       }
     }
 
-    const newPersonResponse = await personService.addPerson(newPersonObject);
-    setPersons(persons.concat(newPersonResponse));
-    // add a timeout message to say a person was added
-    setToast(`${newPersonResponse.name} successfully added!`);
-    setTimeout(() => {
-      setToast(null);
-    }, 5000);
+    try {
+      const newPersonResponse = await personService.addPerson(newPersonObject);
+      setPersons(persons.concat(newPersonResponse));
+      showToast(`${newPersonResponse.name} successfully added!`, "success");
+    } catch {
+      showToast(`Failed to add ${newPerson.name}`, "error");
+    }
 
     setNewPerson({ name: "", number: "" });
   };
 
   const handleDeletePerson = async (id) => {
     try {
-      // get the person to delete
       const personToDelete = persons.find((person) => person.id === id);
-
-      // comfy c.log to see what we are deleting
-      console.log(`Attempting to delete ${personToDelete.name}`);
-
-      // confirm deleting, return out of handleDelete on cancel
       if (!window.confirm(`Delete ${personToDelete.name}?`)) {
         return;
       }
 
-      // try to delete on backend
       await personService.deletePerson(id);
-
-      // remove person from state - triggering re-render
       setPersons(persons.filter((person) => person.id !== id));
-
-      // log success
-      console.log(`${personToDelete.name} deleted successfully!`);
-    } catch (error) {
-      alert("Could not delete that person! Check code and try again.");
-      console.log("Could not delete a person: ");
-      console.log(error);
+      showToast(`${personToDelete.name} deleted successfully!`, "success");
+    } catch {
+      showToast(`Could not delete the person!`, "error");
     }
   };
 
   return (
     <div>
       <h1>Phonebook</h1>
-      {toast ? <Toast toast={toast} /> : ""}
+      {toast.message && toast.status && (
+        <Toast
+          message={toast.message}
+          status={toast.status}
+        />
+      )}
       <form onSubmit={addPerson}>
         <div className="form-group">
           <label htmlFor="name">Name: </label>
@@ -131,7 +142,14 @@ const App = () => {
         </button>
       </form>
       <h2>Numbers</h2>
-      {persons.map((person) => (
+      <label htmlFor="filter">Filter By: </label>
+      <input
+        value={filterItem}
+        onChange={handleFilterChange}
+        type="text"
+        name="filter"
+      />
+      {filteredNames.map((person) => (
         <Person
           key={person.id}
           person={person}

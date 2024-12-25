@@ -1,3 +1,4 @@
-export default function Toast({ toast }) {
-  return <div className="person-added-toast">{toast}</div>;
+export default function Toast({ message, status }) {
+  const toastStatus = status === "error" ? "toast-error" : "toast-success";
+  return <div className={`${toastStatus}`}>{message}</div>;
 }

@@ -13,8 +13,9 @@ const addPerson = async (newPerson) => {
 };
 
 const updatePerson = async (id, newPerson) => {
-  const response = await axios.put(`${baseURL}/${id}`, newPerson);
-  return response.data;
+  await axios.put(`${baseURL}/${id}`, newPerson).then((response) => {
+    return response.data;
+  });
 };
 
 const deletePerson = async (id) => {
