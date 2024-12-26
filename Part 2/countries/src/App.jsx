@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import getCountries from "./services/fetchCountries";
+import countriesService from "./services/fetchCountries";
 import Countries from "./components/Countries";
 
 function App() {
@@ -8,14 +8,15 @@ function App() {
 
   useEffect(() => {
     const fetchCountries = async () => {
-      const countries = await getCountries();
-      setCountries(countries);
+      const countries = await countriesService.getAllCountries();
+      const countryNames = countries.map((country) => country.name.common);
+      setCountries(countryNames);
     };
-    console.log(countries);
     fetchCountries();
   }, []);
 
-  const filteredCountries = countries.filter((country) => country.name.common.includes(searchCountry));
+  const filteredCountries = countries.filter((country) => country.includes(searchCountry));
+  console.log("Filtered countries: " + filteredCountries);
 
   return (
     <div>
@@ -32,12 +33,11 @@ function App() {
           }}
         />
       </div>
-      {filteredCountries && filteredCountries.length > 9 ? (
-        <p>Too many countries! Try to be more specific.</p>
+      {countries && countries.length > 9 ? (
+        <p>Too many countries! Please filter.</p>
       ) : (
         <Countries countries={filteredCountries} />
       )}
-      {/* <Countries countries={countries} /> */}
     </div>
   );
 }
