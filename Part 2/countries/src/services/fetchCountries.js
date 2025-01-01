@@ -6,9 +6,9 @@ const getAllCountries = async () => {
   return response.data;
 };
 
-const getSearchCountries = async (search) => {
+const getSearchCountry = async (search) => {
   const response = await axios.get(`${baseURL}/name/${search}`);
   return response.data;
 };
 
-export default { getAllCountries, getSearchCountries };
+export default { getAllCountries, getSearchCountry };

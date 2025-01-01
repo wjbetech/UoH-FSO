@@ -1,9 +1,10 @@
-export default function Countries({ countries }) {
+export default function Countries({ filteredCountries }) {
+  console.log("Returning countries: ", filteredCountries);
   return (
     <div className="country-list">
-      {countries.map((c) => {
-        return <li key={c}>{c}</li>;
-      })}
+      {filteredCountries.map((country) => (
+        <p key={country.cca2}>{country.name.common}</p>
+      ))}
     </div>
   );
 }

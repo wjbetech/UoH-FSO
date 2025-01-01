@@ -27,6 +27,25 @@
   margin: 16px 0;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 2px;
+}
+
+.country-details {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  margin: auto;
+  margin-top: 24px;
+}
+
+ul {
   list-style: none;
+  padding-left: 0;
+  margin-left: 0;
+}
+
+img {
+  margin-top: 24px;
 }
