@@ -1,6 +1,7 @@
 // we no longer need the http modules from node
 // import and use express instead
 import express from "express";
+import morgan from "morgan";
 const app = express();
 
 // uuid for safe id of new notes
@@ -8,6 +9,7 @@ import { v4 as uuidv4 } from "uuid";
 
 // init the express json-parser
 app.use(express.json());
+app.use(morgan("tiny"));
 
 let notes = [
   {
@@ -98,7 +100,8 @@ app.post("/api/notes", (req, res) => {
 // delete a resource(note)
 app.delete("/api/notes/:id", (req, res) => {
   const noteId = req.params.id;
-  notes = notes.filter((n) => n.id !== noteId);S
+  notes = notes.filter((n) => n.id !== noteId);
+  S;
   res.status(204).end();
 });
 
