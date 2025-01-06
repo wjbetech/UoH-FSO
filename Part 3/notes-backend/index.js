@@ -2,6 +2,9 @@
 // import and use express instead
 import express from "express";
 import morgan from "morgan";
+import cors from "cors";
+
+// init our express app
 const app = express();
 
 // uuid for safe id of new notes
@@ -9,6 +12,8 @@ import { v4 as uuidv4 } from "uuid";
 
 // init the express json-parser
 app.use(express.json());
+app.use(express.static("dist"));
+app.use(cors());
 app.use(morgan("tiny"));
 
 let notes = [
@@ -105,6 +110,7 @@ app.delete("/api/notes/:id", (req, res) => {
   res.status(204).end();
 });
 
-const PORT = 3001;
-app.listen(PORT);
-console.log(`myNotesApp server running on port ${PORT}`);
+const PORT = process.env.port || 3001;
+app.listen(PORT, () => {
+  console.log(`server running on port ${PORT}`);
+});
