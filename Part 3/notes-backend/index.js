@@ -25,25 +25,6 @@ app.get("/api/notes", (req, res) => {
   });
 });
 
-// add a new note
-app.post("/api/notes", (req, res) => {
-  const body = req.body;
-
-  if (body.content === undefined) {
-    return res.status(400).json({ error: "No content was provided!" });
-  }
-
-  const newNote = new Note({
-    content: body.content,
-    important: body.important || false
-  });
-
-  newNote.save().then((savedNote) => {
-    console.log("New note:", newNote.content, "was added successfully!");
-    res.json(savedNote);
-  });
-});
-
 // fetch a specificied note
 app.get("/api/notes/:id", (req, res, next) => {
   Note.findById(req.params.id)
@@ -60,29 +41,50 @@ app.get("/api/notes/:id", (req, res, next) => {
     .catch((error) => next(error));
 });
 
-// delete a resource(note)
-app.delete("/api/notes/:id", (req, res, next) => {
-  Note.findByIdAndDelete(req.params.id)
-    .then((result) => {
-      res.status(204).end();
+// add a new note
+app.post("/api/notes", (req, res, next) => {
+  const body = req.body;
+
+  if (body.content === undefined) {
+    return res.status(400).json({ error: "No content was provided!" });
+  }
+
+  const newNote = new Note({
+    content: {
+      type: String,
+      minLength: 5,
+      required: true
+    },
+    important: body.important || false
+  });
+
+  newNote
+    .save()
+    .then((savedNote) => {
+      console.log("New note:", newNote.content, "was added successfully!");
+      res.json(savedNote);
+    })
+    .catch((error) => next(error));
+});
+
+// update a resource(note)
+app.put("/api/notes/:id", (req, res, next) => {
+  const { content, important } = req.body;
+
+  Note.findByIdAndUpdate(req.params.id, { content, important }, { new: true, runValidators: true, context: "query" })
+    .then((updatedNote) => {
+      res.json(updatedNote);
     })
     .catch((error) => {
       next(error);
     });
 });
 
-// update a resource(note)
-app.put("/api/notes/:id", (req, res, next) => {
-  const body = req.body;
-
-  const noteUpdate = {
-    content: body.content,
-    important: body.important || false
-  };
-
-  Note.findByIdAndUpdate(req.params.id, noteUpdate, { new: true })
-    .then((updatedNote) => {
-      res.json(updatedNote);
+// delete a resource(note)
+app.delete("/api/notes/:id", (req, res, next) => {
+  Note.findByIdAndDelete(req.params.id)
+    .then((result) => {
+      res.status(204).end();
     })
     .catch((error) => {
       next(error);
