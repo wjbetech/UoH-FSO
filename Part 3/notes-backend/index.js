@@ -92,7 +92,7 @@ app.delete("/api/notes/:id", (req, res, next) => {
 });
 
 //
-// // home page
+// // home pagew
 // app.get("/", (req, res) => {
 //   res.send(`
 //     <h1>My Notes App</h1>
