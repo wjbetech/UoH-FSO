@@ -7,6 +7,9 @@ import cors from "cors";
 // import our Note mongoose module
 import Note from "./models/note.js";
 
+// import middleware
+import errorHandler from "./middleware/errorHandler.js";
+
 // init our express app
 const app = express();
 
@@ -42,7 +45,7 @@ app.post("/api/notes", (req, res) => {
 });
 
 // fetch a specificied note
-app.get("/api/notes/:id", (req, res) => {
+app.get("/api/notes/:id", (req, res, next) => {
   Note.findById(req.params.id)
     .then((note) => {
       if (note) {
@@ -54,19 +57,37 @@ app.get("/api/notes/:id", (req, res) => {
         res.status(404).json({ error: "Note not found" });
       }
     })
-    .catch((error) => {
-      console.log(error);
-      res.status(400).send({ error: "Malformed ID provided!" });
-    });
+    .catch((error) => next(error));
 });
 
 // delete a resource(note)
-// app.delete("/api/notes/:id", (req, res) => {
-//   const noteId = req.params.id;
-//   notes = notes.filter((n) => n.id !== noteId);
-//   S;
-//   res.status(204).end();
-// });
+app.delete("/api/notes/:id", (req, res, next) => {
+  Note.findByIdAndDelete(req.params.id)
+    .then((result) => {
+      res.status(204).end();
+    })
+    .catch((error) => {
+      next(error);
+    });
+});
+
+// update a resource(note)
+app.put("/api/notes/:id", (req, res, next) => {
+  const body = req.body;
+
+  const noteUpdate = {
+    content: body.content,
+    important: body.important || false
+  };
+
+  Note.findByIdAndUpdate(req.params.id, noteUpdate, { new: true })
+    .then((updatedNote) => {
+      res.json(updatedNote);
+    })
+    .catch((error) => {
+      next(error);
+    });
+});
 
 //
 // // home page
@@ -144,6 +165,10 @@ app.get("/api/notes/:id", (req, res) => {
 //   S;
 //   res.status(204).end();
 // });
+
+// make sure that error handling middleware appears AFTER
+// all routes and other middleware
+app.use(errorHandler);
 
 const PORT = process.env.port || 3001;
 app.listen(PORT, () => {
