@@ -34,13 +34,16 @@ export default [
       ],
       "@stylistic/js/linebreak-style": [
         "error",
-        "unix"
+        "windows"
       ],
       "@stylistic/js/quotes": [
         "error",
         "double"
       ],
     },
-    ignores: ["dist/**", "build/**"]
+  },
+  {
+    // eslint was trying to lint this file as well, maybe it should, but I don't want to go through and reformat all the indents
+    ignores: ["dist/**", "build/**", "eslint.config.js"]
   }
 ];
