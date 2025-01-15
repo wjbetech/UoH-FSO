@@ -1,12 +1,13 @@
 import mongoose from "mongoose";
 import "dotenv/config";
+import config from "../utils/config.js";
 
 mongoose.set("strictQuery", false);
 
 console.log("Connecting to myNotes MongoDB Database...");
 
 mongoose
-  .connect(process.env.MONGODB_NOTES_URI)
+  .connect(config.MONGODB_URI)
   .then((result) => {
     console.log("Connected to: ", result.connection.models);
   })

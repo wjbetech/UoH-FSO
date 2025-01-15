@@ -3,6 +3,8 @@
 import express from "express";
 import morgan from "morgan";
 import cors from "cors";
+import config from "./utils/config.js";
+import logger from "./utils/logger.js";
 
 // import our Note mongoose module
 import Note from "./models/note.js";
@@ -173,7 +175,6 @@ app.delete("/api/notes/:id", (req, res, next) => {
 // all routes and other middleware
 app.use(errorHandler);
 
-const PORT = process.env.port || 3001;
-app.listen(PORT, () => {
-  console.log(`server running on port ${PORT}`);
+app.listen(config.PORT, () => {
+  logger.info(`App listening on port: ${config.PORT}`);
 });
