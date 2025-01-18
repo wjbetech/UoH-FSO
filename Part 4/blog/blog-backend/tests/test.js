@@ -10,4 +10,8 @@ const arrAverage = (array) => {
   return !array.length ? 0 : array.reduce(reducer, 0) / array.length;
 };
 
-export default { reverseString, arrAverage };
+const blogDummy = (blogs) => {
+  return 1;
+};
+
+export default { reverseString, arrAverage, blogDummy };
