@@ -36,4 +36,22 @@ const mostBlogs = (blogs) => {
   };
 };
 
-export default { reverseString, arrAverage, blogDummy, totalLikes, favoriteBlog, mostBlogs };
+const favoriteAuthor = (blogs) => {
+  const favAuthor = blogs.reduce((fav, current) => {
+    return current.likes > fav.likes ? current : fav;
+  });
+
+  const likes = blogs.reduce((total, current) => {
+    if (current.author === favAuthor.author) {
+      return total + current.likes;
+    }
+    return total;
+  }, 0);
+
+  return {
+    author: favAuthor.author,
+    likes: likes
+  };
+};
+
+export default { reverseString, arrAverage, blogDummy, totalLikes, favoriteBlog, mostBlogs, favoriteAuthor };

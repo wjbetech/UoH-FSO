@@ -3,7 +3,7 @@ import assert from "node:assert";
 import tests from "./test.js";
 import dummyData from "./dummyData.json" assert { type: "json" };
 
-const { blogDummy, totalLikes, favoriteBlog, mostBlogs } = tests;
+const { blogDummy, totalLikes, favoriteBlog, mostBlogs, favoriteAuthor } = tests;
 
 describe("Blog", () => {
   test("returns a value of 1", () => {
@@ -86,6 +86,13 @@ describe("Look for: ", () => {
     assert.deepStrictEqual(mostBlogs(dummyData), {
       author: "Robert C. Martin",
       blogs: 3
+    });
+  });
+
+  test("most liked author", () => {
+    assert.deepStrictEqual(favoriteAuthor(dummyData), {
+      author: "Edsger W. Dijkstra",
+      likes: 17
     });
   });
 });
