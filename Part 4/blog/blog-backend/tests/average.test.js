@@ -8,21 +8,15 @@ describe("average", () => {
   test("of an empty array", () => {
     assert.strictEqual(arrAverage([]), 0);
   });
-});
 
-describe("average", () => {
   test("of a single value x is x", () => {
     assert.strictEqual(arrAverage([1]), 1);
   });
-});
 
-describe("average", () => {
   test("of a whole number array", () => {
     assert.strictEqual(arrAverage([1, 2, 3, 4, 5, 6]), 3.5);
   });
-});
 
-describe("average", () => {
   test("of a negative whole number array", () => {
     assert.strictEqual(arrAverage([-1, -2, -3, -4, -5]), -3);
   });
