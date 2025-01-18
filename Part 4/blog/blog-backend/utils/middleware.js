@@ -1,4 +1,4 @@
-import logger from "./logger";
+import logger from "./logger.js";
 
 // I actually really like Morgan, although I understand the task here
 // is building and understanding middleware.
@@ -19,8 +19,9 @@ const errorHandler = (error, req, res, next) => {
       error: "Malformed ID!"
     });
   } else if (error.name === "ValidationError") {
+    const messages = Object.values(error.errors).map((err) => err.message);
     return res.status(400).json({
-      error: error.message
+      error: messages.join(", ")
     });
   }
 
@@ -33,8 +34,4 @@ const unknownEndpoint = (req, res) => {
   });
 };
 
-export default {
-  requestLogger,
-  errorHandler,
-  unknownEndpoint
-};
+export default { requestLogger, unknownEndpoint, errorHandler };

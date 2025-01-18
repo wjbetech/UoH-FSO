@@ -7,7 +7,7 @@ import cors from "cors";
 import config from "./utils/config.js";
 import logger from "./utils/logger.js";
 import notesRouter from "./controllers/notes.js";
-import unknownEndpoint from "./middleware/unknownEndpoint.js";
+import unknownEndpoint from "./utils/middleware.js";
 
 // mongoose strictQuery
 mongoose.set("strictQuery", false);
