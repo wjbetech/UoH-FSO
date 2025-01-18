@@ -14,4 +14,8 @@ const blogDummy = (blogs) => {
   return 1;
 };
 
-export default { reverseString, arrAverage, blogDummy };
+const totalLikes = (blogs) => {
+  return blogs.reduce((sum, blog) => sum + blog.likes, 0);
+};
+
+export default { reverseString, arrAverage, blogDummy, totalLikes };
