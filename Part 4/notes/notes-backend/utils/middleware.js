@@ -1,4 +1,4 @@
-import logger from "./logger";
+import logger from "./logger.js";
 
 // I actually really like Morgan, although I understand the task here
 // is building and understanding middleware.

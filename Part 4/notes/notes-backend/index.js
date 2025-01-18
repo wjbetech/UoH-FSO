@@ -7,13 +7,12 @@ import cors from "cors";
 import config from "./utils/config.js";
 import logger from "./utils/logger.js";
 import notesRouter from "./controllers/notes.js";
-import unknownEndpoint from "./utils/middleware.js";
+import middleware from "./utils/middleware.js";
+
+const { unknownEndpoint, errorHandler } = middleware;
 
 // mongoose strictQuery
 mongoose.set("strictQuery", false);
-
-// import middleware
-import errorHandler from "./middleware/errorHandler.js";
 
 // init our express app
 const app = express();
