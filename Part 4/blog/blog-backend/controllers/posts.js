@@ -3,8 +3,6 @@ import Blog from "../models/blog.js";
 
 const blogRouter = express.Router();
 
-// PAGES
-
 // home page
 blogRouter.get("/home", (req, res, next) => {
   res.send(`
