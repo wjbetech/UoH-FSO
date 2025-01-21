@@ -38,7 +38,7 @@ notesRouter.get("/:id", (req, res, next) => {
 });
 
 // add a new note
-notesRouter.post("/", (req, res, next) => {
+notesRouter.post("/", async (req, res, next) => {
   const body = req.body;
 
   if (body.content === undefined) {
@@ -50,38 +50,36 @@ notesRouter.post("/", (req, res, next) => {
     important: body.important || false
   });
 
-  newNote
-    .save()
-    .then((savedNote) => {
-      console.log("New note:", newNote.content, "was added successfully!");
-      res.status(201).json(savedNote);
-    })
-    .catch((error) => next(error));
+  try {
+    const savedNote = await newNote.save();
+    res.status(201).json(savedNote);
+  } catch (error) {
+    next(error);
+  }
 });
 
 // update a resource(note)
-notesRouter.put("/:id", (req, res, next) => {
-  const { content, important } = req.body;
-
-  Note.findByIdAndUpdate(req.params.id, { content, important }, { new: true, runValidators: true, context: "query" })
-    .then((updatedNote) => {
-      res.json(updatedNote);
-    })
-    .catch((error) => {
-      next(error);
-    });
+notesRouter.put("/:id", async (req, res, next) => {
+  try {
+    const note = await Note.findById(req.params.id);
+    if (note) {
+      res.json(note);
+    } else {
+      res.status(404).end();
+    }
+  } catch (error) {
+    next(error);
+  }
 });
 
 // delete a resource(note)
-notesRouter.delete("/:id", (req, res, next) => {
-  Note.findByIdAndDelete(req.params.id)
-    .then((result) => {
-      console.log(result);
-      res.status(204).end();
-    })
-    .catch((error) => {
-      next(error);
-    });
+notesRouter.delete("/:id", async (req, res, next) => {
+  try {
+    await Note.findByIdAndDelete(req.params.id);
+    res.status(204).end();
+  } catch (error) {
+    next(error);
+  }
 });
 
 export default notesRouter;
