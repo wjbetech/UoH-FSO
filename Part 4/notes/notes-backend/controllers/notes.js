@@ -3,16 +3,22 @@ import Note from "../models/note.js";
 
 const notesRouter = express.Router();
 
-notesRouter.get("/", (req, res, next) => {
-  Note.find({})
-    .then((note) => {
-      if (note) {
-        res.json(note);
-      } else {
-        res.status(404).json({ error: "Could not fetch notes!" });
-      }
-    })
-    .catch((error) => next(error));
+// now we use ASYNC/AWAIT syntax, so this:
+// notesRouter.get("/", (req, res, next) => {
+//   Note.find({})
+//     .then((note) => {
+//       if (note) {
+//         res.json(note);
+//       } else {
+//         res.status(404).json({ error: "Could not fetch notes!" });
+//       }
+//     })
+//     .catch((error) => next(error));
+// });
+// will become this -->
+notesRouter.get("", async (req, res) => {
+  const notes = await Note.find({});
+  res.json(notes);
 });
 
 // fetch a specificied note
