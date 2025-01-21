@@ -46,11 +46,7 @@ notesRouter.post("/", (req, res, next) => {
   }
 
   const newNote = new Note({
-    content: {
-      type: String,
-      minLength: 5,
-      required: true
-    },
+    content: body.content,
     important: body.important || false
   });
 
@@ -58,7 +54,7 @@ notesRouter.post("/", (req, res, next) => {
     .save()
     .then((savedNote) => {
       console.log("New note:", newNote.content, "was added successfully!");
-      res.json(savedNote);
+      res.status(201).json(savedNote);
     })
     .catch((error) => next(error));
 });
