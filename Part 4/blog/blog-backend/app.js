@@ -5,9 +5,9 @@ import mongoose from "mongoose";
 import morgan from "morgan";
 import cors from "cors";
 import config from "./utils/config.js";
-import notesRouter from "./controllers/notes.js";
 import middleware from "./utils/middleware.js";
 import "express-async-errors";
+import blogRouter from "./controllers/blog.js";
 
 const { unknownEndpoint, errorHandler } = middleware;
 
@@ -26,7 +26,7 @@ app.use(cors());
 app.use(morgan("tiny"));
 
 // fetch a specificied note
-app.use("/api/notes", notesRouter);
+app.use("/api/blogs", blogRouter);
 
 // catch unknown endpoints - last before error handler middleware!
 app.use(unknownEndpoint);

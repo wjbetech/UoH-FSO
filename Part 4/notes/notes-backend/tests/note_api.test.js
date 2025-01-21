@@ -10,13 +10,17 @@ const api = supertest(app);
 
 beforeEach(async () => {
   await Note.deleteMany({});
-  let noteObject = new Note(helper.initialNotes[0]);
-  await noteObject.save();
-  noteObject = new Note(helper.initialNotes[1]);
-  await noteObject.save();
+  console.log("Cleared DB!");
+
+  helper.initialNotes.forEach(async (note) => {
+    let noteObject = new Note(note);
+    await noteObject.save();
+    console.log("Saved note(s)!");
+  });
+  console.log("Finished cleansing and re-building DB!");
 });
 
-describe("in the DB: ", () => {
+describe("in the DB: ", async () => {
   test("notes are returned as json", async () => {
     await api
       .get("/api/notes")
@@ -53,15 +57,16 @@ describe("in the DB: ", () => {
     assert(contents.includes("async/await syntax simplifies async operations"));
   });
 
-  test("invalid notes are rejected", async () => {
+  test("note without content is not added", async () => {
     const newNote = {
-      content: ""
+      important: true
     };
 
     await api.post("/api/notes").send(newNote).expect(400);
 
-    const notesAtEnd = await helper.getNotesInDb();
-    assert.strictEqual(notesAtEnd.length, helper.initialNotes.length);
+    const response = await api.get("/api/notes");
+
+    assert.strictEqual(response.body.length, helper.initialNotes.length);
   });
 
   test("a specific note can be viewed", async () => {
