@@ -1,18 +1,19 @@
 import mongoose from "mongoose";
 import "dotenv/config";
 import config from "../utils/config.js";
+import logger from "../utils/logger.js";
 
 mongoose.set("strictQuery", false);
 
-console.log("Connecting to MongoDB 'blogApp' DB...");
+logger.info("Connecting to MongoDB 'blogApp' DB...");
 
 mongoose
   .connect(config.MONGODB_URI)
   .then((result) => {
-    console.log("Connected to: ", result.connection.models);
+    logger.info("Connected to: ", result.connection.models);
   })
   .catch((error) => {
-    console.log("Failed to connect to MongoDB!", error);
+    logger.error("Failed to connect to MongoDB!", error);
   });
 
 const blogSchema = new mongoose.Schema({

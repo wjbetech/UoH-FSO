@@ -23,7 +23,9 @@ const app = express();
 app.use(express.json());
 app.use(express.static("dist"));
 app.use(cors());
-app.use(morgan("tiny"));
+if (process.env.NODE.ENV !== "test") {
+  app.use(morgan("tiny"));
+}
 
 // fetch a specificied note
 app.use("/api/blogs", blogRouter);

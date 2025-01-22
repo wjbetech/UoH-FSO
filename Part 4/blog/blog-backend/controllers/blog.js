@@ -1,5 +1,6 @@
 import express from "express";
 import Blog from "../models/blog.js";
+import logger from "../utils/logger.js";
 
 const blogRouter = express.Router();
 
@@ -41,7 +42,7 @@ blogRouter.get("/", async (req, res) => {
 // get specific blog via url id
 blogRouter.get("/:id", async (req, res) => {
   const blog = await Blog.findById(req.params.id);
-  console.log("Finding blog at ID: ", req.params.id);
+  logger.info("Finding blog at ID: ", req.params.id);
   if (blog) {
     res.json(blog);
   } else {
@@ -52,7 +53,7 @@ blogRouter.get("/:id", async (req, res) => {
 // POST, PUT, DELETE
 
 blogRouter.post("/", async (req, res) => {
-  console.log("POST request body: ", req.body);
+  logger.info("POST request body: ", req.body);
   const { title, author, url, content, likes } = req.body;
 
   if (!title || !author || !url || !content) {

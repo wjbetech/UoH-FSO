@@ -69,6 +69,15 @@ describe("in the blog DB", () => {
     const blogToView = updatedBlogs[updatedBlogs.length - 1];
     assert.strictEqual(blogToView.likes, 0);
   });
+
+  test("if req.body misses title or url props, return status 400", async () => {
+    const newBlog = {
+      author: "wjbetech",
+      content: "Third blog post for testing purposes! Deleting soon"
+    };
+
+    await api.post("/api/blogs").send(newBlog).expect(400);
+  });
 });
 
 after(async () => {
