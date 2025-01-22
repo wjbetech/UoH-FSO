@@ -21,62 +21,98 @@ beforeEach(async () => {
     });
 });
 
-describe("in the blog DB", () => {
-  test("blogs are returned as json", async () => {
-    await api
-      .get("/api/blogs")
-      .expect(200)
-      .expect("Content-Type", /application\/json/);
+describe("in the blog DB: ", () => {
+  describe("fundamental DB properties: ", () => {
+    test("blogs are returned as json", async () => {
+      await api
+        .get("/api/blogs")
+        .expect(200)
+        .expect("Content-Type", /application\/json/);
+    });
+
+    test("list has length equal to response body.length", async () => {
+      const res = await api.get("/api/blogs");
+      assert.strictEqual(res.body.length, helper.initialBlogs.length);
+    });
   });
 
-  test("list has length equal to response body.length", async () => {
-    const res = await api.get("/api/blogs");
-    assert.strictEqual(res.body.length, helper.initialBlogs.length);
+  describe("route properties: ", () => {
+    test("id passed via params is same as mongodb _id", async () => {
+      const blogs = await helper.getBlogsInDb();
+      const blogToView = blogs[0];
+      const resultBlog = await api.get(`/api/blogs/${blogToView.id}`);
+
+      assert.strictEqual(resultBlog.body.id, blogToView.id.toString());
+    });
   });
 
-  test("id passed via params is same as mongodb _id", async () => {
-    const blogs = await helper.getBlogsInDb();
-    const blogToView = blogs[0];
-    const resultBlog = await api.get(`/api/blogs/${blogToView.id}`);
+  describe("HTTP POST requests: ", () => {
+    test("POST requests add a new blog to the DB", async () => {
+      const newBlog = {
+        title: "New Blog Post",
+        author: "wjbetech",
+        content: "Third blog post for testing purposes! Deleting soon",
+        url: "www.wjbeblog.com",
+        likes: 0
+      };
 
-    assert.strictEqual(resultBlog.body.id, blogToView.id.toString());
+      await api.post("/api/blogs").send(newBlog).expect(201);
+      const updatedBlogs = await helper.getBlogsInDb();
+      assert.strictEqual(updatedBlogs.length, helper.initialBlogs.length + 1);
+    });
   });
 
-  test("POST requests add a new blog to the DB", async () => {
-    const newBlog = {
-      title: "New Blog Post",
-      author: "wjbetech",
-      content: "Third blog post for testing purposes! Deleting soon",
-      url: "www.wjbeblog.com",
-      likes: 0
-    };
+  describe("req.body validation: ", () => {
+    test("if req.body.likes == 0, defaults to 0", async () => {
+      const newBlog = {
+        title: "New Blog Post",
+        author: "wjbetech",
+        content: "Third blog post for testing purposes! Deleting soon",
+        url: "www.wjbeblog.com"
+      };
 
-    await api.post("/api/blogs").send(newBlog).expect(201);
-    const updatedBlogs = await helper.getBlogsInDb();
-    assert.strictEqual(updatedBlogs.length, helper.initialBlogs.length + 1);
+      await api.post("/api/blogs").send(newBlog);
+      const updatedBlogs = await helper.getBlogsInDb();
+      const blogToView = updatedBlogs[updatedBlogs.length - 1];
+      assert.strictEqual(blogToView.likes, 0);
+    });
+
+    test("if req.body misses title or url props, return status 400", async () => {
+      const newBlog = {
+        author: "wjbetech",
+        content: "Third blog post for testing purposes! Deleting soon"
+      };
+
+      await api.post("/api/blogs").send(newBlog).expect(400);
+    });
   });
 
-  test("if req.body.likes == 0, defaults to 0", async () => {
-    const newBlog = {
-      title: "New Blog Post",
-      author: "wjbetech",
-      content: "Third blog post for testing purposes! Deleting soon",
-      url: "www.wjbeblog.com"
-    };
+  describe("HTTP DELETE requests: ", () => {
+    test("single blog resource can be deleted", async () => {
+      const originalBlogs = await helper.getBlogsInDb();
+      const blogToDelete = originalBlogs[0];
 
-    await api.post("/api/blogs").send(newBlog);
-    const updatedBlogs = await helper.getBlogsInDb();
-    const blogToView = updatedBlogs[updatedBlogs.length - 1];
-    assert.strictEqual(blogToView.likes, 0);
+      await api.delete(`/api/blogs/${blogToDelete.id}`).expect(204);
+
+      const updatedBlogs = await helper.getBlogsInDb();
+      const blogContents = updatedBlogs.map((b) => b.content);
+      assert(!blogContents.includes(blogToDelete.content));
+      assert.strictEqual(updatedBlogs.length, originalBlogs.length - 1);
+    });
   });
 
-  test("if req.body misses title or url props, return status 400", async () => {
-    const newBlog = {
-      author: "wjbetech",
-      content: "Third blog post for testing purposes! Deleting soon"
-    };
+  describe("HTTP PUT requests: ", () => {
+    test("single blog resource can be updated", async () => {
+      const blogs = await helper.getBlogsInDb();
+      const blogToUpdate = blogs[0];
+      const updatedBlog = { ...blogToUpdate, likes: blogToUpdate.likes + 2 };
 
-    await api.post("/api/blogs").send(newBlog).expect(400);
+      await api.put(`/api/blogs/${blogToUpdate.id}`).send(updatedBlog).expect(200);
+
+      const updatedBlogs = await helper.getBlogsInDb();
+      const blogToView = updatedBlogs.find((b) => b.id === blogToUpdate.id);
+      assert.strictEqual(blogToView.likes, updatedBlog.likes);
+    });
   });
 });
 

@@ -1,5 +1,6 @@
 import express from "express";
 import Note from "../models/note.js";
+import logger from "../utils/logger.js";
 
 const notesRouter = express.Router();
 
@@ -33,7 +34,7 @@ notesRouter.get("/:id", async (req, res) => {
 
 // add a new note
 notesRouter.post("/", async (req, res) => {
-  console.log("Request body: ", req.body);
+  logger.info("Request body: ", req.body);
   const { content, important } = req.body;
 
   if (!content) {
