@@ -33,6 +33,14 @@ describe("in the blog DB", () => {
     const res = await api.get("/api/blogs");
     assert.strictEqual(res.body.length, helper.initialBlogs.length);
   });
+
+  test("id passed via params is same as mongodb _id", async () => {
+    const blogs = await helper.getBlogsInDb();
+    const blogToView = blogs[0];
+    const resultBlog = await api.get(`/api/blogs/${blogToView.id}`);
+
+    assert.strictEqual(resultBlog.body.id, blogToView.id.toString());
+  });
 });
 
 after(async () => {
