@@ -1,5 +1,5 @@
-import supertest from "supertest";
 import { test, after, describe, beforeEach } from "node:test";
+import supertest from "supertest";
 import Note from "../models/note.js";
 import assert from "node:assert";
 import mongoose from "mongoose";
@@ -10,14 +10,7 @@ const api = supertest(app);
 
 beforeEach(async () => {
   await Note.deleteMany({});
-  console.log("Cleared DB!");
-
-  helper.initialNotes.forEach(async (note) => {
-    let noteObject = new Note(note);
-    await noteObject.save();
-    console.log("Saved note(s)!");
-  });
-  console.log("Finished cleansing and re-building DB!");
+  await Note.insertMany(helper.initialNotes);
 });
 
 describe("in the DB: ", async () => {

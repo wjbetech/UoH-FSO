@@ -7,22 +7,31 @@ import cors from "cors";
 import config from "./utils/config.js";
 import notesRouter from "./controllers/notes.js";
 import middleware from "./utils/middleware.js";
+import logger from "./utils/logger.js";
 import "express-async-errors";
 
-const { unknownEndpoint, errorHandler } = middleware;
+const app = express();
 
-mongoose.connect(config.MONGODB_URI);
+const { unknownEndpoint, errorHandler } = middleware;
 
 // mongoose strictQuery
 mongoose.set("strictQuery", false);
 
-// init our express app
-const app = express();
+logger.info("Connecting to: ", config.MONGODB_URI);
+
+mongoose
+  .connect(config.MONGODB_URI)
+  .then(() => {
+    logger.info("Connected to MongoDB Notes DB");
+  })
+  .catch((error) => {
+    logger.error("Error connecting to MongoDB Notes DB: ", error.message);
+  });
 
 // init the express json-parser
-app.use(express.json());
-app.use(express.static("dist"));
 app.use(cors());
+app.use(express.static("dist"));
+app.use(express.json());
 app.use(morgan("tiny"));
 
 // fetch a specificied note

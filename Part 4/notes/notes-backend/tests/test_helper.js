@@ -3,11 +3,11 @@ import Note from "../models/note.js";
 const initialNotes = [
   {
     content: "HTML is easy",
-    important: true
+    important: false
   },
   {
     content: "CSS is hard",
-    important: false
+    important: true
   }
 ];
 
