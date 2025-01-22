@@ -41,6 +41,20 @@ describe("in the blog DB", () => {
 
     assert.strictEqual(resultBlog.body.id, blogToView.id.toString());
   });
+
+  test("POST requests add a new blog to the DB", async () => {
+    const newBlog = {
+      title: "New Blog Post",
+      author: "wjbetech",
+      content: "Third blog post for testing purposes! Deleting soon",
+      url: "www.wjbeblog.com",
+      likes: 0
+    };
+
+    await api.post("/api/blogs").send(newBlog).expect(201);
+    const updatedBlogs = await helper.getBlogsInDb();
+    assert.strictEqual(updatedBlogs.length, helper.initialBlogs.length + 1);
+  });
 });
 
 after(async () => {
