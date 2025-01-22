@@ -12,12 +12,13 @@ beforeEach(async () => {
   await Blog.deleteMany({});
   console.log("Clearing out the DB");
 
-  helper.initialBlogs.forEach(async (blog) => {
-    let postObject = new Blog(blog);
-    await postObject.save();
-    console.log("Saved post!");
-  });
-  console.log("Finished purging and re-building blog DB");
+  await Blog.insertMany(helper.initialBlogs)
+    .then(() => {
+      console.log("Finished purging and re-building blog DB");
+    })
+    .catch((error) => {
+      next(error);
+    });
 });
 
 describe("in the blog DB", () => {
