@@ -55,6 +55,20 @@ describe("in the blog DB", () => {
     const updatedBlogs = await helper.getBlogsInDb();
     assert.strictEqual(updatedBlogs.length, helper.initialBlogs.length + 1);
   });
+
+  test("if req.body.likes == 0, defaults to 0", async () => {
+    const newBlog = {
+      title: "New Blog Post",
+      author: "wjbetech",
+      content: "Third blog post for testing purposes! Deleting soon",
+      url: "www.wjbeblog.com"
+    };
+
+    await api.post("/api/blogs").send(newBlog);
+    const updatedBlogs = await helper.getBlogsInDb();
+    const blogToView = updatedBlogs[updatedBlogs.length - 1];
+    assert.strictEqual(blogToView.likes, 0);
+  });
 });
 
 after(async () => {
