@@ -1,14 +1,15 @@
 // we no longer need the http modules from node
 // import and use express instead
+import "express-async-errors";
 import express from "express";
 import mongoose from "mongoose";
 import morgan from "morgan";
 import cors from "cors";
 import config from "./utils/config.js";
 import notesRouter from "./controllers/notes.js";
+import userRouter from "./controllers/users.js";
 import middleware from "./utils/middleware.js";
 import logger from "./utils/logger.js";
-import "express-async-errors";
 
 const app = express();
 
@@ -17,7 +18,7 @@ const { unknownEndpoint, errorHandler } = middleware;
 // mongoose strictQuery
 mongoose.set("strictQuery", false);
 
-logger.info("Connecting to: ", config.MONGODB_URI);
+logger.info("Connecting to MongoDB!...");
 
 mongoose
   .connect(config.MONGODB_URI)
@@ -38,6 +39,7 @@ if (process.env.NODE_ENV !== "test") {
 
 // fetch a specificied note
 app.use("/api/notes", notesRouter);
+app.use("/api/users", userRouter);
 
 // catch unknown endpoints - last before error handler middleware!
 app.use(unknownEndpoint);
