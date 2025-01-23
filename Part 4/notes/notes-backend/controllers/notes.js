@@ -1,24 +1,11 @@
 import express from "express";
 import Note from "../models/note.js";
-import logger from "../utils/logger.js";
+import User from "../models/user.js";
 
 const notesRouter = express.Router();
 
-// now we use ASYNC/AWAIT syntax, so this:
-// notesRouter.get("/", (req, res, next) => {
-//   Note.find({})
-//     .then((note) => {
-//       if (note) {
-//         res.json(note);
-//       } else {
-//         res.status(404).json({ error: "Could not fetch notes!" });
-//       }
-//     })
-//     .catch((error) => next(error));
-// });
-// will become this -->
 notesRouter.get("/", async (req, res) => {
-  const notes = await Note.find({});
+  const notes = await Note.find({}).populate("user", { username: 1, name: 1 });
   res.json(notes);
 });
 
@@ -33,21 +20,23 @@ notesRouter.get("/:id", async (req, res) => {
 });
 
 // add a new note
-notesRouter.post("/", async (req, res) => {
-  logger.info("Request body: ", req.body);
-  const { content, important } = req.body;
+notesRouter.post("/", async (request, response) => {
+  const body = request.body;
 
-  if (!content) {
-    return res.status(400).json({ error: "No content was provided!" });
-  }
+  const user = await User.findById(body.userId);
+  console.log(user);
 
   const note = new Note({
-    content: content,
-    important: important || false
+    content: body.content,
+    important: body.important === undefined ? false : body.important,
+    user: user.id
   });
 
   const savedNote = await note.save();
-  res.status(201).json(savedNote);
+  user.notes = user.notes.concat(savedNote._id);
+  await user.save();
+
+  response.status(201).json(savedNote);
 });
 
 // update a resource(note)

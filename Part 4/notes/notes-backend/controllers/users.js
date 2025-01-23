@@ -5,8 +5,8 @@ import bcrypt from "bcrypt";
 const userRouter = express.Router();
 
 userRouter.get("/", async (req, res) => {
-  const user = await User.find({});
-  res.json(user);
+  const users = await User.find({}).populate("notes", { content: 1, important: 1 });
+  res.json(users);
 });
 
 userRouter.post("/", async (req, res) => {
