@@ -6,6 +6,7 @@ import mongoose from "mongoose";
 import morgan from "morgan";
 import cors from "cors";
 import config from "./utils/config.js";
+import loginRouter from "./controllers/login.js";
 import notesRouter from "./controllers/notes.js";
 import userRouter from "./controllers/users.js";
 import middleware from "./utils/middleware.js";
@@ -37,7 +38,8 @@ if (process.env.NODE_ENV !== "test") {
   app.use(morgan("tiny"));
 }
 
-// fetch a specificied note
+// use controllers
+app.use("/api/login", loginRouter);
 app.use("/api/notes", notesRouter);
 app.use("/api/users", userRouter);
 
