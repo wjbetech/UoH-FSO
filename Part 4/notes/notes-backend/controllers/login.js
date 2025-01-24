@@ -10,7 +10,9 @@ loginRouter.post("/", async (req, res) => {
 
   const user = await User.findOne({ username });
 
-  const passwordCheck = user === null ? false : bcrypt.compare(password, user.passwordHash);
+  // seems like an error (redundant await) is being thrown here
+  // but await on bcrypt.compare() method is IMPORTANT
+  const passwordCheck = user === null ? false : await bcrypt.compare(password, user.passwordHash);
 
   if (!(user && passwordCheck)) {
     return res.status(401).json({
