@@ -59,6 +59,46 @@ describe("Tests for User & /controllers/users.js routes", () => {
       assert(res.body.error.includes("expected `username` to be unique"));
       assert.strictEqual(endUsers.length, initialUsers.length);
     });
+
+    test("fails to create a new user with name.length < 3", async () => {
+      const initialUsers = await helper.getUsersInDb();
+
+      const newUser = {
+        username: "te",
+        name: "testUserY",
+        password: "password"
+      };
+
+      const res = await api
+        .post("/api/users")
+        .send(newUser)
+        .expect(400)
+        .expect("Content-Type", /application\/json/);
+
+      const endUsers = await helper.getUsersInDb();
+      assert(res.body.error.includes("Username must be at least 3 characters long"));
+      assert.strictEqual(endUsers.length, initialUsers.length);
+    });
+
+    test("fails to create a new user with password.length < 3", async () => {
+      const initialUsers = await helper.getUsersInDb();
+
+      const newUser = {
+        username: "testUserY",
+        name: "testUserY",
+        password: "pa"
+      };
+
+      const res = await api
+        .post("/api/users")
+        .send(newUser)
+        .expect(400)
+        .expect("Content-Type", /application\/json/);
+
+      const endUsers = await helper.getUsersInDb();
+      assert(res.body.error.includes("Password must be at least 3 characters long"));
+      assert.strictEqual(endUsers.length, initialUsers.length);
+    });
   });
 });
 
