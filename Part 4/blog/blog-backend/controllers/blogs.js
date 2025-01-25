@@ -1,8 +1,22 @@
 import express from "express";
 import Blog from "../models/blog.js";
+import User from "../models/user.js";
 import logger from "../utils/logger.js";
+import jwt from "jsonwebtoken";
 
 const blogRouter = express.Router();
+
+// handle authorization and token
+const getUserToken = (req) => {
+  const auth = req.get("Authorization");
+  if (auth && auth.startsWith("Bearer ")) {
+    const token = auth.replace("Bearer ", "");
+    logger.info("Extracted token: ", token);
+    return token;
+  }
+  logger.error("Authorization header missing or invalid!");
+  return null;
+};
 
 // home page
 blogRouter.get("/home", (req, res) => {
@@ -13,7 +27,7 @@ blogRouter.get("/home", (req, res) => {
 
 // GET
 blogRouter.get("/", async (req, res) => {
-  const blogs = await Blog.find({});
+  const blogs = await Blog.find({}).populate("user", { username: 1, name: 1 });
   res.json(blogs);
 });
 
@@ -29,13 +43,31 @@ blogRouter.get("/:id", async (req, res) => {
 
 // POST, PUT, DELETE
 blogRouter.post("/", async (req, res) => {
-  logger.info("POST request body: ", req.body);
   const { title, author, url, content, likes, userId } = req.body;
-  const connectedUser = await User.findById(userId);
+  logger.info("POST req.body: ", title, author, content);
 
   if (!title || !author || !url || !content) {
     return res.status(400).json({ error: "title, author, and URL are required." });
   }
+
+  const connectedUser = await User.findById(userId);
+
+  // extract token for auth
+  const token = getUserToken(req);
+
+  try {
+    decodedToken = jwt.verify(token, process.env.JWT_SECRET);
+  } catch (error) {
+    logger.error(error);
+    return res.status(401).json({ error: "Invalid or expired token." }).end();
+  }
+
+  // find author
+  const user = await User.findById(decodedToken.id);
+  if (!user) {
+  }
+
+  logger.info("decoded token: ", decodedToken);
 
   const newBlogPost = new Blog({
     title,
@@ -47,6 +79,7 @@ blogRouter.post("/", async (req, res) => {
   });
 
   const savedBlogPost = await newBlogPost.save();
+
   connectedUser.blogs = connectedUser.blogs.concat(savedBlogPost._id);
   res.status(201).json(savedBlogPost);
 });
