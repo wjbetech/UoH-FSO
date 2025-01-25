@@ -3,6 +3,7 @@ import Blog from "../models/blog.js";
 import User from "../models/user.js";
 import logger from "../utils/logger.js";
 import jwt from "jsonwebtoken";
+import middleware from "../utils/middleware.js";
 
 const blogRouter = express.Router();
 
@@ -41,42 +42,53 @@ blogRouter.get("/:id", async (req, res) => {
 });
 
 // POST, PUT, DELETE
-blogRouter.post("/", async (req, res) => {
+blogRouter.post("/", middleware.tokenExtractor, async (req, res) => {
   const { title, url, content, likes } = req.body;
-  logger.info("POST req.body: ", title, content);
 
   if (!title || !url || !content) {
     return res.status(400).json({ error: "title, author, and URL are required." });
   }
 
-  const decodedToken = jwt.verify(getUserToken(req), process.env.JWT_SECRET);
+  try {
+    // verify token
+    const decodedToken = jwt.verify(req.token, process.env.JWT_SECRET);
+    if (!decodedToken.id) {
+      return res.status(401).json({ error: "Invalid authentication token!" });
+    }
 
-  if (!decodedToken.id) {
-    return res.status(401).json({ error: "Invalid authentication token!" });
+    // verify user
+    const user = await User.findById(decodedToken.id);
+    if (!user) {
+      return res.status(401).json({ error: "User not found." });
+    }
+
+    logger.info("Handling POST req from user: ", user.username);
+
+    // build & save our new blog post
+    const newBlogPost = new Blog({
+      title,
+      author: user.username,
+      url,
+      content,
+      likes: likes || 0,
+      user: user.id
+    });
+
+    const savedBlog = await newBlogPost.save();
+
+    // handle adding savedBlog to connected user
+    user.blogs = user.blogs || [];
+    user.blogs = user.blogs.concat(savedBlog._id);
+    await user.save();
+
+    // respond with saved blog post
+    res.status(201).json(savedBlog);
+  } catch (error) {
+    logger.error("Error POSTing new blog post: ", error);
+    res.status(500).json({
+      error: "Internal server error."
+    });
   }
-
-  const user = await User.findById(decodedToken.id);
-  logger.info(user);
-
-  // extract token & auth
-  const token = getUserToken(req);
-  if (!token) return res.status(401).json({ error: "Authorization header missing or invalid!" });
-
-  const newBlogPost = new Blog({
-    title,
-    author: user.username,
-    url,
-    content,
-    likes: likes || 0,
-    user: user.id
-  });
-
-  const savedBlog = await newBlogPost.save();
-  user.blogs = user.blogs || [];
-  user.blogs = user.blogs.concat(savedBlog._id);
-  await user.save();
-
-  res.status(201).json(savedBlog);
 });
 
 blogRouter.put("/:id", async (req, res) => {
@@ -94,9 +106,45 @@ blogRouter.put("/:id", async (req, res) => {
   res.json(updatedBlog);
 });
 
-blogRouter.delete("/:id", async (req, res) => {
-  await Blog.findByIdAndDelete(req.params.id);
-  res.status(204).end();
+blogRouter.delete("/:id", middleware.tokenExtractor, async (req, res) => {
+  try {
+    const decodedToken = jwt.verify(req.token, process.env.JWT_SECRET);
+    if (!decodedToken.id) {
+      return res.status(401).json({
+        error: "Invalid auth token."
+      });
+    }
+
+    const user = await User.findById(decodedToken.id);
+    if (!user) {
+      return res.status(401).json({
+        error: "No user was found."
+      });
+    }
+
+    logger.info("Handling DELETE request from user: ", user.username);
+
+    const blogToDelete = await Blog.findById(req.params.id);
+    if (!blogToDelete) {
+      return res.status(400).json({
+        error: "No blog found."
+      });
+    }
+
+    if (blogToDelete.user.toString() !== user.id.toString()) {
+      return res.status(403).json({
+        error: "You are not authorized to delete this blog."
+      });
+    }
+
+    await Blog.findByIdAndDelete(blogToDelete.id);
+    res.status(204).end();
+  } catch (error) {
+    logger.info("Error deleting blog: ", error);
+    res.status(500).json({
+      error: "An error occurred while trying to delete blog."
+    });
+  }
 });
 
 export default blogRouter;

@@ -45,4 +45,26 @@ const unknownEndpoint = (req, res) => {
   });
 };
 
-export default { requestLogger, unknownEndpoint, errorHandler };
+const tokenExtractor = (req, res, next) => {
+  try {
+    const authHeader = req.headers["authorization"];
+    if (!authHeader) {
+      return res.status(401).json({ error: "No authorization header provided" });
+    }
+
+    // Extract the token from the "Bearer <token>" format
+    const token = authHeader.split(" ")[1];
+    if (!token) {
+      return res.status(401).json({ error: "Malformed authorization header" });
+    }
+
+    // Assign the token to the request object
+    req.token = token;
+    next(); // Proceed to the next middleware or route handler
+  } catch (error) {
+    logger.error("Error extracting token: ", error);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+export default { requestLogger, unknownEndpoint, errorHandler, tokenExtractor };
