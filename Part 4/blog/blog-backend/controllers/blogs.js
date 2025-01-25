@@ -2,21 +2,20 @@ import express from "express";
 import Blog from "../models/blog.js";
 import User from "../models/user.js";
 import logger from "../utils/logger.js";
-// import jwt from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 
 const blogRouter = express.Router();
 
 // handle authorization and token
-// const getUserToken = (req) => {
-//   const auth = req.get("Authorization");
-//   if (auth && auth.startsWith("Bearer ")) {
-//     const token = auth.replace("Bearer ", "");
-//     logger.info("Extracted token: ", token);
-//     return token;
-//   }
-//   logger.error("Authorization header missing or invalid!");
-//   return null;
-// };
+const getUserToken = (req) => {
+  const auth = req.get("Authorization");
+  if (auth && auth.startsWith("Bearer ")) {
+    const token = auth.replace("Bearer ", "");
+    return token;
+  }
+  logger.error("Authorization header missing or invalid!");
+  return null;
+};
 
 // home page
 blogRouter.get("/home", (req, res) => {
@@ -50,29 +49,34 @@ blogRouter.post("/", async (req, res) => {
     return res.status(400).json({ error: "title, author, and URL are required." });
   }
 
-  // find author
-  const users = await User.find({});
+  const decodedToken = jwt.verify(getUserToken(req), process.env.JWT_SECRET);
 
-  const useUser = users[0];
-  logger.info(useUser);
+  if (!decodedToken.id) {
+    return res.status(401).json({ error: "Invalid authentication token!" });
+  }
 
-  logger.info("Handling POST from user: ", useUser.username);
-  // logger.info("decoded token: ", decodedToken);
+  const user = await User.findById(decodedToken.id);
+  logger.info(user);
+
+  // extract token & auth
+  const token = getUserToken(req);
+  if (!token) return res.status(401).json({ error: "Authorization header missing or invalid!" });
 
   const newBlogPost = new Blog({
     title,
-    author: useUser.username,
+    author: user.username,
     url,
     content,
     likes: likes || 0,
-    user: useUser.id
+    user: user.id
   });
 
-  const savedBlogPost = await newBlogPost.save();
-  useUser.blogs = useUser.blogs || [];
-  useUser.blogs = useUser.blogs.concat(savedBlogPost._id);
-  await useUser.save();
-  res.status(201).json(savedBlogPost);
+  const savedBlog = await newBlogPost.save();
+  user.blogs = user.blogs || [];
+  user.blogs = user.blogs.concat(savedBlog._id);
+  await user.save();
+
+  res.status(201).json(savedBlog);
 });
 
 blogRouter.put("/:id", async (req, res) => {

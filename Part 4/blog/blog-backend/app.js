@@ -6,6 +6,7 @@ import mongoose from "mongoose";
 import morgan from "morgan";
 import cors from "cors";
 import config from "./utils/config.js";
+import loginRouter from "./controllers/login.js";
 import userRouter from "./controllers/users.js";
 import blogRouter from "./controllers/blogs.js";
 import middleware from "./utils/middleware.js";
@@ -43,6 +44,7 @@ app.use(express.static("dist"));
 app.use(express.json());
 app.use(morgan("tiny"));
 
+app.use("/api/login", loginRouter);
 app.use("/api/users", userRouter);
 app.use("/api/blogs", blogRouter);
 
