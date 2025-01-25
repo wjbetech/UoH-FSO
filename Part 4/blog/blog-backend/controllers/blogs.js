@@ -11,35 +11,13 @@ blogRouter.get("/home", (req, res) => {
     `);
 });
 
-// info page
-// blogRouter.get("/info", (req, res, next) => {
-//   const currentDateAndTime = new Date();
-//
-//   Blog.find({})
-//     .then((blog) => {
-//       if (blog) {
-//         res.send(`
-//         <h3>The blog currently has ${blog.length} blog posts!</h3>
-//         <p>${currentDateAndTime}</p>
-//         `);
-//       } else {
-//         res.status(404).end();
-//       }
-//     })
-//     .catch((error) => {
-//       next(error);
-//     });
-// });
-
 // GET
 
-// get all blog posts
 blogRouter.get("/", async (req, res) => {
   const blogs = await Blog.find({});
   res.json(blogs);
 });
 
-// get specific blog via url id
 blogRouter.get("/:id", async (req, res) => {
   const blog = await Blog.findById(req.params.id);
   logger.info("Finding blog at ID: ", req.params.id);
@@ -51,10 +29,10 @@ blogRouter.get("/:id", async (req, res) => {
 });
 
 // POST, PUT, DELETE
-
 blogRouter.post("/", async (req, res) => {
   logger.info("POST request body: ", req.body);
-  const { title, author, url, content, likes } = req.body;
+  const { title, author, url, content, likes, userId } = req.body;
+  const connectedUser = await User.findById(userId);
 
   if (!title || !author || !url || !content) {
     return res.status(400).json({ error: "title, author, and URL are required." });
@@ -65,10 +43,12 @@ blogRouter.post("/", async (req, res) => {
     author,
     url,
     content,
-    likes: likes || 0
+    likes: likes || 0,
+    user: connectedUser.id
   });
 
   const savedBlogPost = await newBlogPost.save();
+  connectedUser.blogs = connectedUser.blogs.concat(savedBlogPost._id);
   res.status(201).json(savedBlogPost);
 });
 

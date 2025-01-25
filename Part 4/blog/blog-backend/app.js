@@ -1,13 +1,14 @@
 // we no longer need the http modules from node
 // import and use express instead
+import "express-async-errors";
 import express from "express";
 import mongoose from "mongoose";
 import morgan from "morgan";
 import cors from "cors";
 import config from "./utils/config.js";
 import middleware from "./utils/middleware.js";
-import "express-async-errors";
-import blogRouter from "./controllers/blog.js";
+import userRouter from "./controllers/users.js";
+import blogRouter from "./controllers/blogs.js";
 
 const { unknownEndpoint, errorHandler } = middleware;
 
@@ -23,11 +24,9 @@ const app = express();
 app.use(express.json());
 app.use(express.static("dist"));
 app.use(cors());
-if (process.env.NODE.ENV !== "test") {
-  app.use(morgan("tiny"));
-}
+app.use(morgan("tiny"));
 
-// fetch a specificied note
+app.use("/api/users", userRouter);
 app.use("/api/blogs", blogRouter);
 
 // catch unknown endpoints - last before error handler middleware!
