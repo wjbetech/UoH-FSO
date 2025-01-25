@@ -19,7 +19,7 @@ const { unknownEndpoint, errorHandler } = middleware;
 // mongoose strictQuery
 mongoose.set("strictQuery", false);
 
-logger.info("Connecting to MongoDB!...");
+logger.info("Connecting to MongoDB...");
 
 mongoose
   .connect(config.MONGODB_URI)

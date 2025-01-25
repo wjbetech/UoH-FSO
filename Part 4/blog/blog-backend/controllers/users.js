@@ -5,6 +5,11 @@ import logger from "../utils/logger.js";
 
 const userRouter = express.Router();
 
+userRouter.get("/", async (req, res) => {
+  const users = await User.find({});
+  res.json(users);
+});
+
 userRouter.post("/", async (req, res) => {
   const { username, name, password } = req.body;
 

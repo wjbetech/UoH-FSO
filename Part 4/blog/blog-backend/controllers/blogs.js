@@ -12,7 +12,6 @@ blogRouter.get("/home", (req, res) => {
 });
 
 // GET
-
 blogRouter.get("/", async (req, res) => {
   const blogs = await Blog.find({});
   res.json(blogs);

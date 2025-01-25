@@ -1,18 +1,4 @@
-import "dotenv/config";
 import mongoose from "mongoose";
-import config from "../utils/config.js";
-import logger from "../utils/logger.js";
-
-mongoose.set("strictQuery", false);
-
-mongoose
-  .connect(config.MONGODB_URI)
-  .then(() => {
-    logger.info("Connected to: blogApp - 'models/user.js'");
-  })
-  .catch((error) => {
-    logger.error("Failed to connect to MongoDB!", error);
-  });
 
 const userSchema = new mongoose.Schema({
   username: {
@@ -28,8 +14,7 @@ const userSchema = new mongoose.Schema({
   },
   passwordHash: {
     type: String,
-    required: true,
-    minLength: 5
+    required: true
   },
   blogs: [
     {
