@@ -33,8 +33,11 @@ notesRouter.get("/:id", async (req, res) => {
 
 // add a new note
 notesRouter.post("/", async (req, res) => {
-  const body = req.body;
-  console.log("POSTing new note body:", body);
+  const { content, important } = req.body;
+  console.log("POSTing new note body:", {
+    content,
+    important
+  });
 
   // Extract token
   const token = getUserToken(req);
@@ -60,14 +63,14 @@ notesRouter.post("/", async (req, res) => {
   // Find user
   const user = await User.findById(decodedToken.id);
   if (!user) {
-    return res.status(404).json({ error: "User not found!" });
+    return res.status(400).json({ error: "User not found!" });
   }
   console.log("User from DB:", user);
 
   // Create and save note
   const note = new Note({
-    content: body.content,
-    important: body.important === undefined ? false : body.important,
+    content: content,
+    important: important === undefined ? false : important,
     user: user.id
   });
 
