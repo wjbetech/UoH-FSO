@@ -12,6 +12,9 @@ import NoteForm from "./components/NoteForm.jsx";
 // destructure loginService
 const { login } = loginService;
 
+// destructure noteService
+const { setToken } = noteService;
+
 const App = () => {
   const [notes, setNotes] = useState([]);
   const [newNote, setNewNote] = useState("");
@@ -25,6 +28,15 @@ const App = () => {
     noteService.getAll().then((initialNotes) => {
       setNotes(initialNotes);
     });
+  }, []);
+
+  useEffect(() => {
+    const loggedUserJSON = window.localStorage.getItem("loggedNoteAppUser");
+    if (loggedUserJSON) {
+      const user = JSON.parse(loggedUserJSON);
+      setUser(user);
+      setToken(user.token);
+    }
   }, []);
 
   const addNote = (event) => {
@@ -66,7 +78,9 @@ const App = () => {
         password
       });
 
-      noteService.setToken(user.token);
+      window.localStorage.setItem("loggedNoteAppUser", JSON.stringify(user));
+
+      setToken(user.token);
       setUser(user);
       setUsername("");
       setPassword("");
