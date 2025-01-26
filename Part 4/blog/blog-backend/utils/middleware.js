@@ -1,4 +1,6 @@
 import logger from "./logger.js";
+import jwt from "jsonwebtoken";
+import User from "../models/user.js";
 
 // I actually really like Morgan, although I understand the task here
 // is building and understanding middleware.
@@ -52,19 +54,42 @@ const tokenExtractor = (req, res, next) => {
       return res.status(401).json({ error: "No authorization header provided" });
     }
 
-    // Extract the token from the "Bearer <token>" format
+    // extract the token from the "Bearer <token>" format
     const token = authHeader.split(" ")[1];
     if (!token) {
       return res.status(401).json({ error: "Malformed authorization header" });
     }
 
-    // Assign the token to the request object
+    // assign the token to the request object
     req.token = token;
-    next(); // Proceed to the next middleware or route handler
+    next(); // proceed to the next middleware or route handler
   } catch (error) {
     logger.error("Error extracting token: ", error);
     return res.status(500).json({ error: "Internal server error" });
   }
 };
 
-export default { requestLogger, unknownEndpoint, errorHandler, tokenExtractor };
+const userExtractor = async (req, res, next) => {
+  try {
+    // verify the token
+    const decodedToken = jwt.verify(req.token, process.env.JWT_SECRET);
+    if (!decodedToken.id) {
+      return res.status(401).json({ error: "Invalid auth token" });
+    }
+
+    // verify the user against the token
+    const user = await User.findById(decodedToken.id);
+    if (!user) {
+      return res.status(401).json({ error: "No user was found" });
+    }
+
+    // pass validated user back to req.user
+    req.user = user;
+    next();
+  } catch (error) {
+    logger.error("Error extracting user: ", error);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+export default { requestLogger, unknownEndpoint, errorHandler, tokenExtractor, userExtractor };

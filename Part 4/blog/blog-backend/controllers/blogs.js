@@ -4,6 +4,7 @@ import User from "../models/user.js";
 import logger from "../utils/logger.js";
 import jwt from "jsonwebtoken";
 import middleware from "../utils/middleware.js";
+const { tokenExtractor, userExtractor } = middleware;
 
 const blogRouter = express.Router();
 
@@ -42,7 +43,7 @@ blogRouter.get("/:id", async (req, res) => {
 });
 
 // POST, PUT, DELETE
-blogRouter.post("/", middleware.tokenExtractor, async (req, res) => {
+blogRouter.post("/", tokenExtractor, userExtractor, async (req, res) => {
   const { title, url, content, likes } = req.body;
 
   if (!title || !url || !content) {
@@ -50,19 +51,15 @@ blogRouter.post("/", middleware.tokenExtractor, async (req, res) => {
   }
 
   try {
+    // user already passed by userExtractor middleware
+    const user = req.user;
+    logger.info("Handling POST req from user: " + user.username);
+
     // verify token
-    const decodedToken = jwt.verify(req.token, process.env.JWT_SECRET);
-    if (!decodedToken.id) {
-      return res.status(401).json({ error: "Invalid authentication token!" });
-    }
-
-    // verify user
-    const user = await User.findById(decodedToken.id);
-    if (!user) {
-      return res.status(401).json({ error: "User not found." });
-    }
-
-    logger.info("Handling POST req from user: ", user.username);
+    // const decodedToken = jwt.verify(req.token, process.env.JWT_SECRET);
+    // if (!decodedToken.id) {
+    //   return res.status(401).json({ error: "Invalid authentication token!" });
+    // }
 
     // build & save our new blog post
     const newBlogPost = new Blog({
@@ -106,21 +103,9 @@ blogRouter.put("/:id", async (req, res) => {
   res.json(updatedBlog);
 });
 
-blogRouter.delete("/:id", middleware.tokenExtractor, async (req, res) => {
+blogRouter.delete("/:id", tokenExtractor, userExtractor, async (req, res) => {
   try {
-    const decodedToken = jwt.verify(req.token, process.env.JWT_SECRET);
-    if (!decodedToken.id) {
-      return res.status(401).json({
-        error: "Invalid auth token."
-      });
-    }
-
-    const user = await User.findById(decodedToken.id);
-    if (!user) {
-      return res.status(401).json({
-        error: "No user was found."
-      });
-    }
+    const user = req.user;
 
     logger.info("Handling DELETE request from user: ", user.username);
 
