@@ -1,6 +1,6 @@
 import supertest from "supertest";
-import app from "../app.js";
 import { test, after, describe, beforeEach } from "node:test";
+import app from "../app.js";
 import Blog from "../models/blog.js";
 import assert from "node:assert";
 import mongoose from "mongoose";
@@ -56,9 +56,48 @@ describe("in the blog DB: ", () => {
         likes: 0
       };
 
-      await api.post("/api/blogs").send(newBlog).expect(201);
+      // attempt login to get the token
+      const loginResponse = await api
+        .post("/api/login")
+        .send({ username: "testUser", password: "password" })
+        .expect(200);
+
+      // extract token after logging in
+      const token = loginResponse.body.token; // Assuming the token is returned in the response body
+
+      // pass token into blog POST req
+      const blogResponse = await api
+        .post("/api/blogs")
+        .set("Authorization", `Bearer ${token}`) // Set the token in the Authorization header
+        .send(newBlog)
+        .expect(201);
+
+      // verify DB updates with new blog
       const updatedBlogs = await helper.getBlogsInDb();
       assert.strictEqual(updatedBlogs.length, helper.initialBlogs.length + 1);
+    });
+
+    test("POST requests must be sent with a token", async () => {
+      const newBlog = {
+        title: "New Blog Post",
+        author: "wjbetech",
+        content: "Third blog post for testing purposes! Deleting soon",
+        url: "www.wjbeblog.com",
+        likes: 0
+      };
+
+      // attempt login to get the token
+      const loginResponse = await api
+        .post("/api/login")
+        .send({ username: "testUser", password: "password" })
+        .expect(200);
+
+      // pass token into blog POST req
+      const blogResponse = await api.post("/api/blogs").send(newBlog).expect(401);
+
+      // verify DB updates with new blog
+      const updatedBlogs = await helper.getBlogsInDb();
+      assert.strictEqual(updatedBlogs.length, initialBlogs.length);
     });
   });
 
@@ -71,33 +110,80 @@ describe("in the blog DB: ", () => {
         url: "www.wjbeblog.com"
       };
 
-      await api.post("/api/blogs").send(newBlog);
+      // attempt login to get the token
+      const loginResponse = await api
+        .post("/api/login")
+        .send({ username: "testUser", password: "password" })
+        .expect(200);
+
+      // extract token after logging in
+      const token = loginResponse.body.token;
+
+      const blogResponse = await api
+        .post("/api/blogs")
+        .set("Authorization", `Bearer ${token}`) // Set the token in the Authorization header
+        .send(newBlog)
+        .expect(201);
+
       const updatedBlogs = await helper.getBlogsInDb();
       const blogToView = updatedBlogs[updatedBlogs.length - 1];
       assert.strictEqual(blogToView.likes, 0);
     });
 
     test("if req.body misses title or url props, return status 400", async () => {
+      // attempt login to get the token
+      const loginResponse = await api
+        .post("/api/login")
+        .send({ username: "testUser", password: "password" })
+        .expect(200);
+
+      // extract token after logging in
+      const token = loginResponse.body.token;
+
       const newBlog = {
         author: "wjbetech",
         content: "Third blog post for testing purposes! Deleting soon"
       };
 
-      await api.post("/api/blogs").send(newBlog).expect(400);
+      await api.post("/api/blogs").set("Authorization", `Bearer ${token}`).send(newBlog).expect(400);
     });
   });
 
   describe("HTTP DELETE requests: ", () => {
     test("single blog resource can be deleted", async () => {
       const originalBlogs = await helper.getBlogsInDb();
-      const blogToDelete = originalBlogs[0];
 
-      await api.delete(`/api/blogs/${blogToDelete.id}`).expect(204);
+      // attempt login to get the token
+      const loginResponse = await api
+        .post("/api/login")
+        .send({ username: "testUser", password: "password" })
+        .expect(200);
+
+      // extract token after logging in
+      const token = loginResponse.body.token;
+
+      const newBlog = {
+        title: "New Blog Post",
+        author: "wjbetech",
+        content: "Third blog post for testing purposes! Deleting soon",
+        url: "www.wjbeblog.com"
+      };
+
+      const blogResponse = await api
+        .post("/api/blogs")
+        .set("Authorization", `Bearer ${token}`) // Set the token in the Authorization header
+        .send(newBlog)
+        .expect(201);
+
+      const updatedBlogList = await helper.getBlogsInDb();
+      const blogToDelete = updatedBlogList[updatedBlogList.length - 1];
+
+      await api.delete(`/api/blogs/${blogToDelete.id}`).set("Authorization", `Bearer ${token}`).expect(204);
 
       const updatedBlogs = await helper.getBlogsInDb();
       const blogContents = updatedBlogs.map((b) => b.content);
       assert(!blogContents.includes(blogToDelete.content));
-      assert.strictEqual(updatedBlogs.length, originalBlogs.length - 1);
+      assert.strictEqual(updatedBlogs.length, originalBlogs.length);
     });
   });
 
