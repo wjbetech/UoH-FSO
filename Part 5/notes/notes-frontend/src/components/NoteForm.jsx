@@ -1,5 +1,3 @@
-import Note from "./Note";
-
 const NoteForm = ({ addNote, newNote, handleNoteChange }) => {
   return (
     <form onSubmit={addNote}>

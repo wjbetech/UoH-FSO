@@ -1,13 +1,13 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import Note from "./components/Note";
-import Notification from "./components/Notification";
 import noteService from "./services/notes";
 import loginService from "./services/login.js";
 
 // components
 import LoginForm from "./components/LoginForm.jsx";
 import NoteForm from "./components/NoteForm.jsx";
+import Note from "./components/Note";
+import Notification from "./components/Notification";
 
 // destructure loginService
 const { login } = loginService;
