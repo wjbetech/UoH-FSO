@@ -99,14 +99,14 @@ const App = () => {
           setUsername={setUsername}
         />
       ) : (
-        <>
+        <div className="note-form">
           <h2>Logged in as {user.username}</h2>
           <NoteForm
             addNote={addNote}
             newNote={newNote}
             handleNoteChange={handleNoteChange}
           />
-        </>
+        </div>
       )}
 
       <div className="notes">
