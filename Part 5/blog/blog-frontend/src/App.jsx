@@ -94,22 +94,24 @@ function App() {
   };
 
   return (
-    <>
+    <div className="app">
       <h1>myBlog</h1>
 
       <Notification message={errorMessage} />
 
       {user === null ? (
-        <LoginForm
-          handleLogin={handleLogin}
-          message={errorMessage}
-          username={username}
-          password={password}
-          setPassword={setPassword}
-          setUsername={setUsername}
-        />
+        <div className="form">
+          <LoginForm
+            handleLogin={handleLogin}
+            message={errorMessage}
+            username={username}
+            password={password}
+            setPassword={setPassword}
+            setUsername={setUsername}
+          />
+        </div>
       ) : (
-        <div className="blogw-form">
+        <div className="form">
           <h2>Logged in as {user.username}</h2>
           <BlogForm
             addBlog={addBlog}
@@ -131,7 +133,7 @@ function App() {
           ))}
         </ul>
       </div>
-    </>
+    </div>
   );
 }
 
