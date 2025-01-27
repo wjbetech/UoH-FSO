@@ -19,6 +19,15 @@ function BlogForm({ addBlog, newBlog, handleBlogChange }) {
             onChange={handleBlogChange}
           />
         </div>
+        <div className="blog-form-input">
+          <label>URL:</label>
+          <input
+            type="text"
+            value={newBlog.url}
+            name="url"
+            onChange={handleBlogChange}
+          />
+        </div>
         <button type="submit">Add Blog</button>
       </form>
     </div>

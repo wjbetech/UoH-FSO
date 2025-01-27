@@ -23,7 +23,7 @@ function App() {
     url: "",
     likes: 0
   });
-  const [errorMessage, setErrorMessage] = useState(null);
+  const [notification, setNotification] = useState(null);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
@@ -63,6 +63,11 @@ function App() {
         likes: 0
       });
     });
+
+    setNotification("New blog successfully added!");
+    setTimeout(() => {
+      setNotification(null);
+    }, 5000);
   };
 
   const handleLogin = async (event) => {
@@ -78,6 +83,10 @@ function App() {
 
       setToken(user.token);
       setUser(user);
+      setNotification(`${user.name} successfully logged in!`);
+      setTimeout(() => {
+        setNotification(null);
+      }, 5000);
       setUsername("");
       setPassword("");
     } catch (error) {
@@ -96,6 +105,11 @@ function App() {
       window.localStorage.removeItem("loggedBlogAppUser");
       setUser(null);
       setToken(null);
+
+      setNotification("Successfully logged out!");
+      setTimeout(() => {
+        setNotification(null);
+      }, 5000);
     } catch (error) {
       console.log(error);
     }
@@ -107,20 +121,22 @@ function App() {
   };
 
   const handleBlogChange = ({ target: { name, value } }) => {
-    setNewBlog((prevBlog) => ({ ...prevBlog, [name]: value }));
+    setNewBlog((prevBlog) => ({ ...prevBlog, [name]: value, author: user.name }));
+    console.log("Current user: " + user.name);
+    console.log(newBlog);
   };
 
   return (
     <div className="app">
       <h1>myBlog</h1>
 
-      <Notification message={errorMessage} />
+      <Notification message={notification} />
 
       {user === null ? (
         <div className="form">
           <LoginForm
             handleLogin={handleLogin}
-            message={errorMessage}
+            message={notification}
             username={username}
             password={password}
             setPassword={setPassword}
