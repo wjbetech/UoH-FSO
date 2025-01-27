@@ -74,7 +74,7 @@ function App() {
         password
       });
 
-      window.localStorage.setItem("loggedNoteAppUser", JSON.stringify(user));
+      window.localStorage.setItem("loggedBlogAppUser", JSON.stringify(user));
 
       setToken(user.token);
       setUser(user);
@@ -112,7 +112,7 @@ function App() {
         </div>
       ) : (
         <div className="form">
-          <h2>Logged in as {user.username}</h2>
+          <h3>Logged in as {user.username}</h3>
           <BlogForm
             addBlog={addBlog}
             newBlog={newBlog}
@@ -126,7 +126,10 @@ function App() {
 
         <ul>
           {blogs.map((blog) => (
-            <Blog blogInfo={blog} />
+            <Blog
+              key={blog.id}
+              blogInfo={blog}
+            />
           ))}
         </ul>
       </div>
