@@ -89,6 +89,23 @@ function App() {
     }
   };
 
+  const handleLogout = async (event) => {
+    event.preventDefault();
+
+    try {
+      window.localStorage.removeItem("loggedBlogAppUser");
+      setUser(null);
+      setToken(null);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleDelete = async () => {
+    try {
+    } catch (error) {}
+  };
+
   const handleBlogChange = ({ target: { name, value } }) => {
     setNewBlog((prevBlog) => ({ ...prevBlog, [name]: value }));
   };
@@ -112,7 +129,10 @@ function App() {
         </div>
       ) : (
         <div className="form">
-          <h3>Logged in as {user.username}</h3>
+          <div className="loggedin-user">
+            <h3>Logged in as {user.username}</h3>
+            <button onClick={handleLogout}>Logout</button>
+          </div>
           <BlogForm
             addBlog={addBlog}
             newBlog={newBlog}
@@ -129,6 +149,7 @@ function App() {
             <Blog
               key={blog.id}
               blogInfo={blog}
+              handleDelete={handleDelete}
             />
           ))}
         </ul>
