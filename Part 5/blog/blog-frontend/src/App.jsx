@@ -122,14 +122,11 @@ function App() {
       )}
 
       <div className="blogs">
-        <h3>myBlog</h3>
+        <h3>Blog Posts</h3>
 
         <ul>
-          {blogs.map((note) => (
-            <Blog
-              key={note.id}
-              note={note}
-            />
+          {blogs.map((blog) => (
+            <Blog blogInfo={blog} />
           ))}
         </ul>
       </div>
