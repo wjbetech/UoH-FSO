@@ -23,7 +23,10 @@ function App() {
     url: "",
     likes: 0
   });
-  const [notification, setNotification] = useState(null);
+  const [notification, setNotification] = useState({
+    message: null,
+    type: null
+  });
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
@@ -43,31 +46,40 @@ function App() {
     }
   }, []);
 
-  const addBlog = (event) => {
-    event.preventDefault();
-    const blogObject = {
-      title: newBlog.title,
-      author: newBlog.author,
-      url: newBlog.url,
-      content: newBlog.content,
-      likes: newBlog.likes
-    };
-
-    blogService.create(blogObject).then((returnedBlog) => {
-      setBlogs(blogs.concat(returnedBlog));
-      setNewBlog({
-        title: "",
-        author: "",
-        content: "",
-        url: "",
-        likes: 0
-      });
-    });
-
-    setNotification("New blog successfully added!");
+  const showNotification = (message, type) => {
+    setNotification({ message, type });
     setTimeout(() => {
-      setNotification(null);
+      setNotification({ message: null, type: null });
     }, 5000);
+  };
+
+  const addBlog = (event) => {
+    try {
+      event.preventDefault();
+      const blogObject = {
+        title: newBlog.title,
+        author: newBlog.author,
+        url: newBlog.url,
+        content: newBlog.content,
+        likes: newBlog.likes
+      };
+
+      blogService.create(blogObject).then((returnedBlog) => {
+        setBlogs(blogs.concat(returnedBlog));
+        setNewBlog({
+          title: "",
+          author: "",
+          content: "",
+          url: "",
+          likes: 0
+        });
+      });
+
+      showNotification("New blog created!", "success");
+    } catch (error) {
+      console.log(error);
+      showNotification("Failed to create new blog!", "error");
+    }
   };
 
   const handleLogin = async (event) => {
@@ -83,18 +95,12 @@ function App() {
 
       setToken(user.token);
       setUser(user);
-      setNotification(`${user.name} successfully logged in!`);
-      setTimeout(() => {
-        setNotification(null);
-      }, 5000);
+      showNotification(`${user.name} successfully logged in!`, "success");
       setUsername("");
       setPassword("");
     } catch (error) {
       console.log(error);
-      setErrorMessage("Invalid username or password");
-      setTimeout(() => {
-        setErrorMessage(null);
-      }, 5000);
+      showNotification("Invalid username or password", "error");
     }
   };
 
@@ -106,11 +112,9 @@ function App() {
       setUser(null);
       setToken(null);
 
-      setNotification("Successfully logged out!");
-      setTimeout(() => {
-        setNotification(null);
-      }, 5000);
+      showNotification("Successfully logged out!", "success");
     } catch (error) {
+      showNotification("Invalid username or password!", error);
       console.log(error);
     }
   };
@@ -130,7 +134,10 @@ function App() {
     <div className="app">
       <h1>myBlog</h1>
 
-      <Notification message={notification} />
+      <Notification
+        message={notification.message}
+        type={notification.type}
+      />
 
       {user === null ? (
         <div className="form">

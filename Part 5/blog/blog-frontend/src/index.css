@@ -85,12 +85,11 @@ button:focus-visible {
 
 .notification {
   margin: 2rem 0 0 0;
-  color: gray;
-  background: lightgrey;
   font-size: 20px;
   border-style: solid;
   border-radius: 5px;
   padding: 10px;
+  max-width: 500px;
 }
 
 .form {

@@ -1,11 +1,29 @@
 import React from "react";
 
-const Notification = ({ message }) => {
+const Notification = ({ message, type }) => {
   if (message === null) {
     return null;
   }
 
-  return <div className="notification">{message}</div>;
+  const notificationStyle = {
+    success: {
+      backgroundColor: "green",
+      color: "white"
+    },
+    error: {
+      backgroundColor: "red",
+      color: "white"
+    }
+  };
+
+  return (
+    <div
+      className="notification"
+      style={notificationStyle[type]}
+    >
+      {message}
+    </div>
+  );
 };
 
 export default Notification;
