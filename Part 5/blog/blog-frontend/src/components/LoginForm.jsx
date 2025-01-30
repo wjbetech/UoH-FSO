@@ -1,4 +1,4 @@
-const LoginForm = ({ handleLogin, username, setUsername, setPassword, password }) => {
+const LoginForm = ({ handleLogin, username, setUsername, setPassword, password, hideLogin }) => {
   return (
     <form
       className=""
@@ -24,6 +24,7 @@ const LoginForm = ({ handleLogin, username, setUsername, setPassword, password }
         />
       </div>
       <button type="submit">Login</button>
+      <button type="submit" onClick={hideLogin}>Hide Login</button>
     </form>
   );
 };

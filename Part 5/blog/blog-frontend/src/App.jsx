@@ -16,6 +16,7 @@ const { getAll, setToken } = blogService;
 
 function App() {
   const [blogs, setBlogs] = useState([]);
+  const [loginVisible, setLoginVisible] = useState(true);
   const [newBlog, setNewBlog] = useState({
     title: "",
     author: "",
@@ -130,6 +131,8 @@ function App() {
     console.log(newBlog);
   };
 
+  
+
   return (
     <div className="app">
       <h1>myBlog</h1>
@@ -141,14 +144,22 @@ function App() {
 
       {user === null ? (
         <div className="form">
-          <LoginForm
-            handleLogin={handleLogin}
-            message={notification}
-            username={username}
-            password={password}
-            setPassword={setPassword}
-            setUsername={setUsername}
-          />
+          {loginVisible && (           
+             <div>
+              <LoginForm
+                handleLogin={handleLogin}
+                message={notification}
+                username={username}
+                password={password}
+                setPassword={setPassword}
+                setUsername={setUsername}
+                hideLogin={() => setLoginVisible(false)}
+              />
+          </div>
+         )}
+         {!loginVisible && (
+          <button className="show-login" onClick={() => setLoginVisible(true)}>Login</button>
+         )}
         </div>
       ) : (
         <div className="form">
