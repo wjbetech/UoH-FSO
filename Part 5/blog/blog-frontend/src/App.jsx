@@ -5,6 +5,7 @@ import LoginForm from "./components/LoginForm";
 import Blog from "./components/Blog";
 import BlogForm from "./components/BlogForm";
 import Notification from "./components/Notification";
+import Toggleable from "./components/Toggleable.jsx";
 
 // destructure loginService
 import loginService from "./services/login.js";
@@ -131,7 +132,43 @@ function App() {
     console.log(newBlog);
   };
 
-  
+  const loginForm = () => {
+    const hideWhenVisible = { display: loginVisible ? "none" : "" };
+    const showWhenVisible = { display: loginVisible ? "" : "none" };
+
+    return (
+      <div>
+        <div style={hideWhenVisible}>
+          <button
+            className="show-login"
+            onClick={() => setLoginVisible(true)}
+          >
+            Login
+          </button>
+          <div style={showWhenVisible}>
+            <LoginForm
+              handleLogin={handleLogin}
+              message={notification}
+              username={username}
+              password={password}
+              setPassword={setPassword}
+              setUsername={setUsername}
+              hideLogin={() => setLoginVisible(false)}
+            />
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  const noteForm = () => {
+    <form onSubmit={addNote}>
+      <input
+        value={newNote}
+        onChange={handleNoteChange}
+      />
+    </form>;
+  };
 
   return (
     <div className="app">
@@ -141,26 +178,9 @@ function App() {
         message={notification.message}
         type={notification.type}
       />
-
+      {!user && loginForm()}
       {user === null ? (
-        <div className="form">
-          {loginVisible && (           
-             <div>
-              <LoginForm
-                handleLogin={handleLogin}
-                message={notification}
-                username={username}
-                password={password}
-                setPassword={setPassword}
-                setUsername={setUsername}
-                hideLogin={() => setLoginVisible(false)}
-              />
-          </div>
-         )}
-         {!loginVisible && (
-          <button className="show-login" onClick={() => setLoginVisible(true)}>Login</button>
-         )}
-        </div>
+        <loginForm />
       ) : (
         <div className="form">
           <div className="loggedin-user">
