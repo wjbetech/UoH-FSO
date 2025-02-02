@@ -1,3 +1,19 @@
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  font-size: 16px;
+
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #242424;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
 * {
   padding: ;
   margin: 0;
@@ -6,7 +22,6 @@
 }
 
 body {
-  background-color: #333;
   padding: 1rem;
   color: white;
   padding: 2rem;
@@ -31,6 +46,7 @@ ul {
 button {
   padding: 4px;
   font-size: 0.75rem;
+  cursor: pointer;
 }
 
 input {
@@ -40,9 +56,10 @@ input {
 
 form {
   display: flex;
+  max-width: 300px;
+  margin: 36px 0;
   flex-direction: column;
   gap: 0.5rem;
-  margin: 36px auto;
 
   & label {
     margin-right: 0.5rem;
@@ -61,6 +78,14 @@ form {
   align-items: center;
   font-size: 15px;
   margin-bottom: 1rem;
+}
+
+.togglable {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  margin: 1.5rem 0;
+  width: 50%;
 }
 
 .error {
