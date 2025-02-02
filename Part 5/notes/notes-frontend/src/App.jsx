@@ -144,8 +144,10 @@ const App = () => {
       {!user && loginForm()}
       {user && (
         <div>
-          <p>Logged in as {user.name}</p>
-          <Togglable buttonLabel="new note">
+          <p>
+            Logged in as {user.name} <button onClick={handleLogout}>Logout</button>
+          </p>
+          <Togglable buttonLabel="+ New Note">
             <NoteForm
               onSubmit={addNote}
               value={newNote}
