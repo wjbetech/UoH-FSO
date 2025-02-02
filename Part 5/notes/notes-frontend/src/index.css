@@ -88,6 +88,19 @@ form {
   width: 50%;
 }
 
+.important-button {
+  margin-top: 1.5rem;
+}
+
+.notification {
+  margin: 2rem 0 0 0;
+  font-size: 20px;
+  border-style: solid;
+  border-radius: 5px;
+  padding: 10px;
+  max-width: 500px;
+}
+
 .error {
   color: red;
   background: lightgrey;

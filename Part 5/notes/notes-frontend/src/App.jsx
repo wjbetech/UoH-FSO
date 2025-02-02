@@ -1,7 +1,12 @@
 import React from "react";
 import { useState, useEffect } from "react";
+
+// services
 import noteService from "./services/notes";
+const { getAll, setToken, update } = noteService;
+
 import loginService from "./services/login.js";
+const { login } = loginService;
 
 // components
 import LoginForm from "./components/LoginForm.jsx";
@@ -14,7 +19,10 @@ const App = () => {
   const [notes, setNotes] = useState([]);
   const [newNote, setNewNote] = useState("");
   const [showAll, setShowAll] = useState(true);
-  const [errorMessage, setErrorMessage] = useState(null);
+  const [notification, setNotification] = useState({
+    message: null,
+    type: null
+  });
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
@@ -25,35 +33,48 @@ const App = () => {
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON);
       setUser(user);
-      noteService.setToken(user.token);
+      setToken(user.token);
     }
   }, []);
 
   useEffect(() => {
-    noteService.getAll().then((initialNotes) => {
+    getAll().then((initialNotes) => {
       setNotes(initialNotes);
     });
   }, []);
 
-  const addNote = (event) => {
-    event.preventDefault();
-    const noteObject = {
-      content: newNote,
-      important: Math.random() > 0.5
-    };
+  const showNotification = (message, type) => {
+    setNotification({ message, type });
+    setTimeout(() => {
+      setNotification({ message: null, type: null });
+    }, 5000);
+  };
 
-    noteService.create(noteObject).then((returnedNote) => {
-      setNotes(notes.concat(returnedNote));
-      setNewNote("");
-    });
+  const addNote = (event) => {
+    try {
+      event.preventDefault();
+      const noteObject = {
+        content: newNote,
+        important: Math.random() > 0.5
+      };
+
+      create(noteObject).then((returnedNote) => {
+        setNotes(notes.concat(returnedNote));
+        setNewNote("");
+      });
+
+      showNotification("New blog created!", "success");
+    } catch (error) {
+      showNotification("Failed to create new blog!", "error");
+      console.log(error);
+    }
   };
 
   const toggleImportanceOf = (id) => {
     const note = notes.find((n) => n.id === id);
     const changedNote = { ...note, important: !note.important };
 
-    noteService
-      .update(id, changedNote)
+    update(id, changedNote)
       .then((returnedNote) => {
         setNotes(notes.map((note) => (note.id !== id ? note : returnedNote)));
       })
@@ -69,22 +90,21 @@ const App = () => {
     event.preventDefault();
 
     try {
-      const user = await loginService.login({
+      const user = await login({
         username,
         password
       });
 
       window.localStorage.setItem("loggedNoteAppUser", JSON.stringify(user));
 
-      noteService.setToken(user.token);
+      setToken(user.token);
       setUser(user);
+      showNotification(`${user.name} logged in!`, "success");
       setUsername("");
       setPassword("");
     } catch (error) {
-      setErrorMessage("Invalid username or password");
-      setTimeout(() => {
-        setErrorMessage(null);
-      }, 5000);
+      showNotification("Invalid username or password!", "error");
+      console.log(error);
     }
   };
 
@@ -92,9 +112,14 @@ const App = () => {
     event.preventDefault();
 
     try {
+      window.localStorage.removeItem("loggedNoteAppUser");
       setUser(null);
-      windows.localStorage.removeItem("loggedNoteAppUser");
-    } catch (error) {}
+
+      showNotification("Successfully logged out!", "success");
+    } catch (error) {
+      showNotification("Invalid username or password!", "error");
+      console.log(error);
+    }
   };
 
   const handleNoteChange = (event) => {
@@ -139,7 +164,10 @@ const App = () => {
   return (
     <div>
       <h1>Notes</h1>
-      <Notification message={errorMessage} />
+      <Notification
+        message={notification.message}
+        type={notification.type}
+      />
 
       {!user && loginForm()}
       {user && (
@@ -157,7 +185,7 @@ const App = () => {
         </div>
       )}
 
-      <div>
+      <div className="important-button">
         <button onClick={() => setShowAll(!showAll)}>Show {showAll ? "Important" : "All"}</button>
       </div>
       <ul>

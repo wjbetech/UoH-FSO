@@ -176,7 +176,7 @@ function App() {
 
       <Notification
         message={notification.message}
-        type={notification.type}
+        type={notificawtion.type}
       />
       {!user && loginForm()}
       {user === null ? (
