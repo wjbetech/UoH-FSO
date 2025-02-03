@@ -1,9 +1,9 @@
 import React from "react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 // services
 import noteService from "./services/notes";
-const { getAll, setToken, update } = noteService;
+const { getAll, setToken, update, create } = noteService;
 
 import loginService from "./services/login.js";
 const { login } = loginService;
@@ -13,7 +13,7 @@ import LoginForm from "./components/LoginForm.jsx";
 import NoteForm from "./components/NoteForm.jsx";
 import Note from "./components/Note";
 import Notification from "./components/Notification";
-import Togglable from "./components/Toggleable.jsx";
+import Toggleable from "./components/Toggleable.jsx";
 
 const App = () => {
   const [notes, setNotes] = useState([]);
@@ -27,6 +27,8 @@ const App = () => {
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
   const [loginVisible, setLoginVisible] = useState(false);
+
+  const noteFormRef = useRef();
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem("loggedNoteAppUser");
@@ -52,6 +54,7 @@ const App = () => {
 
   const addNote = (noteObject) => {
     try {
+      noteFormRef.current.toggleVisibility();
       create(noteObject).then((returnedNote) => {
         setNotes(notes.concat(returnedNote));
         setNewNote("");
@@ -169,13 +172,12 @@ const App = () => {
           <p className="user-display">
             Logged in as {user.name} <button onClick={handleLogout}>Logout</button>
           </p>
-          <Togglable buttonLabel="+ New Note">
-            <NoteForm
-              onSubmit={addNote}
-              value={newNote}
-              handleChange={handleNoteChange}
-            />
-          </Togglable>
+          <Toggleable
+            buttonLabel="+ New Note"
+            ref={noteFormRef}
+          >
+            <NoteForm createNote={addNote} />
+          </Toggleable>
         </div>
       )}
 
