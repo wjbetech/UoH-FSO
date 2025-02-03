@@ -67,22 +67,6 @@ const App = () => {
     }
   };
 
-  const toggleImportanceOf = (id) => {
-    const note = notes.find((n) => n.id === id);
-    const changedNote = { ...note, important: !note.important };
-
-    update(id, changedNote)
-      .then((returnedNote) => {
-        setNotes(notes.map((note) => (note.id !== id ? note : returnedNote)));
-      })
-      .catch((error) => {
-        setErrorMessage(`Note '${note.content}' was already removed from server`);
-        setTimeout(() => {
-          setErrorMessage(null);
-        }, 5000);
-      });
-  };
-
   const handleLogin = async (event) => {
     event.preventDefault();
 
@@ -105,12 +89,29 @@ const App = () => {
     }
   };
 
+  const toggleImportanceOf = (id) => {
+    const note = notes.find((n) => n.id === id);
+    const changedNote = { ...note, important: !note.important };
+
+    update(id, changedNote)
+      .then((returnedNote) => {
+        setNotes(notes.map((note) => (note.id !== id ? note : returnedNote)));
+      })
+      .catch((error) => {
+        setErrorMessage(`Note '${note.content}' was already removed from server`);
+        setTimeout(() => {
+          setErrorMessage(null);
+        }, 5000);
+      });
+  };
+
   const handleLogout = async (event) => {
     event.preventDefault();
 
     try {
       window.localStorage.removeItem("loggedNoteAppUser");
       setUser(null);
+      setToken(null);
 
       showNotification("Successfully logged out!", "success");
     } catch (error) {
@@ -141,6 +142,7 @@ const App = () => {
             handleUsernameChange={({ target }) => setUsername(target.value)}
             handlePasswordChange={({ target }) => setPassword(target.value)}
             handleLogin={handleLogin}
+            hideLogin={() => setLoginVisible(false)}
           />
           <button onClick={() => setLoginVisible(false)}>Cancel</button>
         </div>

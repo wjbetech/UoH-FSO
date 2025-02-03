@@ -1,10 +1,7 @@
-const LoginForm = ({ handleLogin, username, setUsername, setPassword, password, hideLogin }) => {
+const LoginForm = ({ handleLogin, username, setUsername, setPassword, password, setLoginVisible }) => {
   return (
-    <div>
-      <form
-        className=""
-        onSubmit={handleLogin}
-      >
+    <div className="form">
+      <form onSubmit={handleLogin}>
         <h3>Login</h3>
         <div className="username-input">
           <label htmlFor="username">Username:</label>
@@ -24,14 +21,19 @@ const LoginForm = ({ handleLogin, username, setUsername, setPassword, password, 
             onChange={({ target }) => setPassword(target.value)}
           />
         </div>
-        <button type="submit">Login</button>
         <button
           type="submit"
-          onClick={hideLogin}
+          onClick={handleLogin}
         >
-          Hide Login
+          Login
         </button>
       </form>
+      <button
+        className="login-form-button"
+        onClick={() => setLoginVisible(false)}
+      >
+        Cancel
+      </button>
     </div>
   );
 };

@@ -1,6 +1,23 @@
-function BlogForm({ addBlog, newBlog, handleBlogChange }) {
+import { useState } from "react";
+
+function BlogForm({ createBlog }) {
+  const [newBlog, setNewBlog] = useState("");
+
+  const addBlog = (event) => {
+    event.preventDefault();
+    createBlog({
+      title: newBlog.title,
+      content: newBlog.content,
+      author: newBlog.author,
+      url: newBlog.url,
+      likes: 0
+    });
+    setNewBlog("");
+  };
+
   return (
-    <div className="">
+    <div className="form">
+      <h2>Create New Blog Post</h2>
       <form onSubmit={addBlog}>
         <div className="blog-form-input">
           <label>Title:</label>
@@ -8,7 +25,7 @@ function BlogForm({ addBlog, newBlog, handleBlogChange }) {
             type="text"
             value={newBlog.title}
             name="title"
-            onChange={handleBlogChange}
+            onChange={(event) => setNewBlog(event.target.value)}
           />
         </div>
         <div className="blog-form-input">
@@ -16,7 +33,7 @@ function BlogForm({ addBlog, newBlog, handleBlogChange }) {
           <textarea
             value={newBlog.content}
             name="content"
-            onChange={handleBlogChange}
+            onChange={(event) => setNewBlog(event.target.value)}
           />
         </div>
         <div className="blog-form-input">
@@ -25,7 +42,7 @@ function BlogForm({ addBlog, newBlog, handleBlogChange }) {
             type="text"
             value={newBlog.url}
             name="url"
-            onChange={handleBlogChange}
+            onChange={(event) => setNewBlog(event.target.value)}
           />
         </div>
         <button type="submit">Add Blog</button>
