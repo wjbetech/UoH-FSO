@@ -55,26 +55,16 @@ function App() {
     }, 5000);
   };
 
-  const addBlog = (event) => {
+  const addBlog = async (blogObject) => {
     try {
-      event.preventDefault();
-      const blogObject = {
-        title: newBlog.title,
-        author: newBlog.author,
-        url: newBlog.url,
-        content: newBlog.content,
-        likes: newBlog.likes
-      };
-
-      blogService.create(blogObject).then((returnedBlog) => {
-        setBlogs(blogs.concat(returnedBlog));
-        setNewBlog({
-          title: "",
-          author: "",
-          content: "",
-          url: "",
-          likes: 0
-        });
+      const returnedBlog = await blogService.create(blogObject);
+      setBlogs(blogs.concat(returnedBlog));
+      setNewBlog({
+        title: "",
+        author: "",
+        content: "",
+        url: "",
+        likes: 0
       });
 
       showNotification("New blog created!", "success");

@@ -1,5 +1,5 @@
 export default function Blog({ blogInfo, handleDelete }) {
-  const { title, content, username, author, url, likes } = blogInfo;
+  const { title, content, author, likes } = blogInfo;
 
   return (
     <div className="blog-post">
