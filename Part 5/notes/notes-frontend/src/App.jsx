@@ -50,14 +50,8 @@ const App = () => {
     }, 5000);
   };
 
-  const addNote = (event) => {
+  const addNote = (noteObject) => {
     try {
-      event.preventDefault();
-      const noteObject = {
-        content: newNote,
-        important: Math.random() > 0.5
-      };
-
       create(noteObject).then((returnedNote) => {
         setNotes(notes.concat(returnedNote));
         setNewNote("");
@@ -143,7 +137,7 @@ const App = () => {
             password={password}
             handleUsernameChange={({ target }) => setUsername(target.value)}
             handlePasswordChange={({ target }) => setPassword(target.value)}
-            handleSubmit={handleLogin}
+            handleLogin={handleLogin}
           />
           <button onClick={() => setLoginVisible(false)}>Cancel</button>
         </div>
@@ -172,7 +166,7 @@ const App = () => {
       {!user && loginForm()}
       {user && (
         <div>
-          <p>
+          <p className="user-display">
             Logged in as {user.name} <button onClick={handleLogout}>Logout</button>
           </p>
           <Togglable buttonLabel="+ New Note">

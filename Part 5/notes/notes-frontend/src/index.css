@@ -93,7 +93,7 @@ form {
 }
 
 .notification {
-  margin: 2rem 0 0 0;
+  margin: 2rem 0 2rem 0;
   font-size: 20px;
   border-style: solid;
   border-radius: 5px;
@@ -109,6 +109,11 @@ form {
   border-radius: 5px;
   padding: 10px;
   margin-bottom: 10px;
+}
+
+.user-display {
+  padding: 0 0 1rem 0;
+  font-size: 0.85rem;
 }
 
 .show-important-button {
