@@ -116,10 +116,22 @@ function App() {
     } catch (error) {}
   };
 
-  const handleBlogChange = ({ target: { name, value } }) => {
-    setNewBlog((prevBlog) => ({ ...prevBlog, [name]: value, author: user.name }));
-    console.log("Current user: " + user.name);
-    console.log(newBlog);
+  const handleLikesClick = async (id) => {
+    try {
+      const blogToUpdate = blogs.find((blog) => blog.id === id);
+      console.log("Blog to update: ", blogToUpdate);
+
+      const updatedBlog = { ...blogToUpdate, likes: blogToUpdate.likes + 1 };
+      console.log("Updated blog: ", updatedBlog);
+
+      const returnedBlog = await update(id, updatedBlog);
+      console.log("Returned blog: ", returnedBlog);
+
+      setBlogs(blogs.map((blog) => (blog.id === id ? returnedBlog : blog)));
+    } catch (error) {
+      console.log(error);
+      showNotification("Failed to update likes!", "error");
+    }
   };
 
   const loginForm = () => {
@@ -186,6 +198,7 @@ function App() {
               key={blog.id}
               blogInfo={blog}
               handleDelete={handleDelete}
+              handleLikesClick={handleLikesClick}
             />
           ))}
         </ul>

@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-export default function Blog({ blogInfo, handleDelete }) {
+export default function Blog({ blogInfo, handleDelete, handleLikesClick }) {
   const [showDetails, setShowDetails] = useState(false);
   const { title, content, author, likes } = blogInfo;
 
@@ -18,7 +18,12 @@ export default function Blog({ blogInfo, handleDelete }) {
             >
               Close
             </button>
-            <button className="like-button">Like</button>
+            <button
+              onClick={() => handleLikesClick(blogInfo.id)}
+              className="like-button"
+            >
+              Like
+            </button>
             <button
               className="delete-button"
               onClick={handleDelete}

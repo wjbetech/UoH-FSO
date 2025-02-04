@@ -88,19 +88,25 @@ blogRouter.post("/", tokenExtractor, userExtractor, async (req, res) => {
   }
 });
 
-blogRouter.put("/:id", async (req, res) => {
+blogRouter.put("/:id", tokenExtractor, userExtractor, async (req, res) => {
   const { title, author, url, content, likes } = req.body;
 
-  const blog = {
-    title: title,
-    author: author,
-    url: url,
-    content: content,
-    likes: likes || 0
-  };
+  try {
+    const user = req.user;
+    logger.info("Handling a POST request from: ", user.username);
 
-  const updatedBlog = await Blog.findByIdAndUpdate(req.params.id, blog, { new: true });
-  res.json(updatedBlog);
+    const blog = {
+      user,
+      title: title,
+      author: author,
+      url: url,
+      content: content,
+      likes: likes || 0
+    };
+
+    const updatedBlog = await Blog.findByIdAndUpdate(req.params.id, blog, { new: true });
+    res.json(updatedBlog);
+  } catch (error) {}
 });
 
 blogRouter.delete("/:id", tokenExtractor, userExtractor, async (req, res) => {
