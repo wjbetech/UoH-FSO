@@ -111,9 +111,23 @@ function App() {
     }
   };
 
-  const handleDelete = async () => {
+  const handleDelete = async (id) => {
     try {
-    } catch (error) {}
+      const blogToDelete = blogs.find((blog) => blog.id === id)
+
+      if (!blogToDelete) {
+        console.log("Blog to delete: ", blogToDelete)
+        return
+      }
+
+      if (window.confirm(`Are you sure you want to delete ${blogToDelete.content}`)) {
+        await blogService.remove(id);
+        setBlogs(blogs.filter((blog) => blog.id!== id));
+      }
+    } catch (error) {
+      console.log(error);
+      showNotification("Failed to delete blog!", "error");
+    }
   };
 
   const handleLikesClick = async (id) => {
