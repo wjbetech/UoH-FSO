@@ -1,3 +1,5 @@
+import PropTypes from "prop-types";
+
 import { useState } from "react";
 
 export default function Blog({ blogInfo, handleDelete, handleLikesClick }) {
@@ -51,3 +53,15 @@ export default function Blog({ blogInfo, handleDelete, handleLikesClick }) {
     </div>
   );
 }
+
+Blog.propTypes = {
+  blogInfo: PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    title: PropTypes.string.isRequired,
+    content: PropTypes.string.isRequired,
+    author: PropTypes.string.isRequired,
+    likes: PropTypes.number.isRequired
+  }),
+  handleDelete: PropTypes.func.isRequired,
+  handleLikesClick: PropTypes.func.isRequired
+};
