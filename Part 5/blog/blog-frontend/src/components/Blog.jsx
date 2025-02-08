@@ -26,7 +26,9 @@ export default function Blog({ blogInfo, handleDelete, handleLikesClick }) {
             </button>
             <button
               className="delete-button"
-              onClick={handleDelete}
+              onClick={() => {
+                handleDelete(blogInfo.id);
+              }}
             >
               Delete
             </button>

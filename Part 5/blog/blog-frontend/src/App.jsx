@@ -112,17 +112,21 @@ function App() {
   };
 
   const handleDelete = async (id) => {
+    console.log(blogs);
+
     try {
-      const blogToDelete = blogs.find((blog) => blog.id === id)
+      const blogToDelete = blogs.find((blog) => blog.id.toString() === id.toString());
 
       if (!blogToDelete) {
-        console.log("Blog to delete: ", blogToDelete)
-        return
+        console.log("Could not find any blog!");
+        return;
+      } else {
+        console.log("blogToDelete: " + blogToDelete);
       }
 
       if (window.confirm(`Are you sure you want to delete ${blogToDelete.content}`)) {
         await blogService.remove(id);
-        setBlogs(blogs.filter((blog) => blog.id!== id));
+        setBlogs(blogs.filter((blog) => blog.id !== id));
       }
     } catch (error) {
       console.log(error);

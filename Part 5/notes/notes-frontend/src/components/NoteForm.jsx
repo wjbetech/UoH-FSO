@@ -27,3 +27,4 @@ const NoteForm = ({ createNote }) => {
 };
 
 export default NoteForm;
+

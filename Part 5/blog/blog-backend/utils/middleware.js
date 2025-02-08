@@ -65,7 +65,7 @@ const tokenExtractor = (req, res, next) => {
     next(); // proceed to the next middleware or route handler
   } catch (error) {
     logger.error("Error extracting token: ", error);
-    return res.status(500).json({ error: "Internal server error" });
+    return res.status(500).json({ error: "Token could not be extracted!" });
   }
 };
 
@@ -88,7 +88,7 @@ const userExtractor = async (req, res, next) => {
     next();
   } catch (error) {
     logger.error("Error extracting user: ", error);
-    return res.status(500).json({ error: "Internal server error" });
+    return res.status(500).json({ error: "The user could not be extracted!" });
   }
 };
 

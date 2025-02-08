@@ -116,6 +116,7 @@ blogRouter.delete("/:id", tokenExtractor, userExtractor, async (req, res) => {
     logger.info("Handling DELETE request from user: ", user.username);
 
     const blogToDelete = await Blog.findById(req.params.id);
+
     if (!blogToDelete) {
       return res.status(400).json({
         error: "No blog found."
@@ -128,7 +129,7 @@ blogRouter.delete("/:id", tokenExtractor, userExtractor, async (req, res) => {
       });
     }
 
-    await Blog.findByIdAndDelete(blogToDelete.id);
+    await Blog.findByIdAndDelete(blogToDelete._id);
     res.status(204).end();
   } catch (error) {
     logger.info("Error deleting blog: ", error);
