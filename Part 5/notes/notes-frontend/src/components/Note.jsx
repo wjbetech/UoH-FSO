@@ -1,3 +1,5 @@
+import PropTypes from "prop-types";
+
 import React from "react";
 
 const Note = ({ note, toggleImportance }) => {
@@ -10,6 +12,15 @@ const Note = ({ note, toggleImportance }) => {
       </span>
     </li>
   );
+};
+
+Note.propTypes = {
+  note: PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    content: PropTypes.string.isRequired,
+    important: PropTypes.bool.isRequired
+  }).isRequired,
+  toggleImportance: PropTypes.func.isRequired
 };
 
 export default Note;

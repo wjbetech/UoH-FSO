@@ -13,7 +13,7 @@ import LoginForm from "./components/LoginForm.jsx";
 import NoteForm from "./components/NoteForm.jsx";
 import Note from "./components/Note";
 import Notification from "./components/Notification";
-import Toggleable from "./components/Toggleable.jsx";
+import Togglable from "./components/Togglable.jsx";
 
 const App = () => {
   const [notes, setNotes] = useState([]);
@@ -98,9 +98,9 @@ const App = () => {
         setNotes(notes.map((note) => (note.id !== id ? note : returnedNote)));
       })
       .catch((error) => {
-        setErrorMessage(`Note '${note.content}' was already removed from server`);
+        setNotification(`Note '${note.content}' was already removed from server`, "error");
         setTimeout(() => {
-          setErrorMessage(null);
+          setNotification(null);
         }, 5000);
       });
   };
@@ -174,12 +174,12 @@ const App = () => {
           <p className="user-display">
             Logged in as {user.name} <button onClick={handleLogout}>Logout</button>
           </p>
-          <Toggleable
-            buttonLabel="+ New Note"
+          <Togglable
+            buttonLabel="+ Add Note"
             ref={noteFormRef}
           >
             <NoteForm createNote={addNote} />
-          </Toggleable>
+          </Togglable>
         </div>
       )}
 
