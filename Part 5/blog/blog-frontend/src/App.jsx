@@ -6,7 +6,7 @@ const { login } = loginService;
 
 // destructure noteService
 import blogService from "./services/blogs.js";
-const { getAll, setToken, update, create } = blogService;
+const { getAll, setToken, update } = blogService;
 
 // component imports
 import LoginForm from "./components/LoginForm";
@@ -17,13 +17,6 @@ import Togglable from "./components/Togglable.jsx";
 
 function App() {
   const [blogs, setBlogs] = useState([]);
-  const [newBlog, setNewBlog] = useState({
-    title: "",
-    author: "",
-    content: "",
-    url: "",
-    likes: 0
-  });
   const [notification, setNotification] = useState({
     message: null,
     type: null
@@ -59,13 +52,6 @@ function App() {
     try {
       const returnedBlog = await blogService.create(blogObject);
       setBlogs(blogs.concat(returnedBlog));
-      setNewBlog({
-        title: "",
-        author: "",
-        content: "",
-        url: "",
-        likes: 0
-      });
 
       showNotification("New blog created!", "success");
     } catch (error) {
@@ -137,13 +123,13 @@ function App() {
   const handleLikesClick = async (id) => {
     try {
       const blogToUpdate = blogs.find((blog) => blog.id === id);
-      console.log("Blog to update: ", blogToUpdate);
+      // console.log("Blog to update: ", blogToUpdate);
 
       const updatedBlog = { ...blogToUpdate, likes: blogToUpdate.likes + 1 };
-      console.log("Updated blog: ", updatedBlog);
+      // console.log("Updated blog: ", updatedBlog);
 
       const returnedBlog = await update(id, updatedBlog);
-      console.log("Returned blog: ", returnedBlog);
+      // console.log("Returned blog: ", returnedBlog);
 
       setBlogs(blogs.map((blog) => (blog.id === id ? returnedBlog : blog)));
     } catch (error) {
@@ -174,16 +160,6 @@ function App() {
         </div>
       </div>
     );
-  };
-
-  const blogForm = () => {
-    <form onSubmit={addBlog}>
-      <input
-        value={newBlog}
-        onChange={handleBlogChange}
-      />
-      <button type="submit">Add</button>
-    </form>;
   };
 
   const sortedBlogs = blogs.sort((a, b) => b.likes - a.likes);
