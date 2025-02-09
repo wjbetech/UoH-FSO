@@ -9,11 +9,11 @@ import loginService from "./services/login.js";
 const { login } = loginService;
 
 // components
-import LoginForm from "./components/LoginForm.jsx";
-import NoteForm from "./components/NoteForm.jsx";
-import Note from "./components/Note";
-import Notification from "./components/Notification";
-import Togglable from "./components/Togglable.jsx";
+import LoginForm from "./components/LoginForm/LoginForm.jsx";
+import NoteForm from "./components/NoteForm/NoteForm.jsx";
+import Note from "./components/Note/Note.jsx";
+import Notification from "./components/Notification/Notification.jsx";
+import Togglable from "./components/Togglable/Togglable.jsx";
 
 const App = () => {
   const [notes, setNotes] = useState([]);
