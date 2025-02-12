@@ -25,30 +25,36 @@ export default function BlogForm({ createBlog }) {
       <h2>Create New Blog Post</h2>
       <form onSubmit={addBlog}>
         <div className="blog-form-input">
-          <label>Title:</label>
-          <input
-            type="text"
-            value={newBlog.title}
-            name="title"
-            onChange={(e) => setNewBlog((prev) => ({ ...prev, title: e.target.value }))}
-          />
+          <label>
+            Title:
+            <input
+              type="text"
+              value={newBlog.title}
+              name="title"
+              onChange={(e) => setNewBlog((prev) => ({ ...prev, title: e.target.value }))}
+            />
+          </label>
         </div>
         <div className="blog-form-input">
-          <label>Content:</label>
-          <textarea
-            value={newBlog.content}
-            name="content"
-            onChange={(e) => setNewBlog((prev) => ({ ...prev, content: e.target.value }))}
-          />
+          <label>
+            Content:
+            <textarea
+              value={newBlog.content}
+              name="content"
+              onChange={(e) => setNewBlog((prev) => ({ ...prev, content: e.target.value }))}
+            />
+          </label>
         </div>
         <div className="blog-form-input">
-          <label>URL:</label>
-          <input
-            type="text"
-            value={newBlog.url}
-            name="url"
-            onChange={(e) => setNewBlog((prev) => ({ ...prev, url: e.target.value }))}
-          />
+          <label>
+            URL:
+            <input
+              type="text"
+              value={newBlog.url}
+              name="url"
+              onChange={(e) => setNewBlog((prev) => ({ ...prev, url: e.target.value }))}
+            />
+          </label>
         </div>
         <button type="submit">Add Blog</button>
       </form>
