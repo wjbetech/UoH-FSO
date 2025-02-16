@@ -11,7 +11,7 @@ const { getAll, setToken, update } = blogService;
 // component imports
 import LoginForm from "./components/LoginForm";
 import Blog from "./components/Blog/Blog.jsx";
-import BlogForm from "./components/BlogForm";
+import BlogForm from "./components/BlogForm/BlogForm.jsx";
 import Notification from "./components/Notification";
 import Togglable from "./components/Togglable.jsx";
 
