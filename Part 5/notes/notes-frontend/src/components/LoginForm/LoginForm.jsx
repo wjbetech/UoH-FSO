@@ -8,6 +8,7 @@ const LoginForm = ({ handleLogin, handleUsernameChange, handlePasswordChange, us
         <label htmlFor="username">Username:</label>
         <input
           type="text"
+          data-testid="username"
           value={username}
           name="username"
           onChange={handleUsernameChange}
@@ -17,6 +18,7 @@ const LoginForm = ({ handleLogin, handleUsernameChange, handlePasswordChange, us
         <label htmlFor="password">Password:</label>
         <input
           type="password"
+          data-testid="password"
           value={password}
           name="password"
           onChange={handlePasswordChange}
