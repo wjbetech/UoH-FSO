@@ -11,6 +11,7 @@ import notesRouter from "./controllers/notes.js";
 import userRouter from "./controllers/users.js";
 import middleware from "./utils/middleware.js";
 import logger from "./utils/logger.js";
+import testRouter from "./controllers/testing.js";
 
 const app = express();
 
@@ -42,6 +43,11 @@ if (process.env.NODE_ENV !== "test") {
 app.use("/api/login", loginRouter);
 app.use("/api/notes", notesRouter);
 app.use("/api/users", userRouter);
+
+// use controllers/testing.js routing in test mode
+if (process.env.NODE_ENV === "test") {
+  app.use("/api/testing", testRouter);
+}
 
 // catch unknown endpoints - last before error handler middleware!
 app.use(unknownEndpoint);
