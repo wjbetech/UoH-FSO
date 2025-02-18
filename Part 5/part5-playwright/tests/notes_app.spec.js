@@ -1,10 +1,14 @@
 import { test, expect, describe, beforeEach } from "@playwright/test";
 
+// import and deconstruct helper funcs
+import helpers from  "./helper.js"
+const { loginWith, createNote } = helpers;
+
 describe("Notes app", () => {
   beforeEach(async ({ page, request }) => {
     // add mock DB data
-    await request.post("http://localhost:3001/api/testing/reset");
-    await request.post("http://localhost:3001/api/users", {
+    await request.post("/api/testing/reset");
+    await request.post("/api/users", {
       data: {
         name: "admin",
         username: "admin",
@@ -13,7 +17,7 @@ describe("Notes app", () => {
     });
 
     // open the page
-    await page.goto("http://localhost:5173/login");
+    await page.goto("");
   });
 
   test("front page can be opened", async ({ page }) => {
@@ -25,19 +29,13 @@ describe("Notes app", () => {
   test("login form can be opened and user can log in", async ({ page }) => {
     await page.getByRole("button", { name: "login" }).click();
 
-    const inputFields = await page.getByRole("textbox").all();
-    await inputFields[0].fill("admin");
-    await inputFields[1].fill("password");
-    await page.getByRole("button", { name: "login" }).click();
+    await loginWith(page, "admin", "password")
 
     await expect(page.getByText("Logged in as admin")).toBeVisible();
   });
 
   test("login fails with wrong password", async ({ page }) => {
-    await page.getByRole("button", { name: "login" }).click();
-    await page.getByTestId("username").fill("admin");
-    await page.getByTestId("password").fill("wrong_password");
-    await page.getByRole("button", { name: "login " }).click();
+    await loginWith(page, "admin", "wrong_password")
 
     const notificationDiv = page.locator(".notification");
     await expect(notificationDiv).toContainText("Invalid username or password!");
@@ -48,28 +46,19 @@ describe("Notes app", () => {
 
   describe("Post login functionality", () => {
     beforeEach(async ({ page }) => {
-      await page.getByRole("button", { name: "Login" }).click();
-
-      await page.getByTestId("username").fill("admin");
-      await page.getByTestId("password").fill("password");
-
-      await page.getByRole("button", { name: "Login" }).click();
+      await loginWith(page, "admin", "password")
     });
 
     describe("Note creation", () => {
       test("new note can be created", async ({ page }) => {
-        await page.getByRole("button", { name: "+ Add Note" }).click();
-        await page.getByRole("textbox").fill("a note created by Playwright");
-        await page.getByRole("button", { name: "Save" }).click();
-        await expect(page.getByText("a note created by Playwright")).toBeVisible();
+        await createNote(page, "a note created by Playwright")
+        await expect(page.getByText("a note created by playwright")).toBeVisible();
       });
     });
 
     describe("Note details", () => {
       beforeEach(async ({ page }) => {
-        await page.getByRole("button", { name: "+ Add Note" }).click();
-        await page.getByRole("textbox").fill("another new note in Playwright");
-        await page.getByRole("button", { name: "Save" }).click();
+        await createNote(page, "another note by playwright")
       });
 
       test("importance of a note can be changed", async ({ page }) => {
