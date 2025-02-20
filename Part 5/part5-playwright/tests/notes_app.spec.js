@@ -1,7 +1,7 @@
 import { test, expect, describe, beforeEach } from "@playwright/test";
 
 // import and deconstruct helper funcs
-import helpers from "./helper.js";
+import helpers from "./notes_helper.js";
 const { loginWith, createNote } = helpers;
 
 describe("Notes app", () => {

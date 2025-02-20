@@ -9,6 +9,8 @@ import config from "./utils/config.js";
 import loginRouter from "./controllers/login.js";
 import userRouter from "./controllers/users.js";
 import blogRouter from "./controllers/blogs.js";
+import testRouter from "./controllers/testing.js";
+
 import middleware from "./utils/middleware.js";
 import logger from "./utils/logger.js";
 
@@ -47,6 +49,10 @@ app.use(morgan("tiny"));
 app.use("/api/login", loginRouter);
 app.use("/api/users", userRouter);
 app.use("/api/blogs", blogRouter);
+
+if (process.env.NODE_ENV === "test") {
+  app.use("/api/testing", testRouter);
+}
 
 // catch unknown endpoints - last before error handler middleware!
 app.use(unknownEndpoint);
