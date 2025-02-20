@@ -1,7 +1,7 @@
 import { test, expect, describe, beforeEach } from "@playwright/test";
 
 // import and deconstruct helper funcs
-import helpers from  "./helper.js"
+import helpers from "./helper.js";
 const { loginWith, createNote } = helpers;
 
 describe("Notes app", () => {
@@ -29,13 +29,13 @@ describe("Notes app", () => {
   test("login form can be opened and user can log in", async ({ page }) => {
     await page.getByRole("button", { name: "login" }).click();
 
-    await loginWith(page, "admin", "password")
+    await loginWith(page, "admin", "password");
 
     await expect(page.getByText("Logged in as admin")).toBeVisible();
   });
 
   test("login fails with wrong password", async ({ page }) => {
-    await loginWith(page, "admin", "wrong_password")
+    await loginWith(page, "admin", "wrong_password");
 
     const notificationDiv = page.locator(".notification");
     await expect(notificationDiv).toContainText("Invalid username or password!");
@@ -46,24 +46,32 @@ describe("Notes app", () => {
 
   describe("Post login functionality", () => {
     beforeEach(async ({ page }) => {
-      await loginWith(page, "admin", "password")
+      await loginWith(page, "admin", "password");
     });
 
     describe("Note creation", () => {
       test("new note can be created", async ({ page }) => {
-        await createNote(page, "a note created by Playwright")
+        await createNote(page, "a note created by Playwright");
         await expect(page.getByText("a note created by playwright")).toBeVisible();
       });
     });
 
     describe("Note details", () => {
       beforeEach(async ({ page }) => {
-        await createNote(page, "another note by playwright")
+        await createNote(page, "A second note by playwright");
+        await createNote(page, "A third note by playwright");
       });
 
       test("importance of a note can be changed", async ({ page }) => {
-        await page.getByRole("button", { name: "make not important" }).click();
-        await expect(page.getByText("make important")).toBeVisible();
+        // setting up the second note for testing
+        const secondNoteElement = await page.getByText("A second note by playwright");
+        const secondNoteButton = await secondNoteElement.locator("..");
+
+        // setting up a third note for testing
+        const thirdNoteElement = await page.getByText("A third note by playwright");
+
+        await secondNoteButton.getByRole("button", { name: "make not important" }).click();
+        await expect(secondNoteButton.getByText("make important")).toBeVisible();
       });
     });
   });
