@@ -60,15 +60,14 @@ describe("Notes app", () => {
       beforeEach(async ({ page }) => {
         await createNote(page, "A second note by playwright");
         await createNote(page, "A third note by playwright");
+        await createNote(page, "A fourth note by playwright");
       });
 
       test("importance of a note can be changed", async ({ page }) => {
+        await page.pause();
         // setting up the second note for testing
         const secondNoteElement = await page.getByText("A second note by playwright");
         const secondNoteButton = await secondNoteElement.locator("..");
-
-        // setting up a third note for testing
-        const thirdNoteElement = await page.getByText("A third note by playwright");
 
         await secondNoteButton.getByRole("button", { name: "make not important" }).click();
         await expect(secondNoteButton.getByText("make important")).toBeVisible();
