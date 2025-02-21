@@ -11,4 +11,4 @@ const createBlog = async (page, content) => {
   await page.getByRole("button", { name: "add blog" }).click();
 };
 
-export default { loginWith, createNote };
+export default { loginWith, createBlog };

@@ -7,6 +7,7 @@ const LoginForm = ({ handleLogin, username, setUsername, setPassword, password, 
           <label htmlFor="username">Username:</label>
           <input
             type="text"
+            data-testid="username"
             value={username}
             name="username"
             onChange={({ target }) => setUsername(target.value)}
@@ -16,6 +17,7 @@ const LoginForm = ({ handleLogin, username, setUsername, setPassword, password, 
           <label htmlFor="password">Password:</label>
           <input
             type="password"
+            data-testid="password"
             value={password}
             name="password"
             onChange={({ target }) => setPassword(target.value)}
@@ -23,6 +25,7 @@ const LoginForm = ({ handleLogin, username, setUsername, setPassword, password, 
         </div>
         <button
           type="submit"
+          data-testid="login-submit-button"
           onClick={handleLogin}
         >
           Login
