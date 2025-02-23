@@ -46,4 +46,18 @@ describe("Blog app", () => {
       await expect(page.getByText("test blog for Playwright")).toBeVisible();
     });
   });
+
+  describe("Blog post functionality", () => {
+    test("a blog can be liked", async ({ page }) => {
+      await loginWith(page, "admin", "admin");
+      await createBlog(page, "test blog for Playwright", "a test blog written for playwright", "www.wjbeblog.com");
+
+      // open the blog details, find like button, click like
+      await page.getByRole("button", { name: "View" }).click();
+      await page.getByRole("button", { name: "Like" }).click();
+      await expect(page.getByText("Likes: 1")).toBeVisible();
+      await page.getByRole("button", { name: "Like" }).click();
+      await expect(page.getByText("Likes: 2")).toBeVisible();
+    });
+  });
 });
