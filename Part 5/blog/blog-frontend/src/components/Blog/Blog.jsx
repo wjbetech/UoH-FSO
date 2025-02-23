@@ -2,10 +2,11 @@ import PropTypes from "prop-types";
 
 import { useState } from "react";
 
-export default function Blog({ blogInfo, handleDelete, handleLikesClick }) {
+export default function Blog({ blogInfo, handleDelete, handleLikesClick, user }) {
   const [showDetails, setShowDetails] = useState(false);
   const { title, content, author, likes } = blogInfo;
 
+  console.log(user ? user.username : "no user", blogInfo);
   const toggleDetails = () => setShowDetails(!showDetails);
 
   return (
@@ -28,15 +29,19 @@ export default function Blog({ blogInfo, handleDelete, handleLikesClick }) {
             >
               Like
             </button>
-            <button
-              data-testid="delete-button"
-              className="delete-button"
-              onClick={() => {
-                handleDelete(blogInfo.id);
-              }}
-            >
-              Delete
-            </button>
+            {user && user.username === blogInfo.author ? (
+              <button
+                data-testid="delete-button"
+                className="delete-button"
+                onClick={() => {
+                  handleDelete(blogInfo.id);
+                }}
+              >
+                Delete
+              </button>
+            ) : (
+              ""
+            )}
           </div>
           <p className="blog-author">Author: {author}</p>
           <p className="blog-content">{content}</p>

@@ -193,6 +193,7 @@ function App() {
             <Blog
               key={blog.id}
               blogInfo={blog}
+              user={user}
               handleDelete={handleDelete}
               handleLikesClick={handleLikesClick}
             />

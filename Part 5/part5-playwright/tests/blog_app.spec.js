@@ -73,5 +73,13 @@ describe("Blog app", () => {
       await page.getByRole("button", { name: "Delete" }).click();
       await expect(page.getByText("test blog for Playwright")).not.toBeVisible();
     });
+
+    test("delete button is only visible to the user who wrote it", async ({ page }) => {
+      await page.getByRole("button", { name: "View" }).click();
+      await expect(page.getByRole("button", { name: "Delete" })).toBeVisible();
+
+      await page.getByRole("button", { name: "Logout" }).click();
+      await expect(page.getByRole("button", { name: "Delete" })).not.toBeVisible();
+    });
   });
 });
