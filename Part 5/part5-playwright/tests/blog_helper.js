@@ -5,10 +5,13 @@ const loginWith = async (page, username, password) => {
   await page.getByRole("button", { name: "login" }).click();
 };
 
-const createBlog = async (page, content) => {
+const createBlog = async (page, title, content, url) => {
   await page.getByRole("button", { name: "+ New Blog" }).click();
-  await page.getByRole("textbox").fill(content);
-  await page.getByRole("button", { name: "add blog" }).click();
+  console.log(content);
+  await page.getByTestId("title").fill(title);
+  await page.getByTestId("content").fill(content);
+  await page.getByTestId("url").fill(url);
+  await page.getByRole("button", { name: "Add Blog" }).click();
 };
 
 export default { loginWith, createBlog };

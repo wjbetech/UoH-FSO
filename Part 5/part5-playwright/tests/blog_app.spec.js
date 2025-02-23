@@ -3,7 +3,7 @@ import { test, expect, describe, beforeEach } from "@playwright/test";
 // import and deconstruct helper funcs
 // loginWith parses a username and password
 import helpers from "./blog_helper.js";
-const { loginWith } = helpers;
+const { loginWith, createBlog } = helpers;
 
 describe("Blog app", () => {
   beforeEach(async ({ page, request }) => {
@@ -36,6 +36,14 @@ describe("Blog app", () => {
       await loginWith(page, "admin", "false-password");
       await expect(page.getByText("Invalid username or password")).toBeVisible();
       await expect(page.getByText("Logged in as admin")).not.toBeVisible();
+    });
+  });
+
+  describe("Post-login functionality tests", () => {
+    test("new post can be created", async ({ page }) => {
+      await loginWith(page, "admin", "admin");
+      await createBlog(page, "test blog for Playwright", "a test blog written for playwright", "www.wjbeblog.com");
+      await expect(page.getByText("test blog for Playwright")).toBeVisible();
     });
   });
 });

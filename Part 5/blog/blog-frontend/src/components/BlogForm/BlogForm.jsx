@@ -29,6 +29,7 @@ export default function BlogForm({ createBlog }) {
             Title:
             <input
               type="text"
+              data-testid="title"
               value={newBlog.title}
               name="title"
               onChange={(e) => setNewBlog((prev) => ({ ...prev, title: e.target.value }))}
@@ -40,6 +41,7 @@ export default function BlogForm({ createBlog }) {
             Content:
             <textarea
               value={newBlog.content}
+              data-testid="content"
               name="content"
               onChange={(e) => setNewBlog((prev) => ({ ...prev, content: e.target.value }))}
             />
@@ -50,6 +52,7 @@ export default function BlogForm({ createBlog }) {
             URL:
             <input
               type="text"
+              data-testid="url"
               value={newBlog.url}
               name="url"
               onChange={(e) => setNewBlog((prev) => ({ ...prev, url: e.target.value }))}
