@@ -15,18 +15,21 @@ export default function Blog({ blogInfo, handleDelete, handleLikesClick }) {
           <h2 className="blog-title">{title}</h2>
           <div className="blog-post-buttons">
             <button
+              data-testid="close-button"
               onClick={toggleDetails}
               className="view-button"
             >
               Close
             </button>
             <button
+              data-testid="like-button"
               onClick={() => handleLikesClick(blogInfo.id)}
               className="like-button"
             >
               Like
             </button>
             <button
+              data-testid="delete-button"
               className="delete-button"
               onClick={() => {
                 handleDelete(blogInfo.id);

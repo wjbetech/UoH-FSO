@@ -48,16 +48,30 @@ describe("Blog app", () => {
   });
 
   describe("Blog post functionality", () => {
-    test("a blog can be liked", async ({ page }) => {
+    beforeEach(async ({ page }) => {
       await loginWith(page, "admin", "admin");
       await createBlog(page, "test blog for Playwright", "a test blog written for playwright", "www.wjbeblog.com");
+    });
 
+    test("a blog can be liked", async ({ page }) => {
       // open the blog details, find like button, click like
       await page.getByRole("button", { name: "View" }).click();
       await page.getByRole("button", { name: "Like" }).click();
       await expect(page.getByText("Likes: 1")).toBeVisible();
       await page.getByRole("button", { name: "Like" }).click();
       await expect(page.getByText("Likes: 2")).toBeVisible();
+    });
+
+    test("a blog can be deleted", async ({ page }) => {
+      // define handling the dialog first
+      page.on("dialog", async (dialog) => {
+        expect(dialog.message()).toContain("Are you sure you want to delete a test blog written for playwright");
+        await dialog.accept();
+      });
+
+      await page.getByRole("button", { name: "View" }).click();
+      await page.getByRole("button", { name: "Delete" }).click();
+      await expect(page.getByText("test blog for Playwright")).not.toBeVisible();
     });
   });
 });
