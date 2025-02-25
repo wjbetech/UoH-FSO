@@ -12,6 +12,7 @@ const createBlog = async (page, title, content, url) => {
   await page.getByTestId("content").fill(content);
   await page.getByTestId("url").fill(url);
   await page.getByRole("button", { name: "Add Blog" }).click();
+  await page.getByRole("button", { name: "Cancel" }).click();
 };
 
 export default { loginWith, createBlog };
