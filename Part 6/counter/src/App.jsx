@@ -1,31 +1,16 @@
-import { useState } from "react";
+// eslint-disable-next-line no-unused-vars
+import React from "react";
 import "./App.css";
+import counterStore from "./counterStore";
+
+import Counter from "./Components/Counter";
+import { Provider } from "react-redux";
 
 function App() {
-  const [count, setCount] = useState(0);
-
-  const handleIncrement = () => {
-    setCount(count + 1);
-  };
-
-  const handleDecrement = () => {
-    setCount(count - 1);
-  };
-
-  const handleReset = () => {
-    setCount(0);
-  };
-
   return (
-    <div>
-      <h1>Counter Demo</h1>
-      <p>Count: {count}</p>
-      <div style={{ display: "flex", flexDirection: "row", gap: "4px", justifyContent: "center" }}>
-        <button onClick={() => handleIncrement()}>+</button>
-        <button onClick={() => handleDecrement()}>-</button>
-        <button onClick={() => handleReset()}>Reset</button>
-      </div>
-    </div>
+    <Provider store={counterStore}>
+      <Counter />
+    </Provider>
   );
 }
 
