@@ -1,5 +1,7 @@
 import { useSelector, useDispatch } from "react-redux";
 import { voteAnecdote, createAnecdote } from "./reducers/anecdoteReducer.js";
+import AnecdoteForm from "./components/AnecdoteForm.jsx";
+import AnecdoteList from "./components/AnecdoteList.jsx";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -8,13 +10,18 @@ const App = () => {
   // you need to pass the payload as id
   // don't overthink the term "payload", you pass whatever data is needed
   // for the action to be executed, in our case we just need the id
+  // id > match id in state to id passed > update [item[id]]
   const addVote = (id) => {
     dispatch(voteAnecdote(id));
   };
 
-  // I think there may be a better way to handle this
+  // 1. I think there may be a better way to handle this
   // perhaps by destructuring the '.anecdote.value' value
   // but for now I think this works
+  // 2. I am wondering if the addAnecdote func can be moved
+  // into the AnecdoteForm component as all the logic for the input
+  // can be handled there, but maybe I am wrong? Perhaps it is
+  // convention or just because dispatch is extracted here
   const addAnecdote = (event) => {
     event.preventDefault();
     const content = event.target.anecdote.value;
@@ -26,23 +33,11 @@ const App = () => {
 
   return (
     <div>
-      <h2>Anecdotes</h2>
-      {anecdotes.map((anecdote) => (
-        <div key={anecdote.id}>
-          <div>{anecdote.content}</div>
-          <div>Likes: {anecdote.votes}</div>
-          <button onClick={() => addVote(anecdote.id)}>vote</button>
-          <br />
-          <br />
-        </div>
-      ))}
-      <h2>Add Anecdote</h2>
-      <form onSubmit={addAnecdote}>
-        <div>
-          <input name="anecdote" />
-        </div>
-        <button type="submit">Add</button>
-      </form>
+      <AnecdoteList
+        anecdotes={anecdotes}
+        addVote={addVote}
+      />
+      <AnecdoteForm addAnecdote={addAnecdote} />
     </div>
   );
 };
