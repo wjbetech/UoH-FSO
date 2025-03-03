@@ -2,17 +2,27 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 export default function AnecdoteList(props) {
-
   const dispatch = useDispatch();
-  const store = useSelector((state) => state.anecdotes);
+
+  // I'm not 100% sure that I need to 'destructure' the Redux store like this, but
+  // for now it is working.
+  const storeAnecdotes = useSelector((state) => state.anecdotes);
+  const storeFilter = useSelector((state) => state.filter);
 
   const addVote = (id) => {
-    dispatch(voteAnecdote({
-      id
-    }))
-  }
+    dispatch(
+      voteAnecdote({
+        id
+      })
+    );
+  };
 
-  const filteredAnecdotes = store.anecdotes.filter(a => a.contains(store.filter(a => store)))
+  console.log("storeAnecdotes: ", storeAnecdotes);
+  console.log("storeFilter: ", storeFilter);
+
+  const filteredAnecdotes = storeAnecdotes.filter((anecdote) =>
+    anecdote.content.toLowerCase().includes(storeFilter.toLowerCase())
+  );
 
   return (
     <div>
