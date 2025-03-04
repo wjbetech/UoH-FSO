@@ -1,5 +1,6 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
+import voteAnecdote from "../reducers/anecdoteReducer.js";
 
 export default function AnecdoteList(props) {
   const dispatch = useDispatch();
@@ -9,14 +10,6 @@ export default function AnecdoteList(props) {
   // good practice.
   const storeAnecdotes = useSelector((state) => state.anecdotes);
   const storeFilter = useSelector((state) => state.filter);
-
-  const addVote = (id) => {
-    dispatch(
-      voteAnecdote({
-        id
-      })
-    );
-  };
 
   console.log("storeAnecdotes: ", storeAnecdotes);
   console.log("storeFilter: ", storeFilter);
@@ -32,7 +25,7 @@ export default function AnecdoteList(props) {
         <div key={anecdote.id}>
           <div>{anecdote.content}</div>
           <div>Likes: {anecdote.votes}</div>
-          <button onClick={() => addVote(anecdote.id)}>vote</button>
+          <button onClick={() => dispatch(voteAnecdote(anecdote.id))}>vote</button>
           <br />
           <br />
         </div>
