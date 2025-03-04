@@ -5,7 +5,8 @@ export default function AnecdoteList(props) {
   const dispatch = useDispatch();
 
   // I'm not 100% sure that I need to 'destructure' the Redux store like this, but
-  // for now it is working.
+  // for now it is working - a quick google shows it is considered relatively
+  // good practice.
   const storeAnecdotes = useSelector((state) => state.anecdotes);
   const storeFilter = useSelector((state) => state.filter);
 
