@@ -10,13 +10,9 @@ export default function AnecdoteForm(props) {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
     const anecdote = event.target.anecdote.value;
     event.target.anecdote.value = "";
-
-    const newAnecdote = await anecdoteService.newAnecdote(anecdote);
     dispatch(createAnecdote(newAnecdote));
-
     dispatch(showNotification(`New anecdote added: "${anecdote}"`));
   };
 

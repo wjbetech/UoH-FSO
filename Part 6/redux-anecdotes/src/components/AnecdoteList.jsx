@@ -2,7 +2,7 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 // make sure that you are using named imports for reducer funcs
-import { voteAnecdote } from "../reducers/anecdoteReducer.js";
+import { voteThunk } from "../reducers/anecdoteReducer.js";
 
 import { showNotification } from "../reducers/notificationReducer.js";
 
@@ -25,7 +25,7 @@ export default function AnecdoteList() {
   filteredAnecdotes.sort((a, b) => b.votes - a.votes);
 
   const handleVote = (anecdote) => {
-    dispatch(voteAnecdote(anecdote.id));
+    dispatch(voteThunk(anecdote.id));
     dispatch(showNotification(`You voted for '${anecdote.content}'`, 5));
   };
 
