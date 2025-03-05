@@ -29,6 +29,7 @@ const anecdoteSlice = createSlice({
     voteAnecdote(state, action) {
       const id = action.payload;
       const anecdote = state.find((a) => a.id === id);
+
       if (anecdote) {
         anecdote.votes += 1;
       }
@@ -57,5 +58,5 @@ export const addNewAnecdote = (content) => {
   };
 };
 
-export const { voteAnecdote, createAnecdote, notificationReducer } = anecdoteSlice.actions;
+export const { voteAnecdote, createAnecdote } = anecdoteSlice.actions;
 export default anecdoteSlice.reducer;

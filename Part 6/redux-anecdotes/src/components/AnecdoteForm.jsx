@@ -2,6 +2,7 @@ import React from "react";
 import { useDispatch } from "react-redux";
 import { createAnecdote } from "../reducers/anecdoteReducer.js";
 import { addNewAnecdote } from "../reducers/anecdoteReducer.js";
+import { showNotification } from "../reducers/notificationReducer.js";
 
 export default function AnecdoteForm(props) {
   const dispatch = useDispatch();
@@ -13,6 +14,7 @@ export default function AnecdoteForm(props) {
     event.target.anecdote.value = "";
 
     dispatch(addNewAnecdote(anecdote));
+    dispatch(showNotification(`New anecdote added: "${anecdote}"`));
   };
 
   return (

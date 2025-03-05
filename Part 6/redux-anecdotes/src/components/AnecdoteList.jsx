@@ -4,6 +4,8 @@ import { useDispatch, useSelector } from "react-redux";
 // make sure that you are using named imports for reducer funcs
 import { voteAnecdote } from "../reducers/anecdoteReducer.js";
 
+import { showNotification } from "../reducers/notificationReducer.js";
+
 export default function AnecdoteList(props) {
   const dispatch = useDispatch();
 
@@ -22,14 +24,18 @@ export default function AnecdoteList(props) {
 
   filteredAnecdotes.sort((a, b) => b.votes - a.votes);
 
+  const handleVote = (anecdote) => {
+    dispatch(voteAnecdote(anecdote.id));
+    dispatch(showNotification(`You voted for '${anecdote.content}'`, 5));
+  };
+
   return (
     <div>
-      <h2>Anecdotes</h2>
       {filteredAnecdotes.map((anecdote) => (
         <div key={anecdote.id}>
           <div>{anecdote.content}</div>
           <div>Likes: {anecdote.votes}</div>
-          <button onClick={() => dispatch(voteAnecdote(anecdote.id))}>vote</button>
+          <button onClick={() => handleVote(anecdote)}>vote</button>
           <br />
           <br />
         </div>
