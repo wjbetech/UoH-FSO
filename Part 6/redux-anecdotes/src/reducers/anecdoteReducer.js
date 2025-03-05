@@ -23,7 +23,7 @@ const initialState = anecdotesAtStart.map(asObject);
 
 const anecdoteSlice = createSlice({
   name: "anecdotes",
-  initialState,
+  initialState: [],
   reducers: {
     // reducer for handling adding votes
     voteAnecdote(state, action) {
@@ -43,6 +43,17 @@ const anecdoteSlice = createSlice({
     // reducer for handling notifications
     notificationReducer(state, action) {
       const notification = action.payload;
+    },
+
+    // reducer to append DB anecdotes
+    appendAnecdote(state, action) {
+      state.push(action.payload);
+    },
+
+    // clean up dispatching multiple actions -
+    // new action to directly replace the anecdotes array
+    setAnecdotes(state, action) {
+      return action.payload;
     }
   }
 });
@@ -58,5 +69,5 @@ export const addNewAnecdote = (content) => {
   };
 };
 
-export const { voteAnecdote, createAnecdote } = anecdoteSlice.actions;
+export const { voteAnecdote, createAnecdote, appendAnecdote, setAnecdotes } = anecdoteSlice.actions;
 export default anecdoteSlice.reducer;

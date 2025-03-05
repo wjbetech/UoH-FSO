@@ -6,7 +6,7 @@ import { voteAnecdote } from "../reducers/anecdoteReducer.js";
 
 import { showNotification } from "../reducers/notificationReducer.js";
 
-export default function AnecdoteList(props) {
+export default function AnecdoteList() {
   const dispatch = useDispatch();
 
   // I'm not 100% sure that I need to 'destructure' the Redux store like this, but
