@@ -14,8 +14,6 @@ const store = configureStore({
   }
 });
 
-store.subscribe(() => console.log(store.getState()));
-
 // @ts-ignore
 ReactDOM.createRoot(document.getElementById("root")).render(
   <Provider store={store}>
