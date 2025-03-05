@@ -7,9 +7,8 @@ const NewNote = () => {
 
   const addNote = async (event) => {
     event.preventDefault();
-    const content = event.target.note.value;
+    const newNote = event.target.note.value;
     event.target.note.value = "";
-    const newNote = await noteService.createNew(content);
     dispatch(createNote(newNote));
   };
 
