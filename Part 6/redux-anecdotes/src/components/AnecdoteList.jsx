@@ -1,6 +1,8 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import voteAnecdote from "../reducers/anecdoteReducer.js";
+
+// make sure that you are using named imports for reducer funcs
+import { voteAnecdote } from "../reducers/anecdoteReducer.js";
 
 export default function AnecdoteList(props) {
   const dispatch = useDispatch();
@@ -17,6 +19,8 @@ export default function AnecdoteList(props) {
   const filteredAnecdotes = storeAnecdotes.filter((anecdote) =>
     anecdote.content.toLowerCase().includes(storeFilter.toLowerCase())
   );
+
+  filteredAnecdotes.sort((a, b) => b.votes - a.votes);
 
   return (
     <div>
