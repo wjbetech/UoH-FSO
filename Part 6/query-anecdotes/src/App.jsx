@@ -1,7 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
-
 import { getAnecdotes, createAnecdote, updateAnecdote } from "./requests.js";
+import axios from "axios";
 
 import AnecdoteForm from "./components/AnecdoteForm";
 import Notification from "./components/Notification";
@@ -35,6 +34,10 @@ const App = () => {
       content,
       votes: 0
     });
+    notificationDispatch({ type: "SET_NOTIFICATION", notification: `You added "${content}"!` });
+    setTimeout(() => {
+      notificationDispatch({ type: "CLEAR_NOTIFICATION" });
+    }, 5000);
   };
 
   const handleVote = (anecdote) => {
@@ -42,6 +45,10 @@ const App = () => {
       ...anecdote,
       votes: anecdote.votes + 1
     });
+    notificationDispatch({ type: "SET_NOTIFICATION", notification: `You voted for "${anecdote.content}"!` });
+    setTimeout(() => {
+      notificationDispatch({ type: "CLEAR_NOTIFICATION" });
+    }, 5000);
   };
 
   const result = useQuery({
