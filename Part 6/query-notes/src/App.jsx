@@ -3,10 +3,12 @@ import { getNotes, createNote, updateNote } from "./requests";
 
 const App = () => {
   const queryClient = useQueryClient();
+
   const newNoteMutation = useMutation({
     mutationFn: createNote,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["notes"] });
+    onSuccess: (newNote) => {
+      const notes = queryClient.getQueryData(["notes"]);
+      queryClient.setQueryData(["notes"], notes.concat(newNote));
     }
   });
 
@@ -29,7 +31,8 @@ const App = () => {
 
   const result = useQuery({
     queryKey: ["notes"],
-    queryFn: getNotes
+    queryFn: getNotes,
+    refetchOnWindowFocus: false
   });
 
   console.log(JSON.parse(JSON.stringify(result)));
@@ -39,6 +42,9 @@ const App = () => {
   }
 
   const notes = result.data;
+
+  // check re-rendering for optimization
+  console.log("React Query just re-rendered!");
 
   return (
     <div>
