@@ -1,9 +1,7 @@
-import { useContext } from "react";
 import { useNotificationValue } from "../AnecdoteContext";
-import AnecdoteContext from "../AnecdoteContext.jsx";
 
-const Notification = ({ notification }) => {
-  const [anecdote, dispatch] = useContext(AnecdoteContext);
+const Notification = () => {
+  const notification = useNotificationValue();
 
   const style = {
     border: "solid",
