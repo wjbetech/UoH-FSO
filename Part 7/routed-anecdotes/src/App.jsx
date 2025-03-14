@@ -78,10 +78,23 @@ const Footer = () => (
   </div>
 );
 
+const Notification = ({ notification }) => {
+  if (!notification) {
+    return null;
+  }
+
+  return (
+    <div style={{ padding: "8px", border: "1px solid black", marginBottom: "12px" }}>
+      <p>Added new anecdote: {notification}</p>
+    </div>
+  );
+};
+
 const CreateNew = (props) => {
   const [content, setContent] = useState("");
   const [author, setAuthor] = useState("");
   const [info, setInfo] = useState("");
+  const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -91,6 +104,8 @@ const CreateNew = (props) => {
       info,
       votes: 0,
     });
+
+    navigate("/");
   };
 
   return (
@@ -141,6 +156,11 @@ const App = () => {
   const addNew = (anecdote) => {
     anecdote.id = Math.round(Math.random() * 10000);
     setAnecdotes(anecdotes.concat(anecdote));
+    setNotification(anecdote.content);
+
+    setTimeout(() => {
+      setNotification(null);
+    }, 5000);
   };
 
   const anecdoteById = (anecdote) => anecdotes.find((a) => a.id === Number(anecdote));
@@ -158,7 +178,9 @@ const App = () => {
 
   return (
     <div>
-      <h1>Software anecdotes</h1>
+      <h1>Software Anecdotes</h1>
+
+      {notification && <Notification notification={notification} />}
 
       {/* link html elements and url updaters */}
       <div>
@@ -174,7 +196,7 @@ const App = () => {
       </div>
 
       <Routes>
-        <Route path="/createNew" element={<CreateNew addNew={addNew} />} />
+        <Route path="/createNew" element={<CreateNew addNew={addNew} setNotification={setNotification} />} />
         <Route path="/about" element={<About />} />
         <Route path="/anecdotes/:id" element={<Anecdote anecdote={anecdote} vote={vote} />} />
         <Route path="/" element={<AnecdoteList anecdotes={anecdotes} />} />
