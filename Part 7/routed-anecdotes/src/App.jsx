@@ -1,14 +1,6 @@
 import { useState } from "react";
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Link,
-  Navigate,
-  useParams,
-  useNavigate,
-  useMatch,
-} from "react-router-dom";
+import { Routes, Route, Link, useNavigate, useMatch } from "react-router-dom";
+import useField from "./hooks/useField.js";
 
 const padding = {
   padding: "4px",
@@ -91,20 +83,30 @@ const Notification = ({ notification }) => {
 };
 
 const CreateNew = (props) => {
-  const [content, setContent] = useState("");
-  const [author, setAuthor] = useState("");
-  const [info, setInfo] = useState("");
+  // give each field distinct reset prop & then spread field props
+  const { reset: resetContent, ...content } = useField("text");
+  const { reset: resetAuthor, ...author } = useField("text");
+  const { reset: resetInfo, ...info } = useField("text");
   const navigate = useNavigate();
+
+  // rebuild handleReset on those renamed individual reset funcs
+  const handleReset = () => {
+    resetContent();
+    resetAuthor();
+    resetInfo();
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     props.addNew({
-      content,
-      author,
-      info,
+      content: content.value,
+      author: author.value,
+      info: info.value,
       votes: 0,
     });
 
+    // pass the handleReset only into the handleSubmit func
+    handleReset();
     navigate("/");
   };
 
@@ -114,17 +116,24 @@ const CreateNew = (props) => {
       <form onSubmit={handleSubmit}>
         <div style={padding}>
           Content
-          <input style={margin} name="content" value={content} onChange={(e) => setContent(e.target.value)} />
+          <input style={margin} {...content} />
         </div>
         <div style={padding}>
           Author
-          <input style={margin} name="author" value={author} onChange={(e) => setAuthor(e.target.value)} />
+          <input style={margin} {...author} />
         </div>
         <div style={padding}>
           URL
-          <input style={margin} name="info" value={info} onChange={(e) => setInfo(e.target.value)} />
+          <input style={margin} {...info} />
         </div>
-        <button>create</button>
+
+        {/* need to handle button types here as they default to submit inside a form! */}
+        <div style={{ display: "flex", flexDirection: "row", gap: "8px" }}>
+          <button type="submit">Create</button>
+          <button type="button" onClick={() => handleReset()}>
+            Reset
+          </button>
+        </div>
       </form>
     </div>
   );
