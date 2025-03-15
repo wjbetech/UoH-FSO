@@ -1,5 +1,6 @@
 import ReactDOM from "react-dom/client";
 import { useState } from "react";
+import { Form, Table, Button } from "react-bootstrap";
 
 import {
   BrowserRouter as Router,
@@ -41,13 +42,18 @@ const Note = ({ note }) => {
 const Notes = ({ notes }) => (
   <div>
     <h2>Notes</h2>
-    <ul>
-      {notes.map((note) => (
-        <li key={note.id}>
-          <Link to={`/notes/${note.id}`}>{note.content}</Link>
-        </li>
-      ))}
-    </ul>
+    <Table striped>
+      <tbody>
+        {notes.map((note) => (
+          <tr key={note.id}>
+            <td>
+              <Link to={`/notes/${note.id}`}>{note.content}</Link>
+            </td>
+            <td>{note.user}</td>
+          </tr>
+        ))}
+      </tbody>
+    </Table>
   </div>
 );
 
@@ -74,15 +80,33 @@ const Login = (props) => {
   return (
     <div>
       <h2>login</h2>
-      <form onSubmit={onSubmit}>
-        <div>
-          username: <input />
-        </div>
-        <div>
-          password: <input type="password" />
-        </div>
-        <button type="submit">login</button>
-      </form>
+      <Form onSubmit={onSubmit}>
+        <Form.Group className="my-3">
+          <Form.Label>Username: </Form.Label>
+          <Form.Control
+            type="text"
+            name="username"
+            placeholder="Username"
+          />
+        </Form.Group>
+        <Form.Group
+          className="my-3"
+          controlId="formBasicPassword"
+        >
+          <Form.Label>Password:</Form.Label>
+          <Form.Control
+            type="password"
+            placeholder="Password"
+          />
+        </Form.Group>
+        <Button
+          className="w-100"
+          variant="primary"
+          type="submit"
+        >
+          Login
+        </Button>
+      </Form>
     </div>
   );
 };
@@ -110,9 +134,14 @@ const App = () => {
   ]);
 
   const [user, setUser] = useState(null);
+  const [message, setMessage] = useState(null);
 
   const login = (user) => {
     setUser(user);
+    setMessage(`Welcome, ${user}`);
+    setTimeout(() => {
+      setMessage(null);
+    }, 10000);
   };
 
   const match = useMatch("/notes/:id");
@@ -123,7 +152,7 @@ const App = () => {
   };
 
   return (
-    <div>
+    <div className="container">
       <div>
         <Link
           style={padding}
@@ -186,6 +215,7 @@ const App = () => {
           element={<Home />}
         />
       </Routes>
+
       <footer>
         <br />
         <em>Note app, Department of Computer Science 2023 (@wjbetech)</em>
