@@ -1,6 +1,6 @@
 import ReactDOM from "react-dom/client";
 import { useState } from "react";
-import { Form, Table, Button } from "react-bootstrap";
+import { Form, Table, Button, Alert, Navbar, Nav } from "react-bootstrap";
 
 import {
   BrowserRouter as Router,
@@ -153,36 +153,67 @@ const App = () => {
 
   return (
     <div className="container">
-      <div>
-        <Link
-          style={padding}
-          to="/"
-        >
-          home
-        </Link>
-        <Link
-          style={padding}
-          to="/notes"
-        >
-          notes
-        </Link>
-        <Link
-          style={padding}
-          to="/users"
-        >
-          users
-        </Link>
-        {user ? (
-          <em>{user} logged in</em>
-        ) : (
-          <Link
-            style={padding}
-            to="/login"
-          >
-            login
-          </Link>
-        )}
-      </div>
+      {message && <Alert variant="success">{message}</Alert>}
+      <Navbar
+        collapseOnSelect
+        expand="md"
+        bg="light"
+        variant="light"
+      >
+        <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+        <Navbar.Collapse id="responsive-navbar-nav">
+          <Nav className="me-auto">
+            <Nav.Link
+              href="#"
+              as="span"
+            >
+              <Link
+                style={padding}
+                to="/"
+              >
+                Home
+              </Link>
+            </Nav.Link>
+            <Nav.Link
+              href="#"
+              as="span"
+            >
+              <Link
+                style={padding}
+                to="/notes"
+              >
+                Notes
+              </Link>
+            </Nav.Link>
+            <Nav.Link
+              href="#"
+              as="span"
+            >
+              <Link
+                style={padding}
+                to="/users"
+              >
+                Users
+              </Link>
+            </Nav.Link>
+            <Nav.Link
+              href="#"
+              as="span"
+            >
+              {user ? (
+                <em style="padding">{user} logged in</em>
+              ) : (
+                <Link
+                  style={padding}
+                  to="/login"
+                >
+                  Login
+                </Link>
+              )}
+            </Nav.Link>
+          </Nav>
+        </Navbar.Collapse>
+      </Navbar>
 
       <Routes>
         <Route
