@@ -11,7 +11,6 @@ export default function Blog({
   const [showDetails, setShowDetails] = useState(false);
   const { title, content, author, likes } = blogInfo;
 
-  console.log(user ? user.username : "no user", blogInfo);
   const toggleDetails = () => setShowDetails(!showDetails);
 
   return (

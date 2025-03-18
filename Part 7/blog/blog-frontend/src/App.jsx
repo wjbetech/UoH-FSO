@@ -1,5 +1,9 @@
 import { useState, useEffect } from "react";
 
+// Redux
+import { useDispatch } from "react-redux";
+import { notificationThunk } from "./reducers/notificationReducer.js";
+
 // destructure loginService
 import loginService from "./services/login.js";
 const { login } = loginService;
@@ -16,6 +20,8 @@ import Notification from "./components/Notification";
 import Togglable from "./components/Togglable.jsx";
 
 function App() {
+  const dispatch = useDispatch();
+
   const [blogs, setBlogs] = useState([]);
   const [notification, setNotification] = useState({
     message: null,
@@ -62,23 +68,23 @@ function App() {
 
   const handleLogin = async (event) => {
     event.preventDefault();
-
     try {
-      const user = await login({
-        username,
-        password,
-      });
+      const user = await login({ username, password });
 
       window.localStorage.setItem("loggedBlogAppUser", JSON.stringify(user));
-
       setToken(user.token);
       setUser(user);
-      showNotification(`${user.name} successfully logged in!`, "success");
+
+      // debugging user before dispatching notification
+      console.log("Attempting to login with: ", { user });
+      dispatch(notificationThunk(`${user.username} logged in!`, "success", 5));
+
+      // reset username and password fields for next potential login attempt
       setUsername("");
       setPassword("");
     } catch (error) {
       console.log(error);
-      showNotification("Invalid username or password", "error");
+      dispatch(notificationThunk("Invalid username or password", "error", 5));
     }
   };
 
@@ -129,13 +135,10 @@ function App() {
   const handleLikesClick = async (id) => {
     try {
       const blogToUpdate = blogs.find((blog) => blog.id === id);
-      // console.log("Blog to update: ", blogToUpdate);
 
       const updatedBlog = { ...blogToUpdate, likes: blogToUpdate.likes + 1 };
-      // console.log("Updated blog: ", updatedBlog);
 
       const returnedBlog = await update(id, updatedBlog);
-      // console.log("Returned blog: ", returnedBlog);
 
       setBlogs(blogs.map((blog) => (blog.id === id ? returnedBlog : blog)));
     } catch (error) {
@@ -174,7 +177,10 @@ function App() {
     <div className="app">
       <h1>myBlog</h1>
 
-      <Notification message={notification.message} type={notification.type} />
+      <Notification
+        notification={notification.message}
+        type={notification.type}
+      />
 
       {!user && loginForm()}
       {user && (
