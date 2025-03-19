@@ -1,75 +1,103 @@
 import { createSlice } from "@reduxjs/toolkit";
-import blogService from "../services/blogs.js"
+import blogService from "../services/blogs.js";
 import { notificationThunk } from "./notificationReducer";
 
 const blogSlice = createSlice({
-  
   // name of the functionality for this reducer
-  name: "blog",
+  name: "blogs",
 
   // initial state for the blog slice
-  initialState: {
-    title: "",
-    content: "", 
-    author: "",
-    likes: 0
-  },
+  initialState: [],
 
   reducers: {
-    voteBlog(state, action) {
-      // make sure to pass the blog id to the voteBlog call
-      const blogId = action.payload
-      const blog = state.find((b) => b.id === blogId)
+    setBlogs: (state, action) => action.payload || [],
 
-      if (blog) {
-        blog.likes += 1
-      }
-    },
-    createBlog(state, action) {
-      state.push(action.payload)
+    appendBlog: (state, action) => {
+      state.push(action.payload);
     },
 
-    appendBlog(state, action) {
-      state.push(action.payload)
+    updateBlog: (state, action) => {
+      return state.map((blog) =>
+        blog.id === action.payload.id ? action.payload : blog,
+      );
     },
 
-    setBlogs(state, action) {
-      return action.payload
+    removeBlog: (state, action) => {
+      return state.filter((blog) => blog.id !== action.payload);
     },
+  },
+});
+
+export const { setBlogs, voteBlog, appendBlog, updateBlog, removeBlog } =
+  blogSlice.actions;
+
+export const initializeBlogs = () => async (dispatch) => {
+  try {
+    const blogs = await blogService.getAll();
+    console.log("Fetched blogs:", blogs); // Debugging statement
+    dispatch(setBlogs(Array.isArray(blogs) ? blogs : [])); // Ensure an array is passed
+  } catch (error) {
+    console.error("Error fetching blogs:", error);
+    dispatch(setBlogs([])); // Handle error case
   }
-})
-
-export const { voteBlog, createBlog, appendBlog, setBlogs } = blogSlice.actions;
+};
 
 export const addBlogThunk = (blog) => {
   return async (dispatch) => {
-    const newBlog = await blogService.create(blog);
-    dispatch(createBlog(newBlog));
-    dispatch(notificationThunk(`New blog added: ${newBlog.content.substring(0, 14)}`)); //
-  }
-}
-
-export const initializeBlogs = () => {
-  return async (dispatch) => {
-    const blogs = await blogService.getAll();
-    dispatch(setBlogs(blogs))
-  }
-}
+    try {
+      const newBlog = await blogService.create(blog);
+      dispatch(appendBlog(newBlog));
+      dispatch(
+        notificationThunk(
+          `New blog added: ${(newBlog.content.substring(0, 14), "success")}`,
+        ),
+      );
+    } catch (error) {
+      dispatch(
+        notificationThunk(
+          `Blog could not be added! - ${error.message}`,
+          "error",
+        ),
+      );
+    }
+  };
+};
 
 export const voteThunk = (id) => {
   return async (dispatch, getState) => {
     const { blogs } = getState();
-    const blogToVote = blogs.find(b => b.id === id);
-    
+    const blogToVote = blogs.find((b) => b.id === id);
+
+    console.log(blogToVote);
+
+    if (!blogToVote) return;
+
     const updatedBlog = {
       ...blogToVote,
-      votes: blogToVote.votes += 1
-    }
+      likes: blogToVote.likes + 1,
+    };
 
     await blogService.update(id, updatedBlog);
 
-    dispatch(voteBlog(id))
-  }
-}
+    dispatch(updateBlog(updatedBlog));
+  };
+};
+
+export const deleteBlogThunk = (id) => {
+  return async (dispatch) => {
+    try {
+      await blogService.remove(id);
+      dispatch(removeBlog(id));
+      dispatch(notificationThunk(`Blog deleted successfully!`, "success"));
+    } catch (error) {
+      dispatch(
+        notificationThunk(
+          `Blog could not be deleted! - ${error.message}`,
+          "error",
+        ),
+      );
+    }
+  };
+};
 
 export default blogSlice.reducer;

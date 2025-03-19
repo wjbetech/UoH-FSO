@@ -5,7 +5,7 @@ import blogReducer from "./reducers/blogReducer.js";
 const store = configureStore({
   reducer: {
     notification: notificationReducer,
-    blog: blogReducer,
+    blogs: blogReducer,
   },
   devTools: true,
 });

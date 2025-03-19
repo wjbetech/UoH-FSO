@@ -1,7 +1,15 @@
 import { useState, useEffect } from "react";
 
 // Redux
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  initializeBlogs,
+  appendBlog,
+  setBlogs,
+  addBlogThunk,
+  voteThunk,
+  deleteBlogThunk,
+} from "./reducers/blogReducer.js";
 import { notificationThunk } from "./reducers/notificationReducer.js";
 
 // destructure loginService
@@ -21,15 +29,11 @@ import Togglable from "./components/Togglable.jsx";
 
 function App() {
   const dispatch = useDispatch();
-
-  const [blogs, setBlogs] = useState([]);
-  const [notification, setNotification] = useState({
-    message: null,
-    type: null,
-  });
+  const blogs = useSelector((state) => state.blogs);
+  const notification = useSelector((state) => state.notification);
+  const [user, setUser] = useState(null);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [user, setUser] = useState(null);
   const [loginVisible, setLoginVisible] = useState(false);
 
   useEffect(() => {
@@ -42,29 +46,8 @@ function App() {
   }, []);
 
   useEffect(() => {
-    getAll().then((initialBlogs) => {
-      setBlogs(initialBlogs);
-    });
-  }, []);
-
-  const showNotification = (message, type) => {
-    setNotification({ message, type });
-    setTimeout(() => {
-      setNotification({ message: null, type: null });
-    }, 5000);
-  };
-
-  const addBlog = async (blogObject) => {
-    try {
-      const returnedBlog = await blogService.create(blogObject);
-      setBlogs(blogs.concat(returnedBlog));
-
-      showNotification("New blog created!", "success");
-    } catch (error) {
-      console.log(error);
-      showNotification("Failed to create new blog!", "error");
-    }
-  };
+    dispatch(initializeBlogs());
+  }, [dispatch]);
 
   const handleLogin = async (event) => {
     event.preventDefault();
@@ -88,64 +71,26 @@ function App() {
     }
   };
 
-  const handleLogout = async (event) => {
-    event.preventDefault();
+  const handleLogout = async () => {
+    window.localStorage.removeItem("loggedBlogAppUser");
+    setUser(null);
+    setToken(null);
+    dispatch(notificationThunk("Successfully logged out!", "success"));
+  };
 
-    try {
-      window.localStorage.removeItem("loggedBlogAppUser");
-      setUser(null);
-      setToken(null);
+  const addBlog = async (blogObject) => {
+    dispatch(appendBlog(blogObject));
+  };
 
-      showNotification("Successfully logged out!", "success");
-    } catch (error) {
-      showNotification("Invalid username or password!", error);
-      console.log(error);
-    }
+  const handleLikesClick = (id) => {
+    dispatch(voteThunk(id)); // ✅ Use Redux to update state
   };
 
   const handleDelete = async (id) => {
-    console.log(blogs);
-
-    try {
-      const blogToDelete = blogs.find(
-        (blog) => blog.id.toString() === id.toString(),
-      );
-
-      if (!blogToDelete) {
-        console.log("Could not find any blog!");
-        return;
-      } else {
-        console.log("blogToDelete: " + blogToDelete);
-      }
-
-      if (
-        window.confirm(
-          `Are you sure you want to delete ${blogToDelete.content}`,
-        )
-      ) {
-        await blogService.remove(id);
-        setBlogs(blogs.filter((blog) => blog.id !== id));
-      }
-    } catch (error) {
-      console.log(error);
-      showNotification("Failed to delete blog!", "error");
-    }
+    dispatch(deleteBlogThunk(id));
   };
 
-  const handleLikesClick = async (id) => {
-    try {
-      const blogToUpdate = blogs.find((blog) => blog.id === id);
-
-      const updatedBlog = { ...blogToUpdate, likes: blogToUpdate.likes + 1 };
-
-      const returnedBlog = await update(id, updatedBlog);
-
-      setBlogs(blogs.map((blog) => (blog.id === id ? returnedBlog : blog)));
-    } catch (error) {
-      console.log(error);
-      showNotification("Failed to update likes!", "error");
-    }
-  };
+  const sortedBlogs = [...blogs].sort((a, b) => b.likes - a.likes);
 
   const loginForm = () => {
     const hideWhenVisible = { display: loginVisible ? "none" : "" };
@@ -171,11 +116,9 @@ function App() {
     );
   };
 
-  const sortedBlogs = blogs.sort((a, b) => b.likes - a.likes);
-
   return (
     <div className="app">
-      <h1>myBlog</h1>
+      <h1>Bloglist</h1>
 
       <Notification
         notification={notification.message}
