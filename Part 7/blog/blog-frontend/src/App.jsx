@@ -11,6 +11,12 @@ import {
   deleteBlogThunk,
 } from "./reducers/blogReducer.js";
 import { notificationThunk } from "./reducers/notificationReducer.js";
+import {
+  setUser,
+  removeUser,
+  loginThunk,
+  logoutThunk,
+} from "./reducers/userReducer.js";
 
 // destructure loginService
 import loginService from "./services/login.js";
@@ -52,14 +58,8 @@ function App() {
   const handleLogin = async (event) => {
     event.preventDefault();
     try {
-      const user = await login({ username, password });
-
-      window.localStorage.setItem("loggedBlogAppUser", JSON.stringify(user));
-      setToken(user.token);
-      setUser(user);
-
-      // debugging user before dispatching notification
-      console.log("Attempting to login with: ", { user });
+      console.log(event);
+      dispatch(loginThunk({ username, password }));
       dispatch(notificationThunk(`${user.username} logged in!`, "success", 5));
 
       // reset username and password fields for next potential login attempt
@@ -72,9 +72,7 @@ function App() {
   };
 
   const handleLogout = async () => {
-    window.localStorage.removeItem("loggedBlogAppUser");
-    setUser(null);
-    setToken(null);
+    dispatch(logoutThunk());
     dispatch(notificationThunk("Successfully logged out!", "success"));
   };
 
@@ -83,7 +81,7 @@ function App() {
   };
 
   const handleLikesClick = (id) => {
-    dispatch(voteThunk(id)); // ✅ Use Redux to update state
+    dispatch(voteThunk(id));
   };
 
   const handleDelete = async (id) => {

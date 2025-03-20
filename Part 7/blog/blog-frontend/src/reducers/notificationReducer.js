@@ -33,13 +33,9 @@ export const { setNotification, clearNotification } = notificationSlice.actions;
 // message or 'content'
 // type for styling, "success" green or "error" red
 // seconds for how long notification stays
-export const notificationThunk = (message, type, seconds) => {
-  return (dispatch) => {
-    dispatch(setNotification({ message, type }));
-    setTimeout(() => {
-      dispatch(clearNotification());
-    }, seconds * 1000);
-  };
+export const notificationThunk = (message, type, seconds) => (dispatch) => {
+  dispatch(setNotification({ message, type }));
+  setTimeout(() => dispatch(clearNotification()), seconds * 1000);
 };
 
 export default notificationSlice.reducer;

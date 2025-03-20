@@ -43,9 +43,13 @@ export const initializeBlogs = () => async (dispatch) => {
 };
 
 export const addBlogThunk = (blog) => {
-  return async (dispatch) => {
+  return async (dispatch, getState) => {
     try {
-      const newBlog = await blogService.create(blog);
+      const user = getState.user();
+      const newBlog = await blogService.create({
+        ...blog,
+        author: user.username,
+      });
       dispatch(appendBlog(newBlog));
       dispatch(
         notificationThunk(
