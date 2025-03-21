@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { useState, useEffect } from "react";
 
 // Redux
@@ -37,19 +39,24 @@ function App() {
   const dispatch = useDispatch();
   const blogs = useSelector((state) => state.blogs);
   const notification = useSelector((state) => state.notification);
-  const [user, setUser] = useState(null);
+  const user = useSelector((state) => state.user);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [loginVisible, setLoginVisible] = useState(false);
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem("loggedBlogAppUser");
-    if (loggedUserJSON) {
-      const user = JSON.parse(loggedUserJSON);
-      setUser(user);
-      setToken(user.token);
+
+    if (loggedUserJSON && loggedUserJSON !== "undefined") {
+      try {
+        const user = JSON.parse(loggedUserJSON);
+        dispatch(setUser(user));
+      } catch (error) {
+        console.error("Error parsing localStorage user:", error);
+        window.localStorage.removeItem("loggedBlogAppUser"); // Clear corrupted data
+      }
     }
-  }, []);
+  }, [dispatch]);
 
   useEffect(() => {
     dispatch(initializeBlogs());
@@ -58,22 +65,26 @@ function App() {
   const handleLogin = async (event) => {
     event.preventDefault();
     try {
-      console.log(event);
-      dispatch(loginThunk({ username, password }));
-      dispatch(notificationThunk(`${user.username} logged in!`, "success", 5));
-
-      // reset username and password fields for next potential login attempt
+      const user = { username, password };
+      await dispatch(loginThunk(user));
+      dispatch(
+        notificationThunk(
+          `${user.username} logged in successfully!`,
+          "success",
+          5,
+        ),
+      );
       setUsername("");
       setPassword("");
     } catch (error) {
       console.log(error);
-      dispatch(notificationThunk("Invalid username or password", "error", 5));
+      dispatch(notificationThunk("Invalid username or password!", "error", 5));
     }
   };
 
   const handleLogout = async () => {
     dispatch(logoutThunk());
-    dispatch(notificationThunk("Successfully logged out!", "success"));
+    dispatch(notificationThunk("Successfully logged out!", "success", 5));
   };
 
   const addBlog = async (blogObject) => {
