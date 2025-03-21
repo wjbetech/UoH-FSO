@@ -21,16 +21,12 @@ const create = async (newObject) => {
   return res.data;
 };
 
-const update = async (id, newObject) => {
-  const config = {
-    headers: { Authorization: token },
-  };
-
+const update = async (id, newObject, config) => {
   const request = axios.put(`${baseUrl}/${id}`, newObject, config);
   return request.then((response) => response.data);
 };
 
-const remove = async (id) => {
+const remove = async (id, token) => {
   const config = {
     headers: { Authorization: token },
   };

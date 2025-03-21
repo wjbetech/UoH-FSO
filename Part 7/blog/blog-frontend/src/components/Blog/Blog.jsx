@@ -28,8 +28,7 @@ export default function Blog({
             </button>
             <button
               data-testid="like-button"
-              onClick={() => handleLikesClick(blogInfo.id)}
-              className="like-button"
+              onClick={() => handleLikesClick(blogInfo)}
             >
               Like
             </button>

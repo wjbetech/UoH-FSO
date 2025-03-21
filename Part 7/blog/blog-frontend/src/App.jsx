@@ -20,6 +20,16 @@ import {
   logoutThunk,
 } from "./reducers/userReducer.js";
 
+// React-Router
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Link,
+  Navigate,
+  useNavigate,
+} from "react-router-dom";
+
 // destructure loginService
 import loginService from "./services/login.js";
 const { login } = loginService;
@@ -29,11 +39,12 @@ import blogService from "./services/blogs.js";
 const { getAll, setToken, update } = blogService;
 
 // component imports
-import LoginForm from "./components/LoginForm";
+import LoginForm from "./components/LoginForm/LoginForm.jsx";
 import Blog from "./components/Blog/Blog.jsx";
 import BlogForm from "./components/BlogForm/BlogForm.jsx";
-import Notification from "./components/Notification";
-import Togglable from "./components/Togglable.jsx";
+import Notification from "./components/Notification/Notification.jsx";
+import Togglable from "./components/Togglable/Togglable.jsx";
+import NavBar from "./components/NavBar/NavBar.jsx";
 
 function App() {
   const dispatch = useDispatch();
@@ -91,12 +102,19 @@ function App() {
     dispatch(appendBlog(blogObject));
   };
 
-  const handleLikesClick = (id) => {
-    dispatch(voteThunk(id));
+  const handleLike = async (blog, token) => {
+    if (!token) {
+      dispatch(
+        notificationThunk("Cannot vote without logging in!", "error", 5),
+      );
+    } else {
+      dispatch(voteThunk(blog.id, token));
+    }
   };
 
   const handleDelete = async (id) => {
-    dispatch(deleteBlogThunk(id));
+    if (!user || !user.token) return; // Ensure user and token exist
+    dispatch(deleteBlogThunk(id, user.token)); // Pass token here
   };
 
   const sortedBlogs = [...blogs].sort((a, b) => b.likes - a.likes);
@@ -127,6 +145,7 @@ function App() {
 
   return (
     <div className="app">
+      <NavBar />
       <h1>Bloglist</h1>
 
       <Notification
@@ -156,8 +175,8 @@ function App() {
               key={blog.id}
               blogInfo={blog}
               user={user}
-              handleDelete={handleDelete}
-              handleLikesClick={handleLikesClick}
+              handleDelete={() => handleDelete(blog, user.token)}
+              handleLikesClick={() => handleLike(blog, user.token)}
             />
           ))}
         </ul>

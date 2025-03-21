@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
-import blogService from "../services/blogs.js";
 import { notificationThunk } from "./notificationReducer";
+import blogService from "../services/blogs.js";
+const { update } = blogService;
 
 const blogSlice = createSlice({
   // name of the functionality for this reducer
@@ -67,30 +68,37 @@ export const addBlogThunk = (blog) => {
   };
 };
 
-export const voteThunk = (id) => {
+export const voteThunk = (id, token) => {
   return async (dispatch, getState) => {
     const { blogs } = getState();
-    const blogToVote = blogs.find((b) => b.id === id);
-
-    console.log(blogToVote);
-
-    if (!blogToVote) return;
+    const blogToVote = blogs.find((blog) => blog.id === id);
 
     const updatedBlog = {
       ...blogToVote,
       likes: blogToVote.likes + 1,
     };
 
-    await blogService.update(id, updatedBlog);
+    const config = {
+      headers: { Authorization: `Bearer ${token}` },
+    };
 
-    dispatch(updateBlog(updatedBlog));
+    try {
+      const updatedBlogResponse = await blogService.update(
+        id,
+        updatedBlog,
+        config,
+      );
+      dispatch(updateBlog(updatedBlogResponse));
+    } catch (error) {
+      console.error("Error voting:", error);
+    }
   };
 };
 
-export const deleteBlogThunk = (id) => {
+export const deleteBlogThunk = (id, token) => {
   return async (dispatch) => {
     try {
-      await blogService.remove(id);
+      await blogService.remove(id, token);
       dispatch(removeBlog(id));
       dispatch(notificationThunk(`Blog deleted successfully!`, "success"));
     } catch (error) {
