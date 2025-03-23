@@ -17,7 +17,6 @@ export default function BlogForm({ user }) {
   });
 
   const userToken = user.token;
-  console.log("userToken in BlogForm: ", userToken);
 
   const addBlog = async (event) => {
     event.preventDefault();

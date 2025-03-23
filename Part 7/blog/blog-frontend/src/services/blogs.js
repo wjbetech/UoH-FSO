@@ -22,7 +22,7 @@ const create = async (blogData) => {
 };
 
 const update = async (id, newObject, authToken) => {
-  console.log(id, " updating blog with: ", newObject);
+  console.log("Updating blog with id: ", newObject);
 
   const config = {
     headers: { Authorization: authToken },
