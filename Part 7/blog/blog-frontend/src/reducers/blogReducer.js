@@ -43,9 +43,12 @@ export const initializeBlogs = () => async (dispatch) => {
   }
 };
 
-export const addBlogThunk = (blogData) => {
+export const addBlogThunk = (blogData, token) => {
   return async (dispatch) => {
     try {
+      // Set the token before creating the blog
+      blogService.setToken(token);
+
       const newBlog = await blogService.create(blogData);
       dispatch(appendBlog(newBlog));
       dispatch(
@@ -53,6 +56,10 @@ export const addBlogThunk = (blogData) => {
       );
     } catch (error) {
       console.log("Error in addBlogThunk: ", error);
+      // You might want to display an error notification here
+      dispatch(
+        notificationThunk(`Failed to add blog: ${error.message}`, "error", 5),
+      );
     }
   };
 };

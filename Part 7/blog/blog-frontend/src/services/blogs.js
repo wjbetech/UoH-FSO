@@ -21,11 +21,11 @@ const create = async (blogData) => {
   return response.data;
 };
 
-const update = async (id, newObject, authToken) => {
+const update = async (id, newObject, token) => {
   console.log("Updating blog with id: ", newObject);
 
   const config = {
-    headers: { Authorization: authToken },
+    headers: { Authorization: token },
   };
 
   try {

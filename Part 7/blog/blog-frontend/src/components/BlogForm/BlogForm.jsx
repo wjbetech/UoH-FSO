@@ -18,16 +18,16 @@ export default function BlogForm({ user }) {
 
   const userToken = user.token;
 
-  const addBlog = async (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    await dispatch(addBlogThunk(newBlog));
+    await dispatch(addBlogThunk(newBlog, userToken));
     setNewBlog({ title: "", content: "", author: user.username, url: "" });
   };
 
   return (
     <div className="form">
       <h2>Create New Blog Post</h2>
-      <form onSubmit={addBlog}>
+      <form onSubmit={handleSubmit}>
         <div className="blog-form-input">
           <label>
             Title:

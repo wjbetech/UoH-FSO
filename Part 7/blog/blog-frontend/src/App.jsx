@@ -45,6 +45,7 @@ import BlogForm from "./components/BlogForm/BlogForm.jsx";
 import Notification from "./components/Notification/Notification.jsx";
 import Togglable from "./components/Togglable/Togglable.jsx";
 import NavBar from "./components/NavBar/NavBar.jsx";
+import BlogList from "./components/BlogList/BlogList.jsx";
 
 function App() {
   const dispatch = useDispatch();
@@ -121,8 +122,6 @@ function App() {
     dispatch(deleteBlogThunk(blog.id));
   };
 
-  const sortedBlogs = [...blogs].sort((a, b) => b.likes - a.likes);
-
   const loginForm = () => {
     const hideWhenVisible = { display: loginVisible ? "none" : "" };
     const showWhenVisible = { display: loginVisible ? "" : "none" };
@@ -170,21 +169,12 @@ function App() {
         </div>
       )}
 
-      <div className="blogs">
-        <h3>Blog Posts</h3>
-
-        <ul>
-          {sortedBlogs.map((blog) => (
-            <Blog
-              key={blog.id}
-              blogInfo={blog}
-              user={user}
-              handleDelete={() => handleDelete(blog, user.token)}
-              handleLikesClick={() => handleLike(blog, user.token)}
-            />
-          ))}
-        </ul>
-      </div>
+      <BlogList
+        blogs={blogs}
+        handleDelete={handleDelete}
+        handleLike={handleLike}
+        user={user}
+      />
     </div>
   );
 }
