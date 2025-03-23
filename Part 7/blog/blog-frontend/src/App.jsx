@@ -98,10 +98,6 @@ function App() {
     dispatch(notificationThunk("Successfully logged out!", "success", 5));
   };
 
-  const addBlog = async (blogObject) => {
-    dispatch(appendBlog(blogObject));
-  };
-
   const handleLike = async (blog, token) => {
     if (!token) {
       dispatch(
@@ -112,9 +108,9 @@ function App() {
     }
   };
 
-  const handleDelete = async (id) => {
-    if (!user || !user.token) return; // Ensure user and token exist
-    dispatch(deleteBlogThunk(id, user.token)); // Pass token here
+  const handleDelete = async (blog) => {
+    if (!user || !user.token) return;
+    dispatch(deleteBlogThunk(blog.id, user.token));
   };
 
   const sortedBlogs = [...blogs].sort((a, b) => b.likes - a.likes);
@@ -161,7 +157,7 @@ function App() {
             <button onClick={handleLogout}>Logout</button>
           </p>
           <Togglable buttonLabel="+ New Blog">
-            <BlogForm createBlog={addBlog} />
+            <BlogForm user={user} />
           </Togglable>
         </div>
       )}

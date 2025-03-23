@@ -1,23 +1,42 @@
 import PropTypes from "prop-types";
+import { useDispatch } from "react-redux";
+import { addBlogThunk } from "../../reducers/blogReducer";
+import store from "../../store";
+import { useSelector } from "react-redux";
 
 import { useState } from "react";
 
-export default function BlogForm({ createBlog }) {
+export default function BlogForm({ user }) {
+  const dispatch = useDispatch();
+
   const [newBlog, setNewBlog] = useState({
     title: "",
     content: "",
     url: "",
+    author: user.username,
   });
 
-  const addBlog = (event) => {
+  const userToken = user.token;
+  console.log("userToken in BlogForm: ", userToken);
+
+  const addBlog = async (event) => {
     event.preventDefault();
-    createBlog({
-      title: newBlog.title,
-      content: newBlog.content,
-      url: newBlog.url,
-      likes: 0,
-    });
-    setNewBlog({ title: "", content: "", author: "", url: "" });
+
+    if (!user || !user.token) {
+      console.error("No user token available");
+      return;
+    }
+
+    console.log("Submitting blog with token:", user.token);
+
+    await dispatch(
+      addBlogThunk({
+        blogData: newBlog,
+        token: user.token,
+      }),
+    );
+
+    setNewBlog({ title: "", content: "", author: user.username, url: "" });
   };
 
   return (
@@ -70,7 +89,3 @@ export default function BlogForm({ createBlog }) {
     </div>
   );
 }
-
-BlogForm.propTypes = {
-  createBlog: PropTypes.func.isRequired,
-};

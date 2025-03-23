@@ -1,7 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { notificationThunk } from "./notificationReducer";
 import blogService from "../services/blogs.js";
-const { update } = blogService;
+const { update, remove, setToken } = blogService;
+import { useSelector } from "react-redux";
 
 const blogSlice = createSlice({
   // name of the functionality for this reducer
@@ -35,33 +36,36 @@ export const { setBlogs, voteBlog, appendBlog, updateBlog, removeBlog } =
 export const initializeBlogs = () => async (dispatch) => {
   try {
     const blogs = await blogService.getAll();
-    console.log("Fetched blogs:", blogs); // Debugging statement
-    dispatch(setBlogs(Array.isArray(blogs) ? blogs : [])); // Ensure an array is passed
+    dispatch(setBlogs(Array.isArray(blogs) ? blogs : []));
   } catch (error) {
     console.error("Error fetching blogs:", error);
-    dispatch(setBlogs([])); // Handle error case
+    dispatch(setBlogs([]));
   }
 };
 
-export const addBlogThunk = (blog) => {
-  return async (dispatch, getState) => {
+export const addBlogThunk = ({ blogData, token }) => {
+  return async (dispatch) => {
     try {
-      const user = getState.user();
-      const newBlog = await blogService.create({
-        ...blog,
-        author: user.username,
-      });
+      // Format token properly with Bearer prefix
+      const formattedToken = `Bearer ${token}`;
+
+      console.log("Sending blog data:", blogData);
+      console.log("With auth token:", formattedToken);
+
+      const newBlog = await blogService.create(blogData, formattedToken);
+
       dispatch(appendBlog(newBlog));
       dispatch(
-        notificationThunk(
-          `New blog added: ${(newBlog.content.substring(0, 14), "success")}`,
-        ),
+        notificationThunk(`New blog added: ${blogData.title}`, "success", 5),
       );
     } catch (error) {
+      console.log("Error inside addBlogThunk: ", error);
+      console.log("Error details:", error.response?.data);
       dispatch(
         notificationThunk(
-          `Blog could not be added! - ${error.message}`,
+          `Blog could not be added! - ${error.response?.data?.error || error.message}`,
           "error",
+          5,
         ),
       );
     }
@@ -98,10 +102,20 @@ export const voteThunk = (id, token) => {
 export const deleteBlogThunk = (id, token) => {
   return async (dispatch) => {
     try {
-      await blogService.remove(id, token);
+      // Format token with Bearer prefix
+      const formattedToken = `Bearer ${token}`;
+      console.log("Deleting blog with ID:", id);
+      console.log("Using token:", formattedToken);
+
+      await blogService.remove(id, formattedToken);
       dispatch(removeBlog(id));
       dispatch(notificationThunk(`Blog deleted successfully!`, "success"));
     } catch (error) {
+      console.error(
+        "Delete error:",
+        error.response?.status,
+        error.response?.data,
+      );
       dispatch(
         notificationThunk(
           `Blog could not be deleted! - ${error.message}`,
