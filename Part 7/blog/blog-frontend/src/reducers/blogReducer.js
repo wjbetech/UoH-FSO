@@ -8,7 +8,7 @@ const blogSlice = createSlice({
   // name of the functionality for this reducer
   name: "blogs",
 
-  // initial state for the blog slice
+  // initial state for the blog(s) slice
   initialState: [],
 
   reducers: {
@@ -38,36 +38,21 @@ export const initializeBlogs = () => async (dispatch) => {
     const blogs = await blogService.getAll();
     dispatch(setBlogs(Array.isArray(blogs) ? blogs : []));
   } catch (error) {
-    console.error("Error fetching blogs:", error);
+    console.error("Error in initializeBlogs: ", error);
     dispatch(setBlogs([]));
   }
 };
 
-export const addBlogThunk = ({ blogData, token }) => {
+export const addBlogThunk = (blogData) => {
   return async (dispatch) => {
     try {
-      // Format token properly with Bearer prefix
-      const formattedToken = `Bearer ${token}`;
-
-      console.log("Sending blog data:", blogData);
-      console.log("With auth token:", formattedToken);
-
-      const newBlog = await blogService.create(blogData, formattedToken);
-
+      const newBlog = await blogService.create(blogData);
       dispatch(appendBlog(newBlog));
       dispatch(
         notificationThunk(`New blog added: ${blogData.title}`, "success", 5),
       );
     } catch (error) {
-      console.log("Error inside addBlogThunk: ", error);
-      console.log("Error details:", error.response?.data);
-      dispatch(
-        notificationThunk(
-          `Blog could not be added! - ${error.response?.data?.error || error.message}`,
-          "error",
-          5,
-        ),
-      );
+      console.log("Error in addBlogThunk: ", error);
     }
   };
 };
@@ -82,46 +67,33 @@ export const voteThunk = (id, token) => {
       likes: blogToVote.likes + 1,
     };
 
-    const config = {
-      headers: { Authorization: `Bearer ${token}` },
-    };
+    // format the token correctly with Bearer prefix
+    const formattedToken = `Bearer ${token}`;
+
+    console.log("Liking blog with id: ", id);
 
     try {
       const updatedBlogResponse = await blogService.update(
         id,
         updatedBlog,
-        config,
+        formattedToken,
       );
       dispatch(updateBlog(updatedBlogResponse));
     } catch (error) {
       console.error("Error voting:", error);
+      console.log("Error details:", error.response?.data);
     }
   };
 };
 
-export const deleteBlogThunk = (id, token) => {
+export const deleteBlogThunk = (id) => {
   return async (dispatch) => {
     try {
-      // Format token with Bearer prefix
-      const formattedToken = `Bearer ${token}`;
-      console.log("Deleting blog with ID:", id);
-      console.log("Using token:", formattedToken);
-
-      await blogService.remove(id, formattedToken);
+      await blogService.remove(id);
       dispatch(removeBlog(id));
       dispatch(notificationThunk(`Blog deleted successfully!`, "success"));
     } catch (error) {
-      console.error(
-        "Delete error:",
-        error.response?.status,
-        error.response?.data,
-      );
-      dispatch(
-        notificationThunk(
-          `Blog could not be deleted! - ${error.message}`,
-          "error",
-        ),
-      );
+      console.log("Error in deleteBlogThunk: ", error);
     }
   };
 };

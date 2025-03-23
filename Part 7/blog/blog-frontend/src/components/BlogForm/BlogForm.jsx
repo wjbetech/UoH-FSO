@@ -21,21 +21,7 @@ export default function BlogForm({ user }) {
 
   const addBlog = async (event) => {
     event.preventDefault();
-
-    if (!user || !user.token) {
-      console.error("No user token available");
-      return;
-    }
-
-    console.log("Submitting blog with token:", user.token);
-
-    await dispatch(
-      addBlogThunk({
-        blogData: newBlog,
-        token: user.token,
-      }),
-    );
-
+    await dispatch(addBlogThunk(newBlog));
     setNewBlog({ title: "", content: "", author: user.username, url: "" });
   };
 

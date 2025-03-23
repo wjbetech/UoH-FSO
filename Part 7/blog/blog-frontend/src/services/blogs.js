@@ -12,47 +12,42 @@ const getAll = async () => {
   return request.then((response) => response.data);
 };
 
-const create = async (blogData, authToken) => {
+const create = async (blogData) => {
+  const config = {
+    headers: { Authorization: token },
+  };
+
+  const response = await axios.post(baseUrl, blogData, config);
+  return response.data;
+};
+
+const update = async (id, newObject, authToken) => {
+  console.log(id, " updating blog with: ", newObject);
+
   const config = {
     headers: { Authorization: authToken },
   };
 
-  console.log("Creating blog with data:", blogData);
-  console.log("And authorization:", authToken);
-
   try {
-    const response = await axios.post(baseUrl, blogData, config);
-    return response.data;
-  } catch (error) {
-    console.error("API error:", error.response?.status, error.response?.data);
-    throw error;
-  }
-};
-
-const update = async (id, newObject, config) => {
-  const request = axios.put(`${baseUrl}/${id}`, newObject, config);
-  return request.then((response) => response.data);
-};
-
-const remove = async (id, authToken) => {
-  const config = {
-    headers: { Authorization: authToken },
-  };
-
-  console.log("Making delete request to:", `${baseUrl}/${id}`);
-  console.log("With authorization:", authToken);
-
-  try {
-    const response = await axios.delete(`${baseUrl}/${id}`, config);
+    const response = await axios.put(`${baseUrl}/${id}`, newObject, config);
     return response.data;
   } catch (error) {
     console.error(
-      "API error during delete:",
+      "API error during update:",
       error.response?.status,
       error.response?.data,
     );
     throw error;
   }
+};
+
+const remove = async (id) => {
+  const config = {
+    headers: { Authorization: token },
+  };
+
+  const response = await axios.delete(`${baseUrl}/${id}`, config);
+  return response.data;
 };
 
 export default {

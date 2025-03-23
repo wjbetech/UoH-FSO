@@ -62,9 +62,14 @@ function App() {
       try {
         const user = JSON.parse(loggedUserJSON);
         dispatch(setUser(user));
+
+        // set the blogService token when loading from localStorage
+        // - not sure why this is done in blogs service and not login
+        blogService.setToken(user.token);
       } catch (error) {
         console.error("Error parsing localStorage user:", error);
-        window.localStorage.removeItem("loggedBlogAppUser"); // Clear corrupted data
+        // remove any error'd localStorage var
+        window.localStorage.removeItem("loggedBlogAppUser");
       }
     }
   }, [dispatch]);
@@ -77,7 +82,8 @@ function App() {
     event.preventDefault();
     try {
       const user = { username, password };
-      await dispatch(loginThunk(user));
+      const loggedInUser = await dispatch(loginThunk(user));
+
       dispatch(
         notificationThunk(
           `${user.username} logged in successfully!`,
@@ -95,6 +101,7 @@ function App() {
 
   const handleLogout = async () => {
     dispatch(logoutThunk());
+    blogService.setToken("");
     dispatch(notificationThunk("Successfully logged out!", "success", 5));
   };
 
@@ -104,13 +111,14 @@ function App() {
         notificationThunk("Cannot vote without logging in!", "error", 5),
       );
     } else {
+      // we don't have to pass `Bearer ...` in here
       dispatch(voteThunk(blog.id, token));
     }
   };
 
   const handleDelete = async (blog) => {
-    if (!user || !user.token) return;
-    dispatch(deleteBlogThunk(blog.id, user.token));
+    if (!user) return;
+    dispatch(deleteBlogThunk(blog.id));
   };
 
   const sortedBlogs = [...blogs].sort((a, b) => b.likes - a.likes);
