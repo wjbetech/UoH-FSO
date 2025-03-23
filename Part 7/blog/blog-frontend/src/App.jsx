@@ -46,6 +46,7 @@ import Notification from "./components/Notification/Notification.jsx";
 import Togglable from "./components/Togglable/Togglable.jsx";
 import NavBar from "./components/NavBar/NavBar.jsx";
 import BlogList from "./components/BlogList/BlogList.jsx";
+import Users from "./components/Users/Users.jsx";
 
 function App() {
   const dispatch = useDispatch();
@@ -169,12 +170,21 @@ function App() {
         </div>
       )}
 
-      <BlogList
-        blogs={blogs}
-        handleDelete={handleDelete}
-        handleLike={handleLike}
-        user={user}
-      />
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <BlogList
+              blogs={blogs}
+              handleDelete={handleDelete}
+              handleLike={handleLike}
+              user={user}
+            />
+          }
+        />
+
+        <Route path="/users" element={<Users blogs={blogs} />} />
+      </Routes>
     </div>
   );
 }

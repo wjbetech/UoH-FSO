@@ -64,41 +64,50 @@ export const addBlogThunk = (blogData, token) => {
   };
 };
 
-export const voteThunk = (id, token) => {
+export const voteThunk = (id) => {
   return async (dispatch, getState) => {
-    const { blogs } = getState();
+    const state = getState();
+    const { blogs, user } = state;
+
     const blogToVote = blogs.find((blog) => blog.id === id);
+
+    if (!user) {
+      console.error("User not found in state");
+      return;
+    }
+
+    // since we have the user (+token) in state, we can extract and set the token now
+    blogService.setToken(user.token);
 
     const updatedBlog = {
       ...blogToVote,
       likes: blogToVote.likes + 1,
     };
 
-    // format the token correctly with Bearer prefix
-    const formattedToken = `Bearer ${token}`;
-
-    console.log("Liking blog with id: ", id);
-
     try {
-      const updatedBlogResponse = await blogService.update(
-        id,
-        updatedBlog,
-        formattedToken,
-      );
+      const updatedBlogResponse = await blogService.update(id, updatedBlog);
       dispatch(updateBlog(updatedBlogResponse));
     } catch (error) {
       console.error("Error voting:", error);
-      console.log("Error details:", error.response?.data);
     }
   };
 };
 
 export const deleteBlogThunk = (id) => {
-  return async (dispatch) => {
+  return async (dispatch, getState) => {
+    const { user } = getState();
+
+    if (!user) {
+      console.error("User not found in state");
+      return;
+    }
+
+    blogService.setToken(user.token);
+
     try {
       await blogService.remove(id);
       dispatch(removeBlog(id));
-      dispatch(notificationThunk(`Blog deleted successfully!`, "success"));
+      dispatch(notificationThunk(`Blog deleted successfully!`, "success", 5));
     } catch (error) {
       console.log("Error in deleteBlogThunk: ", error);
     }

@@ -21,7 +21,7 @@ const create = async (blogData) => {
   return response.data;
 };
 
-const update = async (id, newObject, token) => {
+const update = async (id, newObject) => {
   console.log("Updating blog with id: ", newObject);
 
   const config = {
