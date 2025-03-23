@@ -47,6 +47,7 @@ import Togglable from "./components/Togglable/Togglable.jsx";
 import NavBar from "./components/NavBar/NavBar.jsx";
 import BlogList from "./components/BlogList/BlogList.jsx";
 import Users from "./components/Users/Users.jsx";
+import User from "./components/User/User.jsx";
 
 function App() {
   const dispatch = useDispatch();
@@ -184,6 +185,8 @@ function App() {
         />
 
         <Route path="/users" element={<Users blogs={blogs} />} />
+
+        <Route path="/users/:id" element={<User blogs={blogs} />} />
       </Routes>
     </div>
   );
