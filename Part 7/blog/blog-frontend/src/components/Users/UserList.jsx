@@ -5,7 +5,7 @@
 
 import React from "react";
 import has from "lodash";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   Paper,
   TableContainer,
@@ -14,10 +14,13 @@ import {
   TableRow,
   TableCell,
   TableBody,
+  Button,
 } from "@mui/material";
+import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
 
 const Users = ({ blogs }) => {
   console.log(blogs);
+  const navigate = useNavigate();
 
   // Sort blogs by author name
   const sortedArrays = has.orderBy(blogs, ["author"], ["asc"]);
@@ -41,8 +44,22 @@ const Users = ({ blogs }) => {
 
   console.log("userArray: ", userArray);
 
+  const handleReturn = (event) => {
+    event.preventDefault();
+    navigate("/");
+  };
+
   return (
     <TableContainer>
+      <Button
+        onClick={handleReturn}
+        sx={{ marginBottom: "24px", width: "200px" }}
+        variant="contained"
+        startIcon={<KeyboardBackspaceIcon />}
+      >
+        Back
+      </Button>
+
       <Table size="small">
         <TableHead>
           <TableRow>

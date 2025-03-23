@@ -30,18 +30,20 @@ const User = ({ blogs }) => {
     <div>
       <Button
         onClick={handleReturn}
-        sx={{ marginBottom: "24px" }}
+        sx={{ marginBottom: "24px", width: "200px" }}
         variant="contained"
         startIcon={<KeyboardBackspaceIcon />}
       >
-        Default
+        Back
       </Button>
       <h2>{`${userBlogs[0].author}'s Blogs`}</h2>
       <ul>
         {userBlogs.map((blog) => {
           return (
             <li key={blog.id}>
-              <h3>{blog.title}</h3>
+              <Link to={`/blogs/${blog.id}`}>
+                <h3>{blog.title}</h3>
+              </Link>{" "}
               <p>{blog.content}</p>
             </li>
           );

@@ -1,24 +1,31 @@
 import React from "react";
 import Blog from "../Blog/Blog";
+import { useNavigate } from "react-router-dom";
 
 const BlogList = ({ blogs, handleDelete, handleLike, user }) => {
   const sortedBlogs = [...blogs].sort((a, b) => b.likes - a.likes);
 
-  return (
-    <div className="blogs">
-      <h3>Blog Posts</h3>
+  const navigate = useNavigate();
 
-      <ul>
-        {sortedBlogs.map((blog) => (
-          <Blog
-            key={blog.id}
-            blogInfo={blog}
-            user={user}
-            handleDelete={() => handleDelete(blog, user.token)}
-            handleLikesClick={() => handleLike(blog, user.token)}
-          />
-        ))}
-      </ul>
+  const handleReturn = (event) => {
+    event.preventDefault();
+    navigate("/");
+  };
+
+  return (
+    <div>
+    
+    
+      <h2>Blogs</h2>
+      {blogs.map((blog) => (
+        <Blog
+          key={blog.id}
+          blogInfo={blog}
+          handleDelete={handleDelete}
+          handleLike={handleLike}
+          user={user}
+        />
+      ))}
     </div>
   );
 };

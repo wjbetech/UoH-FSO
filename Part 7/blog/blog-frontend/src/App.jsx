@@ -46,7 +46,7 @@ import Notification from "./components/Notification/Notification.jsx";
 import Togglable from "./components/Togglable/Togglable.jsx";
 import NavBar from "./components/NavBar/NavBar.jsx";
 import BlogList from "./components/BlogList/BlogList.jsx";
-import Users from "./components/Users/Users.jsx";
+import Users from "./components/Users/UserList.jsx";
 import User from "./components/User/User.jsx";
 
 function App() {
@@ -183,10 +183,19 @@ function App() {
             />
           }
         />
-
         <Route path="/users" element={<Users blogs={blogs} />} />
-
         <Route path="/users/:id" element={<User blogs={blogs} />} />
+        <Route
+          path="/blogs/:id"
+          element={
+            <Blog
+              blogs={blogs} // ✅ Make sure this is available
+              handleDelete={handleDelete}
+              handleLikesClick={handleLike}
+              user={user}
+            />
+          }
+        />
       </Routes>
     </div>
   );
