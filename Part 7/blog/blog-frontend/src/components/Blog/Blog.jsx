@@ -125,6 +125,31 @@ export default function Blog({
             <span style={{ fontWeight: "bold", color: "#888" }}>Likes: </span>
             {likes}
           </p>
+          <div style={{ marginTop: "24px" }}>
+            <div style={{ display: "flex", flexDirection: "row", gap: "12px" }}>
+              <h3>Comments</h3>
+              <Button
+                onClick={handleReturn}
+                variant="contained"
+                sx={{ width: "140px" }}
+                size="small"
+              >
+                + Comment
+              </Button>
+            </div>
+            <ul>
+              {blog.comments.map((comment) => {
+                return (
+                  <li key={comment.id} style={{ listStyle: "none" }}>
+                    <strong style={{ color: "rgba(0, 255, 25, 0.5)" }}>
+                      {comment.user.username}:{" "}
+                    </strong>{" "}
+                    {comment.content}
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
         </div>
       ) : (
         <div className="mini-blog-post">

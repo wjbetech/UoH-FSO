@@ -28,16 +28,37 @@ blogRouter.get("/home", (req, res) => {
 
 // GET
 blogRouter.get("/", async (req, res) => {
-  const blogs = await Blog.find({}).populate("user", {
-    username: 1,
-    name: 1,
-    id: 1,
-  });
+  const blogs = await Blog.find({})
+    .populate("user", {
+      username: 1,
+      name: 1,
+      id: 1,
+    })
+    .populate({
+      path: "comments",
+      populate: {
+        path: "user",
+        select: "username name id",
+      },
+    });
   res.json(blogs);
 });
 
 blogRouter.get("/:id", async (req, res) => {
-  const blog = await Blog.findById(req.params.id);
+  const blog = await Blog.findById(req.params.id)
+    .populate("user", {
+      username: 1,
+      name: 1,
+      id: 1,
+    })
+    .populate({
+      path: "comments",
+      populate: {
+        path: "user",
+        select: "username name id",
+      },
+    });
+
   logger.info("Finding blog at ID: ", req.params.id);
   if (blog) {
     res.json(blog);

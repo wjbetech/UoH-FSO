@@ -6,10 +6,13 @@ import mongoose from "mongoose";
 import morgan from "morgan";
 import cors from "cors";
 import config from "./utils/config.js";
+
+// routers
 import loginRouter from "./controllers/login.js";
 import userRouter from "./controllers/users.js";
 import blogRouter from "./controllers/blogs.js";
 import testRouter from "./controllers/testing.js";
+import commentRouter from "./controllers/comments.js";
 
 import middleware from "./utils/middleware.js";
 import logger from "./utils/logger.js";
@@ -49,6 +52,7 @@ app.use(morgan("tiny"));
 app.use("/api/login", loginRouter);
 app.use("/api/users", userRouter);
 app.use("/api/blogs", blogRouter);
+app.use("/api/blogs", commentRouter);
 
 if (process.env.NODE_ENV === "test") {
   app.use("/api/testing", testRouter);
