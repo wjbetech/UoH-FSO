@@ -1,3 +1,8 @@
+// mui components
+import { Button } from "@mui/material";
+import LoginIcon from "@mui/icons-material/Login";
+import CloseIcon from "@mui/icons-material/Close";
+
 const LoginForm = ({
   handleLogin,
   username,
@@ -30,20 +35,26 @@ const LoginForm = ({
             onChange={({ target }) => setPassword(target.value)}
           />
         </div>
-        <button
+        <Button
           type="submit"
           data-testid="login-submit-button"
           onClick={handleLogin}
+          sx={{ marginTop: "8px", marginBottom: "12px", width: "200px" }}
+          variant="contained"
         >
           Login
-        </button>
+          <LoginIcon sx={{ marginLeft: "8px" }} />
+        </Button>
       </form>
-      <button
-        className="login-form-button"
+      <Button
+        variant="contained"
+        color="error"
+        sx={{ width: "200px" }}
         onClick={() => setLoginVisible(false)}
       >
         Cancel
-      </button>
+        <CloseIcon sx={{ marginLeft: "8px" }} />
+      </Button>
     </div>
   );
 };

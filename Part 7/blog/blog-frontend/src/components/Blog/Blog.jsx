@@ -1,14 +1,19 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
 import { useParams, useNavigate } from "react-router-dom";
+
+// mui components
 import { Button } from "@mui/material";
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
+import CloseIcon from "@mui/icons-material/Close";
+import ThumbUpIcon from "@mui/icons-material/ThumbUp";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 export default function Blog({
   blogs,
   blogInfo,
   handleDelete,
-  handleLikesClick,
+  handleLike,
   user,
 }) {
   const { id } = useParams(); // ✅ Corrected key to match /blogs/:id
@@ -33,32 +38,74 @@ export default function Blog({
   };
 
   return (
-    <div className="blog-post">
+    <div style={{ marginBottom: "48px" }}>
       {showDetails ? (
         <div className="full-blog-post">
           <h2 className="blog-title">{title}</h2>
-          <div className="blog-post-buttons">
-            <button
+          <div
+            className="blog-post-buttons"
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              gap: "12px",
+              alignContent: "center",
+              alignItems: "center",
+              textAlign: "center",
+            }}
+          >
+            <Button
               data-testid="close-button"
               onClick={toggleDetails}
-              className="view-button"
+              variant="contained"
+              size="small"
+              disableElevation
+              sx={{ width: "88px", alignItems: "normal" }}
             >
+              <CloseIcon fontSize="small" />
               Close
-            </button>
-            <button
+            </Button>
+            <Button
               data-testid="like-button"
-              onClick={() => handleLikesClick(blog)}
+              variant="contained"
+              color="success"
+              size="small"
+              disableElevation
+              onClick={() => handleLike(blog)}
+              sx={{
+                width: "88px",
+                justifyContent: "center",
+                textAlign: "center",
+                alignItems: "center",
+              }}
             >
+              <ThumbUpIcon
+                sx={{
+                  marginRight: "4px",
+                  fontSize: "14px",
+                  marginBottom: "2px",
+                }}
+              />
               Like
-            </button>
+            </Button>
             {user && user.username === author ? (
-              <button
+              <Button
                 data-testid="delete-button"
-                className="delete-button"
                 onClick={() => handleDelete(blog.id)}
+                variant="contained"
+                size="small"
+                disableElevation
+                color="error"
+                sx={{ width: "88px" }}
               >
+                <DeleteIcon
+                  sx={{
+                    marginRight: "4px",
+                    fontSize: "16px",
+                    marginBottom: "2px",
+                  }}
+                />
                 Delete
-              </button>
+              </Button>
             ) : null}
           </div>
           <p className="blog-author">Author: {author}</p>
@@ -68,9 +115,14 @@ export default function Blog({
       ) : (
         <div className="mini-blog-post">
           <h2 className="blog-title">{title}</h2>
-          <button onClick={toggleDetails} className="view-button">
+          <Button
+            onClick={toggleDetails}
+            variant="contained"
+            sx={{ width: "140px" }}
+            size="small"
+          >
             View
-          </button>
+          </Button>
         </div>
       )}
     </div>
@@ -95,6 +147,6 @@ Blog.propTypes = {
     }),
   ),
   handleDelete: PropTypes.func.isRequired,
-  handleLikesClick: PropTypes.func.isRequired,
+  handleLike: PropTypes.func.isRequired,
   user: PropTypes.object,
 };

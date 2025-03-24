@@ -60,6 +60,7 @@ const Users = ({ blogs }) => {
         Back
       </Button>
 
+      <h1 style={{ marginBottom: "48px" }}>Users</h1>
       <Table size="small">
         <TableHead>
           <TableRow>

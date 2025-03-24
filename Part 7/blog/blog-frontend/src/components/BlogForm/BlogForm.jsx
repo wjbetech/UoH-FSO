@@ -4,6 +4,9 @@ import { addBlogThunk } from "../../reducers/blogReducer";
 import store from "../../store";
 import { useSelector } from "react-redux";
 
+// mui components
+import { Button } from "@mui/material";
+
 import { useState } from "react";
 
 export default function BlogForm({ user }) {
@@ -69,7 +72,9 @@ export default function BlogForm({ user }) {
             />
           </label>
         </div>
-        <button type="submit">Add Blog</button>
+        <Button type="submit" variant="contained" sx={{ width: "200px" }}>
+          Add Blog
+        </Button>
       </form>
     </div>
   );

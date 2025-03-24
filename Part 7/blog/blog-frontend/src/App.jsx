@@ -49,6 +49,10 @@ import BlogList from "./components/BlogList/BlogList.jsx";
 import Users from "./components/Users/UserList.jsx";
 import User from "./components/User/User.jsx";
 
+// mui components
+import { Button } from "@mui/material";
+import LoginIcon from "@mui/icons-material/Login";
+
 function App() {
   const dispatch = useDispatch();
   const blogs = useSelector((state) => state.blogs);
@@ -108,20 +112,13 @@ function App() {
     dispatch(notificationThunk("Successfully logged out!", "success", 5));
   };
 
-  const handleLike = async (blog, token) => {
-    if (!token) {
-      dispatch(
-        notificationThunk("Cannot vote without logging in!", "error", 5),
-      );
-    } else {
-      // we don't have to pass `Bearer ...` in here
-      dispatch(voteThunk(blog.id, token));
-    }
+  const handleLike = async (blog) => {
+    dispatch(voteThunk(blog.id));
   };
 
-  const handleDelete = async (blog) => {
+  const handleDelete = async (id) => {
     if (!user) return;
-    dispatch(deleteBlogThunk(blog.id));
+    dispatch(deleteBlogThunk(id));
   };
 
   const loginForm = () => {
@@ -131,7 +128,14 @@ function App() {
     return (
       <div className="togglable">
         <div style={hideWhenVisible}>
-          <button onClick={() => setLoginVisible(true)}>Login</button>
+          <Button
+            variant="contained"
+            color="success"
+            onClick={() => setLoginVisible(true)}
+          >
+            Login
+            <LoginIcon sx={{ marginLeft: "4px" }} />
+          </Button>
         </div>
         <div style={showWhenVisible}>
           <LoginForm
@@ -149,54 +153,62 @@ function App() {
   };
 
   return (
-    <div className="app">
-      <NavBar />
-      <h1>Bloglist</h1>
-
-      <Notification
-        notification={notification.message}
-        type={notification.type}
-      />
-
-      {!user && loginForm()}
-      {user && (
-        <div className="blog-post-form">
-          <p className="user-display">
-            Logged in as {user.name}{" "}
-            <button onClick={handleLogout}>Logout</button>
-          </p>
-          <Togglable buttonLabel="+ New Blog">
-            <BlogForm user={user} />
-          </Togglable>
-        </div>
-      )}
-
-      <Routes>
-        <Route
-          path="/"
-          element={
-            <BlogList
-              blogs={blogs}
-              handleDelete={handleDelete}
-              handleLike={handleLike}
-              user={user}
-            />
-          }
+    <div>
+      <div className="app">
+        <Notification
+          notification={notification.message}
+          type={notification.type}
         />
-        <Route path="/users" element={<Users blogs={blogs} />} />
-        <Route path="/users/:id" element={<User blogs={blogs} />} />
-        <Route
-          path="/blogs/:id"
-          element={
-            <Blog
-              blogs={blogs} // ✅ Make sure this is available
-              handleDelete={handleDelete}
-              handleLikesClick={handleLike}
-              user={user}
-            />
-          }
-        />
-      </Routes>
+        <NavBar />
+        <h1>Bloglist</h1>
+
+        {!user && loginForm()}
+        {user && (
+          <div>
+            <p style={{ marginTop: "8px" }}>
+              Logged in as {user.name}{" "}
+              <Button
+                onClick={handleLogout}
+                variant="contained"
+                sx={{ height: "30px" }}
+                color="error"
+              >
+                Logout
+              </Button>
+            </p>
+            <Togglable buttonLabel="+ New Blog">
+              <BlogForm user={user} />
+            </Togglable>
+          </div>
+        )}
+
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <BlogList
+                blogs={blogs}
+                handleDelete={handleDelete}
+                handleLike={handleLike}
+                user={user}
+              />
+            }
+          />
+          <Route path="/users" element={<Users blogs={blogs} />} />
+          <Route path="/users/:id" element={<User blogs={blogs} />} />
+          <Route
+            path="/blogs/:id"
+            element={
+              <Blog
+                blogs={blogs} // ✅ Make sure this is available
+                handleDelete={handleDelete}
+                handleLike={handleLike}
+                user={user}
+              />
+            }
+          />
+        </Routes>
+      </div>
     </div>
   );
 }
