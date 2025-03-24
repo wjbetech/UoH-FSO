@@ -15,20 +15,22 @@ const Notification = ({ type }) => {
 
   const notificationStyle = {
     success: {
-      backgroundColor: "rgba(51, 255, 0, 0.19)",
+      backgroundColor: "rgb(30, 148, 0)",
       color: "white",
-      position: "absolute",
+      position: "fixed",
       top: "0px",
       left: "0px",
-      width: "110%",
+      width: "100%",
+      zIndex: 1000,
     },
     error: {
-      backgroundColor: "hsla(0, 100.00%, 50.00%, 0.25)",
+      backgroundColor: "rgb(161, 0, 0)",
       color: "white",
-      position: "absolute",
+      position: "fixed",
       top: "0px",
       left: "0px",
-      width: "110%",
+      width: "100%",
+      zIndex: 1000,
     },
   };
 

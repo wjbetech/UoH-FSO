@@ -72,7 +72,11 @@ export const voteThunk = (id) => {
     const blogToVote = blogs.find((blog) => blog.id === id);
 
     if (!user) {
-      console.error("User not found in state");
+      console.error("User not logged in");
+      // Dispatch notification to inform the user they need to log in
+      dispatch(
+        notificationThunk("Please log in to like blog posts!", "error", 5),
+      );
       return;
     }
 
@@ -87,8 +91,17 @@ export const voteThunk = (id) => {
     try {
       const updatedBlogResponse = await blogService.update(id, updatedBlog);
       dispatch(updateBlog(updatedBlogResponse));
+      // Optional: Add success notification
+      dispatch(notificationThunk(`Liked "${blogToVote.title}"`, "success", 3));
     } catch (error) {
       console.error("Error voting:", error);
+      dispatch(
+        notificationThunk(
+          `Error liking post: ${error.message || "Unknown error"}`,
+          "error",
+          5,
+        ),
+      );
     }
   };
 };

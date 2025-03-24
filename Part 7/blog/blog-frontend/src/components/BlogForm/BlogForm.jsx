@@ -5,7 +5,7 @@ import store from "../../store";
 import { useSelector } from "react-redux";
 
 // mui components
-import { Button } from "@mui/material";
+import { Button, Grid, TextField } from "@mui/material";
 
 import { useState } from "react";
 
@@ -31,50 +31,115 @@ export default function BlogForm({ user }) {
     <div className="form">
       <h2>Create New Blog Post</h2>
       <form onSubmit={handleSubmit}>
-        <div className="blog-form-input">
-          <label>
-            Title:
-            <input
-              type="text"
-              data-testid="title"
-              value={newBlog.title}
+        <Grid container spacing={3}>
+          <Grid item xs={12}>
+            <TextField
+              fullWidth
+              label="Title"
+              variant="outlined"
               name="title"
+              value={newBlog.title}
               onChange={(e) =>
                 setNewBlog((prev) => ({ ...prev, title: e.target.value }))
               }
+              inputProps={{
+                "data-testid": "title",
+                style: { color: "#ffffff" }, // White text for input
+              }}
+              InputLabelProps={{
+                style: { color: "#b3b3b3" }, // Light gray label
+              }}
+              sx={{
+                marginTop: "14px",
+                "& .MuiOutlinedInput-root": {
+                  "& fieldset": {
+                    borderColor: "#4d4d4d", // Dark gray border
+                  },
+                  "&:hover fieldset": {
+                    borderColor: "#666666", // Medium gray on hover
+                  },
+                  "&.Mui-focused fieldset": {
+                    borderColor: "#1976d2", // Material UI primary color for focus
+                  },
+                },
+              }}
             />
-          </label>
-        </div>
-        <div className="blog-form-input">
-          <label>
-            Content:
-            <textarea
-              value={newBlog.content}
-              data-testid="content"
+          </Grid>
+
+          <Grid item xs={12}>
+            <TextField
+              fullWidth
+              label="Content"
+              variant="outlined"
               name="content"
+              multiline
+              minRows={4}
+              value={newBlog.content}
               onChange={(e) =>
                 setNewBlog((prev) => ({ ...prev, content: e.target.value }))
               }
+              inputProps={{
+                "data-testid": "content",
+                style: { color: "#ffffff" },
+              }}
+              InputLabelProps={{
+                style: { color: "#b3b3b3" },
+              }}
+              sx={{
+                "& .MuiOutlinedInput-root": {
+                  "& fieldset": { borderColor: "#4d4d4d" },
+                  "&:hover fieldset": { borderColor: "#666666" },
+                  "&.Mui-focused fieldset": { borderColor: "#1976d2" },
+                },
+              }}
             />
-          </label>
-        </div>
-        <div className="blog-form-input">
-          <label>
-            URL:
-            <input
-              type="text"
-              data-testid="url"
-              value={newBlog.url}
+          </Grid>
+
+          <Grid item xs={12}>
+            <TextField
+              fullWidth
+              label="URL"
+              variant="outlined"
               name="url"
+              value={newBlog.url}
               onChange={(e) =>
                 setNewBlog((prev) => ({ ...prev, url: e.target.value }))
               }
+              inputProps={{
+                "data-testid": "url",
+                style: { color: "#ffffff" },
+              }}
+              InputLabelProps={{
+                style: { color: "#b3b3b3" },
+              }}
+              sx={{
+                "& .MuiOutlinedInput-root": {
+                  "& fieldset": { borderColor: "#4d4d4d" },
+                  "&:hover fieldset": { borderColor: "#666666" },
+                  "&.Mui-focused fieldset": { borderColor: "#1976d2" },
+                },
+              }}
             />
-          </label>
-        </div>
-        <Button type="submit" variant="contained" sx={{ width: "200px" }}>
-          Add Blog
-        </Button>
+          </Grid>
+
+          <Grid item xs={12}>
+            <Button
+              type="submit"
+              variant="contained"
+              size="large"
+              sx={{
+                width: "200px",
+                mt: 2,
+                backgroundColor: "#1976d2",
+                "&:hover": {
+                  backgroundColor: "#1565c0",
+                },
+              }}
+            >
+              Add Blog
+            </Button>
+          </Grid>
+        </Grid>
       </form>
     </div>
   );

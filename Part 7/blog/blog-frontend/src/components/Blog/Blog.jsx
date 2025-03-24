@@ -108,9 +108,24 @@ export default function Blog({
               </Button>
             ) : null}
           </div>
-          <p className="blog-author">Author: {author}</p>
-          <p className="blog-content">{content}</p>
-          <p>Likes: {likes}</p>
+          <p className="blog-author">
+            <span style={{ fontWeight: "bold", color: "#888" }}>Author:</span>{" "}
+            {author}
+          </p>
+          <p
+            className="blog-content"
+            style={{
+              fontWeight: "bold",
+              fontSize: "1.1rem",
+              color: "rgba(255, 255, 150)",
+            }}
+          >
+            {content}
+          </p>
+          <p>
+            <span style={{ fontWeight: "bold", color: "#888" }}>Likes: </span>
+            {likes}
+          </p>
         </div>
       ) : (
         <div className="mini-blog-post">

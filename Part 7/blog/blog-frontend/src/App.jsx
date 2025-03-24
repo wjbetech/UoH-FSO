@@ -170,7 +170,7 @@ function App() {
               <Button
                 onClick={handleLogout}
                 variant="contained"
-                sx={{ height: "30px" }}
+                sx={{ height: "30px", marginLeft: "24px" }}
                 color="error"
               >
                 Logout
