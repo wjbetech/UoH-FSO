@@ -73,7 +73,6 @@ export const voteThunk = (id) => {
 
     if (!user) {
       console.error("User not logged in");
-      // Dispatch notification to inform the user they need to log in
       dispatch(
         notificationThunk("Please log in to like blog posts!", "error", 5),
       );
@@ -91,7 +90,6 @@ export const voteThunk = (id) => {
     try {
       const updatedBlogResponse = await blogService.update(id, updatedBlog);
       dispatch(updateBlog(updatedBlogResponse));
-      // Optional: Add success notification
       dispatch(notificationThunk(`Liked "${blogToVote.title}"`, "success", 3));
     } catch (error) {
       console.error("Error voting:", error);

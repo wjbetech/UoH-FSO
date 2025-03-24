@@ -8,6 +8,7 @@ import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
 import CloseIcon from "@mui/icons-material/Close";
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import DeleteIcon from "@mui/icons-material/Delete";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 
 export default function Blog({
   blogs,
@@ -115,9 +116,7 @@ export default function Blog({
           <p
             className="blog-content"
             style={{
-              fontWeight: "bold",
-              fontSize: "1.1rem",
-              color: "rgba(255, 255, 150)",
+              fontSize: "1.25rem",
             }}
           >
             {content}
@@ -133,10 +132,13 @@ export default function Blog({
           <Button
             onClick={toggleDetails}
             variant="contained"
-            sx={{ width: "140px" }}
+            sx={{ width: "100px" }}
             size="small"
           >
             View
+            <VisibilityIcon
+              sx={{ marginLeft: "6px", fontSize: "16px", marginBottom: "3px" }}
+            />
           </Button>
         </div>
       )}

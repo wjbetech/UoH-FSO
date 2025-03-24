@@ -50,7 +50,7 @@ const Users = ({ blogs }) => {
   };
 
   return (
-    <TableContainer>
+    <TableContainer sx={{ maxWidth: "400px" }}>
       <Button
         onClick={handleReturn}
         sx={{ marginBottom: "24px", width: "200px" }}
