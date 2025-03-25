@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import { notificationThunk } from "./notificationReducer";
 import blogService from "../services/blogs.js";
 const { update } = blogService;
+import { updateBlog } from "./blogReducer";
 import commentService from "../services/comments.js";
 const { create, remove, setToken } = commentService;
 import { useSelector } from "react-redux";
@@ -22,11 +23,26 @@ const commentSlice = createSlice({
 export const { appendComment, removeComment } = commentSlice.actions;
 
 export const addCommentThunk = (blogId, commentData, token) => {
-  return async (dispatch) => {
+  return async (dispatch, getState) => {
     try {
       commentService.setToken(token);
       const newComment = await commentService.create(blogId, commentData);
-      dispatch(appendComment(blogId, newComment));
+
+      // Get the current blog state
+      const { blogs } = getState();
+      const blog = blogs.find((b) => b.id === blogId);
+
+      if (!blog) {
+        console.error("Blog not found when adding comment");
+        return;
+      }
+
+      // Update the blog's comments
+      const updatedBlog = { ...blog, comments: [...blog.comments, newComment] };
+
+      // Dispatch the update to the blogs slice
+      dispatch(updateBlog(updatedBlog));
+
       dispatch(
         notificationThunk(
           `New comment added: ${commentData.content}`,
@@ -35,16 +51,8 @@ export const addCommentThunk = (blogId, commentData, token) => {
         ),
       );
     } catch (error) {
-      console.log("Error in addCommentThunk: ", "error");
-
-      dispatch(
-        notificationThunk(
-          "addCommentThunk error - failed to add comment: ",
-          error,
-          "error",
-          5,
-        ),
-      );
+      console.error("Error in addCommentThunk: ", error);
+      dispatch(notificationThunk("Failed to add comment", "error", 5));
     }
   };
 };

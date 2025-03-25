@@ -1,6 +1,8 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
 import { useParams, useNavigate } from "react-router-dom";
+import commentService from "../../services/comments.js";
+import { addCommentThunk } from "../../reducers/commentReducer.js";
 
 // components
 import { CommentForm } from "../CommentForm/CommentForm";
@@ -21,20 +23,17 @@ export default function Blog({
   handleLike,
   user,
 }) {
-  const { id } = useParams(); // ✅ Corrected key to match /blogs/:id
+  const { id } = useParams();
   const [showDetails, setShowDetails] = useState(false);
   const [toggleCommentForm, setToggleCommentForm] = useState(false);
   const navigate = useNavigate();
 
-  // ✅ Use blogInfo if passed, otherwise find the blog from the list
   const blog = blogInfo || blogs.find((b) => b.id === id);
-
-  // ✅ Ensure blog exists before rendering
   if (!blog) {
     return <h2>No blog found!</h2>;
   }
 
-  const { title, content, author, likes } = blog; // ✅ Use `blog`, not `blogInfo`
+  const { title, content, author, likes } = blog;
 
   const toggleDetails = () => setShowDetails(!showDetails);
 

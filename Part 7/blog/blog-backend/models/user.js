@@ -25,15 +25,26 @@ const userSchema = new mongoose.Schema({
   ],
 });
 
+// INCORRECT
+// userSchema.set("toJSON", {
+//   transform: (document, returnedObj) => {
+//     if (!returnedObj._id) {
+//       console.error("User document is missing _id!", returnedObj);
+//       returnedObj.id = null;
+//     } else {
+//       returnedObj.id = returnedObj._id.toString();
+//     }
+//     returnedObj.id = returnedObj?._id.toString();
+//     delete returnedObj._id;
+//     delete returnedObj.__v;
+//     delete returnedObj.passwordHash;
+//   },
+// });
+
+// CORRECT
 userSchema.set("toJSON", {
   transform: (document, returnedObj) => {
-    if (!returnedObj._id) {
-      console.error("User document is missing _id!", returnedObj);
-      returnedObj, (id = null);
-    } else {
-      returnedObj.id = returnedObj._id.toString();
-    }
-    returnedObj.id = returnedObj?._id.toString();
+    returnedObj.id = returnedObj._id.toString();
     delete returnedObj._id;
     delete returnedObj.__v;
     delete returnedObj.passwordHash;

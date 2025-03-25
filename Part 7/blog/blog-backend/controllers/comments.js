@@ -34,14 +34,12 @@ commentRouter.post(
       const user = req.user;
       const blogId = req.params.id;
 
-      // make sure that content has been provided for the HTTP request
       if (!content) {
         return res.status(400).json({
           error: "commentRouter.post error - comment content is required!",
         });
       }
 
-      // find the right blog to attach the comment to
       const blog = await Blog.findById(blogId);
       if (!blog) {
         return res.status(404).json({
@@ -54,13 +52,6 @@ commentRouter.post(
           error: "commentRouter.post error - user not logged in!",
         });
       }
-
-      // check the outgoing POST request data
-      console.log("Creating comment with:", {
-        content,
-        userId: user._id,
-        blogId,
-      });
 
       // build the new comment object
       // - remember the createdAt date is added by default

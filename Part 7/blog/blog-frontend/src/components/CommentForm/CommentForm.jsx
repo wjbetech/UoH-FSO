@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import commentService from "../../services/comments.js";
-import { TextField, Button } from "@mui/material";
 import { addCommentThunk } from "../../reducers/commentReducer.js";
 
 // mui components
+import { TextField, Button } from "@mui/material";
 import AddCommentIcon from "@mui/icons-material/AddComment";
 
 export const CommentForm = ({ user, blogId, handleToggleForm }) => {
