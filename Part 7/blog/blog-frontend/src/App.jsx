@@ -178,7 +178,7 @@ function App() {
                 <LogoutIcon sx={{ fontSize: "16px", marginLeft: "4px" }} />
               </Button>
             </p>
-            <Togglable buttonLabel="+ New Blog">
+            <Togglable buttonLabel="Add Blog">
               <BlogForm user={user} />
             </Togglable>
           </div>

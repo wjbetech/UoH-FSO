@@ -5,9 +5,6 @@ const commentSchema = new Schema({
   content: {
     type: String,
     required: true,
-    minlength: 8,
-    maxlength: 100,
-    trim: true,
   },
   user: {
     type: mongoose.Schema.Types.ObjectId,

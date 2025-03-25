@@ -34,12 +34,6 @@ commentRouter.post(
       const user = req.user;
       const blogId = req.params.id;
 
-      console.log("Incoming request to add comment:", {
-        content,
-        user,
-        blogId,
-      });
-
       // make sure that content has been provided for the HTTP request
       if (!content) {
         return res.status(400).json({
@@ -55,6 +49,19 @@ commentRouter.post(
         });
       }
 
+      if (!user) {
+        return res.status(401).json({
+          error: "commentRouter.post error - user not logged in!",
+        });
+      }
+
+      // check the outgoing POST request data
+      console.log("Creating comment with:", {
+        content,
+        userId: user._id,
+        blogId,
+      });
+
       // build the new comment object
       // - remember the createdAt date is added by default
       const newComment = new Comment({
@@ -64,6 +71,9 @@ commentRouter.post(
       });
 
       const savedComment = await newComment.save();
+
+      // checking the new saved comment:
+      console.log("Saved comment: ", savedComment);
 
       // add the reference
       blog.comments.push(savedComment._id);

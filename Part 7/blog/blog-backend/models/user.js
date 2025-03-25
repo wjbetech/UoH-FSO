@@ -27,9 +27,16 @@ const userSchema = new mongoose.Schema({
 
 userSchema.set("toJSON", {
   transform: (document, returnedObj) => {
-    returnedObj.id = returnedObj._id.toString();
+    if (!returnedObj._id) {
+      console.error("User document is missing _id!", returnedObj);
+      returnedObj, (id = null);
+    } else {
+      returnedObj.id = returnedObj._id.toString();
+    }
+    returnedObj.id = returnedObj?._id.toString();
     delete returnedObj._id;
     delete returnedObj.__v;
+    delete returnedObj.passwordHash;
   },
 });
 
