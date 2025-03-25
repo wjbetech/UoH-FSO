@@ -12,6 +12,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import DeleteIcon from "@mui/icons-material/Delete";
 import VisibilityIcon from "@mui/icons-material/Visibility";
+import AddCommentIcon from "@mui/icons-material/AddComment";
 
 export default function Blog({
   blogs,
@@ -22,6 +23,7 @@ export default function Blog({
 }) {
   const { id } = useParams(); // ✅ Corrected key to match /blogs/:id
   const [showDetails, setShowDetails] = useState(false);
+  const [toggleCommentForm, setToggleCommentForm] = useState(false);
   const navigate = useNavigate();
 
   // ✅ Use blogInfo if passed, otherwise find the blog from the list
@@ -41,8 +43,21 @@ export default function Blog({
     navigate(-1);
   };
 
+  const handleToggleForm = (event) => {
+    event.preventDefault();
+    setToggleCommentForm(!toggleCommentForm);
+  };
+
   return (
-    <div style={{ marginBottom: "48px" }}>
+    <div
+      style={{
+        marginBottom: "24px",
+        marginTop: "24px",
+        border: "2px solid grey",
+        padding: "0 12px 12px 12px",
+        borderRadius: "8px",
+      }}
+    >
       {showDetails ? (
         <div className="full-blog-post">
           <h2 className="blog-title">{title}</h2>
@@ -131,14 +146,22 @@ export default function Blog({
           <div style={{ marginTop: "24px" }}>
             <div style={{ display: "flex", flexDirection: "row", gap: "12px" }}>
               <h3>Comments</h3>
-              <Button
-                onClick={handleReturn}
-                variant="contained"
-                sx={{ width: "140px" }}
-                size="small"
-              >
-                + Comment
-              </Button>
+              {!toggleCommentForm ? (
+                <Button
+                  onClick={handleToggleForm}
+                  variant="contained"
+                  color="info"
+                  sx={{ width: "200px" }}
+                  size="small"
+                >
+                  Add Comment
+                  <AddCommentIcon
+                    sx={{ fontSize: "16px", marginLeft: "4px" }}
+                  />
+                </Button>
+              ) : (
+                ""
+              )}
             </div>
             <ul>
               {blog.comments.map((comment) => {
@@ -157,20 +180,34 @@ export default function Blog({
       ) : (
         <div className="mini-blog-post">
           <h2 className="blog-title">{title}</h2>
-          <Button
-            onClick={toggleDetails}
-            variant="contained"
-            sx={{ width: "100px" }}
-            size="small"
-          >
-            View
-            <VisibilityIcon
-              sx={{ marginLeft: "6px", fontSize: "16px", marginBottom: "3px" }}
-            />
-          </Button>
+          <div style={{ display: "flex", flexDirection: "row", gap: "8px" }}>
+            <Button
+              onClick={toggleDetails}
+              variant="contained"
+              sx={{ width: "124px" }}
+              size="small"
+            >
+              View
+              <VisibilityIcon
+                sx={{
+                  marginLeft: "6px",
+                  fontSize: "16px",
+                  marginBottom: "2px",
+                }}
+              />
+            </Button>
+          </div>
         </div>
       )}
-      <CommentForm />
+      {toggleCommentForm ? (
+        <CommentForm
+          user={user}
+          blogId={blog.id}
+          handleToggleForm={handleToggleForm}
+        />
+      ) : (
+        ""
+      )}
     </div>
   );
 }

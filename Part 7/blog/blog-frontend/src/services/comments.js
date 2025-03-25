@@ -12,7 +12,11 @@ const create = async (blogId, commentData) => {
     headers: { Authorization: token },
   };
 
-  const res = await axios.post(`${baseUrl}/${blogId}/comments`, commentData, config);
+  const res = await axios.post(
+    `${baseUrl}/${blogId}/comments`,
+    commentData,
+    config,
+  );
 
   return res.data;
 };

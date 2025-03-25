@@ -52,6 +52,7 @@ import User from "./components/User/User.jsx";
 // mui components
 import { Button } from "@mui/material";
 import LoginIcon from "@mui/icons-material/Login";
+import LogoutIcon from "@mui/icons-material/Logout";
 
 function App() {
   const dispatch = useDispatch();
@@ -174,6 +175,7 @@ function App() {
                 color="error"
               >
                 Logout
+                <LogoutIcon sx={{ fontSize: "16px", marginLeft: "4px" }} />
               </Button>
             </p>
             <Togglable buttonLabel="+ New Blog">
