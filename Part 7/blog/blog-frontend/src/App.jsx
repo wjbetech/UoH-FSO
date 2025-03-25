@@ -202,7 +202,7 @@ function App() {
             path="/blogs/:id"
             element={
               <Blog
-                blogs={blogs} // ✅ Make sure this is available
+                blogs={blogs}
                 handleDelete={handleDelete}
                 handleLike={handleLike}
                 user={user}

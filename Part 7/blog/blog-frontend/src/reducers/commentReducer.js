@@ -28,7 +28,7 @@ export const addCommentThunk = (blogId, commentData, token) => {
       commentService.setToken(token);
       const newComment = await commentService.create(blogId, commentData);
 
-      // Get the current blog state
+      // call getState to get the current blogs
       const { blogs } = getState();
       const blog = blogs.find((b) => b.id === blogId);
 
@@ -37,12 +37,10 @@ export const addCommentThunk = (blogId, commentData, token) => {
         return;
       }
 
-      // Update the blog's comments
+      // ensure that you are spreading the prevBlogs to enforce re-rendering
       const updatedBlog = { ...blog, comments: [...blog.comments, newComment] };
 
-      // Dispatch the update to the blogs slice
       dispatch(updateBlog(updatedBlog));
-
       dispatch(
         notificationThunk(
           `New comment added: ${commentData.content}`,

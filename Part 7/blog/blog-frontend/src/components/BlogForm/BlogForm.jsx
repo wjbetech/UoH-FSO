@@ -42,24 +42,27 @@ export default function BlogForm({ user }) {
               onChange={(e) =>
                 setNewBlog((prev) => ({ ...prev, title: e.target.value }))
               }
+              // I don't really like this set up for handling the mUI form
+              // styles, but it works and I don't think cleaning it up is
+              // pertinent right now
               inputProps={{
                 "data-testid": "title",
-                style: { color: "#ffffff" }, // White text for input
+                style: { color: "#ffffff" },
               }}
               InputLabelProps={{
-                style: { color: "#b3b3b3" }, // Light gray label
+                style: { color: "#b3b3b3" },
               }}
               sx={{
                 marginTop: "14px",
                 "& .MuiOutlinedInput-root": {
                   "& fieldset": {
-                    borderColor: "#4d4d4d", // Dark gray border
+                    borderColor: "#4d4d4d",
                   },
                   "&:hover fieldset": {
-                    borderColor: "#666666", // Medium gray on hover
+                    borderColor: "#666666",
                   },
                   "&.Mui-focused fieldset": {
-                    borderColor: "#1976d2", // Material UI primary color for focus
+                    borderColor: "#1976d2",
                   },
                 },
               }}
