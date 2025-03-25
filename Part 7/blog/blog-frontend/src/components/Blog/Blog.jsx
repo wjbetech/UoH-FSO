@@ -2,6 +2,9 @@ import { useState } from "react";
 import PropTypes from "prop-types";
 import { useParams, useNavigate } from "react-router-dom";
 
+// components
+import { CommentForm } from "../CommentForm/CommentForm";
+
 // mui components
 import { Button } from "@mui/material";
 import KeyboardBackspaceIcon from "@mui/icons-material/KeyboardBackspace";
@@ -167,6 +170,7 @@ export default function Blog({
           </Button>
         </div>
       )}
+      <CommentForm />
     </div>
   );
 }

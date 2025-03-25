@@ -78,7 +78,7 @@ commentRouter.post(
 );
 
 commentRouter.delete(
-  "/:id",
+  "/:blogId/comments/:id",
   tokenExtractor,
   userExtractor,
   async (req, res) => {
@@ -102,7 +102,7 @@ commentRouter.delete(
 
       // remove comment ref from DB
       // - this may be what screwed up the blog post count
-      await Blog.findByIdAndUpdate(comment.blog, {
+      await Blog.findByIdAndUpdate(req.params.blogId, {
         $pull: { comments: comment._id },
       });
 

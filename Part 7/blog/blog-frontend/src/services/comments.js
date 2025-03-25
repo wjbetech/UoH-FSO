@@ -12,7 +12,7 @@ const create = async (blogId, commentData) => {
     headers: { Authorization: token },
   };
 
-  const res = await axios.post(`${blogId}/comments`, commentData, config);
+  const res = await axios.post(`${baseUrl}/${blogId}/comments`, commentData, config);
 
   return res.data;
 };
@@ -22,9 +22,9 @@ const remove = async (commentId) => {
     headers: { Authorization: token },
   };
 
-  const res = await axios.delete(`/api/comments/${commentId}`, config);
+  const res = await axios.delete(`${baseUrl}/${commentId}`, config);
 
   return res.data;
 };
 
-export default { create, remove };
+export default { create, remove, setToken };
