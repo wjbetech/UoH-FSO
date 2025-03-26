@@ -117,6 +117,7 @@ const typeDefs = `
     bookCount: Int!
     authorCount: Int!
     allBooks(author: String!): [Book!]!
+    booksByGenre(genre: String!): [Book!]!
     allAuthors: [Author!]!
   }
 `;
@@ -128,6 +129,12 @@ const resolvers = {
     allBooks: (root, args) => {
       if (args.author) {
         return books.filter((book) => book.author === args.author);
+      }
+      return books;
+    },
+    booksByGenre: (root, args) => {
+      if (args.genre) {
+        return books.filter((book) => book.genres.includes(args.genre));
       }
       return books;
     },
