@@ -1,4 +1,5 @@
 {
+  "type": "module",
   "name": "bookstore-gql",
   "version": "1.0.0",
   "description": "graphQL setup /w Apollo Server for a bookstore",

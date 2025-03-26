@@ -1,5 +1,7 @@
-const { ApolloServer } = require("@apollo/server");
-const { startStandaloneServer } = require("@apollo/server/standalone");
+import { ApolloServer } from "@apollo/server";
+import { startStandaloneServer } from "@apollo/server/standalone";
+import { GraphQLError } from "graphql";
+import { v4 as uuid } from "uuid";
 
 let authors = [
   {
@@ -119,9 +121,19 @@ const typeDefs = `
     allBooks(author: String, genre: String): [Book!]!
     allAuthors: [Author!]!
   }
+    
+  type Mutation {
+    addBook(
+      title: String!
+      published: Int!
+      author: String!
+      genres: [String!]!
+    ): Book!
+  }
 `;
 
 const resolvers = {
+  // server queries
   Query: {
     bookCount: () => books.length,
     authorCount: () => authors.length,
@@ -138,10 +150,30 @@ const resolvers = {
     },
     allAuthors: () => authors
   },
+  // Author sub-queries
   Author: {
     authorBookCount: (root, args) => {
       // have to check book.author vs the ROOT
-      return books.filter((book) => book.author === root.name).length;
+      return books.filter((book) => book.title === root.name).length;
+    }
+  },
+  // Mutations for manipulating data on the server
+  Mutation: {
+    addBook: (root, args) => {
+      // handle errors
+      // - books can share author or title, but not both
+      if (books.find((book) => book.title === args.title) && books.find((book) => book.author === args.author)) {
+        throw new GraphQLError("Books should have either a unique author or title!", {
+          extensions: {
+            code: "BAD_USER_INPUT",
+            invalidArgs: { title: args.title, author: args.author }
+          }
+        });
+      }
+
+      const newBook = { ...args, id: uuid() };
+      books = books.concat(newBook);
+      return newBook;
     }
   }
 };
