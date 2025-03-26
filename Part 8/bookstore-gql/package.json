@@ -1,0 +1,16 @@
+{
+  "name": "bookstore-gql",
+  "version": "1.0.0",
+  "description": "graphQL setup /w Apollo Server for a bookstore",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "wjbetech",
+  "license": "ISC",
+  "dependencies": {
+    "@apollo/server": "^4.11.3",
+    "graphql": "^16.10.0",
+    "uuid": "^11.1.0"
+  }
+}

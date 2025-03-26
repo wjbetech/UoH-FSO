@@ -1,5 +1,7 @@
 import { ApolloServer } from "@apollo/server";
 import { startStandaloneServer } from "@apollo/server/standalone";
+import { GraphQLError } from "graphql";
+import { v4 as uuid } from "uuid";
 
 // the data for our GraphQL server
 let persons = [
@@ -26,6 +28,11 @@ let persons = [
 ];
 
 const typeDefs = `
+  enum YesNo {
+    YES
+    NO
+  } 
+
   type Address {
     street: String!
     city: String!
@@ -40,15 +47,34 @@ const typeDefs = `
     
   type Query {
     personCount: Int!
-    allPersons: [Person!]
+    allPersons(phone: YesNo): [Person!]!
     findPerson(name: String!): Person
+  }
+    
+  type Mutation {
+    addPerson(
+      name: String!
+      phone: String
+      street: String!
+      city: String!  
+    ): Person
+    updatePerson(
+      name: String!
+      phone: String!
+    ): Person
   }
 `;
 
 const resolvers = {
   Query: {
     personCount: () => persons.length,
-    allPersons: () => persons,
+    allPersons: (root, args) => {
+      if (!args.phone) {
+        return persons;
+      }
+      const byPhone = (person) => (args.phone === "YES" ? person.phone : !person.phone);
+      return persons.filter(byPhone);
+    },
     findPerson: (root, args) => persons.find((p) => p.name === args.name)
   },
   Person: {
@@ -57,6 +83,32 @@ const resolvers = {
         street: root.street,
         city: root.city
       };
+    }
+  },
+  Mutation: {
+    addPerson: (root, args) => {
+      if (persons.find((p) => p.name === args.name)) {
+        throw new GraphQLError("Name must be unique!", {
+          extensions: {
+            code: "BAD_USER_INPUT",
+            invalidArgs: args.name
+          }
+        });
+      }
+      const newPerson = { ...args, id: uuid() };
+      persons = persons.concat(newPerson);
+      return newPerson;
+    },
+    updatePerson: (root, args) => {
+      const person = persons.find((p) => p.name === args.name);
+
+      if (!person) {
+        return null;
+      }
+
+      const updatedPerson = { ...args, phone: args.phone };
+      persons = persons.map((p) => (p.name === args.name ? updatedPerson : p));
+      return updatedPerson;
     }
   }
 };
