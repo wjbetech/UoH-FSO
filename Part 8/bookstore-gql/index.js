@@ -129,12 +129,11 @@ const typeDefs = `
       author: String!
       genres: [String!]!
     ): Book!
-    updateBook(
-      title: String
-      published: Int
-      author: String
-      genres: [String]
-    )
+    updateAuthor(
+      name: String
+      id: String
+      born: Int
+    ): Author!
   }
 `;
 
@@ -161,14 +160,13 @@ const resolvers = {
     authorBookCount: (root, args) => {
       // have to check book.author vs the ROOT
       return books.filter((book) => book.title === root.name).length;
-    }
+    },
   },
   // Mutations for manipulating data on the server
   Mutation: {
     addBook: (root, args) => {
-      // handle errors
-      // - books can share author or title, but not both
-      if (books.find((book) => book.title === args.title) && books.find((book) => book.author === args.author)) {
+      // Check if the book already exists with the same title and author
+      if (books.find((book) => book.title === args.title && book.author === args.author)) {
         throw new GraphQLError("Books should have either a unique author or title!", {
           extensions: {
             code: "BAD_USER_INPUT",
@@ -176,25 +174,39 @@ const resolvers = {
           }
         });
       }
-
+  
+      // check if author exists
+      let author = authors.find((a) => a.name === args.author);
+      
+      if (!author) {
+        // if !author, add them to the authors list
+        author = { name: args.author, id: uuid() };
+        authors = authors.concat(author);
+      }
+  
+      // create and add the new book
       const newBook = { ...args, id: uuid() };
       books = books.concat(newBook);
+      
       return newBook;
     },
-    updateBook: (root, args) => {
+    updateAuthor: (root, args) => {
+      const author = authors.find((a) => a.name === args.name)
+
       // handle errors
-      if (!books.find((book) => book.author === args.author)) {
-        throw new GraphQLError(`Book ${args.title} does not exist!`, {
+      // - we just want to make sure that an author exists
+      if (!author) {
+        throw new GraphQLError(`That author does not exist!`, {
           extensions: {
             code: "BAD_USER_INPUT",
-            invalidArgs: { title: args.title }
+            invalidArgs: { name: args.name }
           }
         });
       }
 
-      const updatedBook = { ...args, born: args.born };
-      books = books.map((book) => book.name === args.name ? updatedBook : book)
-      return updatedBook;
+      const updatedAuthor = { ...args, born: args.born };
+      authors = authors.map((author) => author.name === args.name ? updatedAuthor : author)
+      return updatedAuthor;
     }}
 }
 
