@@ -165,7 +165,7 @@ const resolvers = {
   // Mutations for manipulating data on the server
   Mutation: {
     addBook: (root, args) => {
-      // Check if the book already exists with the same title and author
+      // check if the book already exists with the same title and author
       if (books.find((book) => book.title === args.title && book.author === args.author)) {
         throw new GraphQLError("Books should have either a unique author or title!", {
           extensions: {
