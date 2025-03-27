@@ -1,6 +1,9 @@
 import React from "react";
 import { gql, useQuery } from "@apollo/client";
 
+// components
+import PersonsList from "./components/PersonsList";
+
 const ALL_PERSONS = gql`
   query {
     allPersons {
@@ -23,11 +26,8 @@ const App = () => {
   return (
     <div>
       <h1>Phonebook-gql</h1>
-      <p>This is the demo GraphQL Phonebook app from the FullstackOpen course by UoH, Finland</p>
-      <div style={{ marginTop: "48px" }}>
-        <span style={{ fontWeight: "bold" }}>allPersons Query Result: </span>
-        {persons.map((p) => p.name).join(", ")}
-      </div>
+      <p>This is the demo GraphQL Phonebook app from the FullstackOpen course by UoH, Finland.</p>
+      <PersonsList persons={persons} />
     </div>
   );
 };
