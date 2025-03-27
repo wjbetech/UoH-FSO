@@ -129,6 +129,12 @@ const typeDefs = `
       author: String!
       genres: [String!]!
     ): Book!
+    updateBook(
+      title: String
+      published: Int
+      author: String
+      genres: [String]
+    )
   }
 `;
 
@@ -174,9 +180,23 @@ const resolvers = {
       const newBook = { ...args, id: uuid() };
       books = books.concat(newBook);
       return newBook;
-    }
-  }
-};
+    },
+    updateBook: (root, args) => {
+      // handle errors
+      if (!books.find((book) => book.author === args.author)) {
+        throw new GraphQLError(`Book ${args.title} does not exist!`, {
+          extensions: {
+            code: "BAD_USER_INPUT",
+            invalidArgs: { title: args.title }
+          }
+        });
+      }
+
+      const updatedBook = { ...args, born: args.born };
+      books = books.map((book) => book.name === args.name ? updatedBook : book)
+      return updatedBook;
+    }}
+}
 
 const server = new ApolloServer({
   typeDefs,
