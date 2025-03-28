@@ -58,7 +58,7 @@ const typeDefs = `
       street: String!
       city: String!
     ): Person
-    updatePerson(
+    changePhoneNumber(
       name: String!
       phone: String!
     ): Person
@@ -99,7 +99,7 @@ const resolvers = {
       persons = persons.concat(newPerson);
       return newPerson;
     },
-    updatePerson: (root, args) => {
+    changePhoneNumber: (root, args) => {
       const person = persons.find((p) => p.name === args.name);
 
       if (!person) {
