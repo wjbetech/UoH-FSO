@@ -1,27 +1,32 @@
-import { useState } from "react";
+import { Home } from "./components/Home";
 import Authors from "./components/Authors";
 import Books from "./components/Books";
 import NewBook from "./components/NewBook";
 import { Link, Routes, Route } from "react-router-dom";
 
 const App = () => {
-  const [page, setPage] = useState("authors");
-
   return (
     <div>
-      <div>
-        <button onClick={() => setPage("authors")}>authors</button>
-        <button onClick={() => setPage("books")}>books</button>
-        <button onClick={() => setPage("add")}>add book</button>
+      <div className="links">
+        <Link to="/">
+          <button>Home</button>
+        </Link>
+        <Link to="/authors">
+          <button>Authors</button>
+        </Link>
+        <Link to="/books">
+          <button>Books</button>
+        </Link>
+        <Link to="/addbook">
+          <button>Add Book</button>
+        </Link>
       </div>
 
       <Routes>
-        <Route>
-          <Link to="/authors" component={<Authors show={page === "authors"} />}></Link>
-        </Route>
-
-        <Route to="/books" component={<Books show={page === "books"} />}></Route>
-        <Route to="/newbook" component={<NewBook show={page === "add"} />}></Route>
+        <Route path="/" element={<Home />}></Route>
+        <Route path="/books" element={<Books />}></Route>
+        <Route path="/addbook" element={<NewBook />}></Route>
+        <Route path="/authors" element={<Authors />}></Route>
       </Routes>
     </div>
   );

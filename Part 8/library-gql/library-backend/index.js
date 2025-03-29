@@ -157,10 +157,9 @@ const resolvers = {
   },
   // Author sub-queries
   Author: {
-    authorBookCount: (root, args) => {
-      // have to check book.author vs the ROOT
-      return books.filter((book) => book.title === root.name).length;
-    },
+    authorBookCount: (root) => {
+      return books.filter((book) => book.author === root.name).length;
+    }
   },
   // Mutations for manipulating data on the server
   Mutation: {
@@ -174,24 +173,24 @@ const resolvers = {
           }
         });
       }
-  
+
       // check if author exists
       let author = authors.find((a) => a.name === args.author);
-      
+
       if (!author) {
         // if !author, add them to the authors list
         author = { name: args.author, id: uuid() };
         authors = authors.concat(author);
       }
-  
+
       // create and add the new book
       const newBook = { ...args, id: uuid() };
       books = books.concat(newBook);
-      
+
       return newBook;
     },
     updateAuthor: (root, args) => {
-      const author = authors.find((a) => a.name === args.name)
+      const author = authors.find((a) => a.name === args.name);
 
       // handle errors
       // - we just want to make sure that an author exists
@@ -205,10 +204,11 @@ const resolvers = {
       }
 
       const updatedAuthor = { ...args, born: args.born };
-      authors = authors.map((author) => author.name === args.name ? updatedAuthor : author)
+      authors = authors.map((author) => (author.name === args.name ? updatedAuthor : author));
       return updatedAuthor;
-    }}
-}
+    }
+  }
+};
 
 const server = new ApolloServer({
   typeDefs,
