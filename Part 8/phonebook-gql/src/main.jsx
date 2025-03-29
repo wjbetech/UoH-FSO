@@ -12,7 +12,7 @@ const query = gql`
   query {
     allPersons {
       name
-      phone
+      phoneNumber
       address {
         street
         city

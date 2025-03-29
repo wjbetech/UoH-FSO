@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useMutation } from "@apollo/client";
 
 import { EDIT_PHONENUMBER } from "../queries/queries";
@@ -7,14 +7,21 @@ const PhoneNumberForm = () => {
   const [name, setName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
 
-  const [changePhoneNumber] = useMutation(EDIT_PHONENUMBER);
+  const [editPhoneNumber, result] = useMutation(EDIT_PHONENUMBER);
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    changePhoneNumber({ variables: { name, phoneNumber } });
+    console.log(name, phoneNumber);
+    editPhoneNumber({ variables: { name, phoneNumber } });
     setName("");
     setPhoneNumber("");
   };
+
+  useEffect(() => {
+    if (result.data && result.data.editPhoneNumber === null) {
+      SpeechSynthesisErrorEvent("That person was not found!");
+    }
+  }, [result.data]);
 
   return (
     <div>

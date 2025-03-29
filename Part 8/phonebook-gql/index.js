@@ -7,14 +7,14 @@ import { v4 as uuid } from "uuid";
 let persons = [
   {
     name: "Arto Hellas",
-    phone: "040-123543",
+    phoneNumber: "040-123543",
     street: "Tapiolankatu 5 A",
     city: "Espoo",
     id: "3d594650-3436-11e9-bc57-8b80ba54c431"
   },
   {
     name: "Matti Luukkainen",
-    phone: "040-432342",
+    phoneNumber: "040-432342",
     street: "Malminkaari 10 A",
     city: "Helsinki",
     id: "3d599470-3436-11e9-bc57-8b80ba54c431"
@@ -40,27 +40,28 @@ const typeDefs = `
 
   type Person {
     name: String!
-    phone: String
+    phoneNumber: String
     address: Address!
     id: ID!
   }
 
   type Query {
     personCount: Int!
-    allPersons(phone: YesNo): [Person!]!
+    allPersons(phoneNumber: YesNo): [Person!]!
     findPerson(name: String!): Person
   }
 
   type Mutation {
     addPerson(
       name: String!
-      phone: String
+      phoneNumber: String
       street: String!
       city: String!
     ): Person
-    changePhoneNumber(
+    
+    editPhoneNumber(
       name: String!
-      phone: String!
+      phoneNumber: String!
     ): Person
   }
 `;
@@ -72,7 +73,7 @@ const resolvers = {
       if (!args.phone) {
         return persons;
       }
-      const byPhone = (person) => (args.phone === "YES" ? person.phone : !person.phone);
+      const byPhone = (person) => (args.phoneNumber === "YES" ? person.phoneNumber : !person.phoneNumber);
       return persons.filter(byPhone);
     },
     findPerson: (root, args) => persons.find((p) => p.name === args.name)
@@ -99,14 +100,17 @@ const resolvers = {
       persons = persons.concat(newPerson);
       return newPerson;
     },
-    changePhoneNumber: (root, args) => {
+    editPhoneNumber: (root, args) => {
       const person = persons.find((p) => p.name === args.name);
+      console.log(`Editing the phone number of: ${person}`);
 
       if (!person) {
         return null;
       }
 
-      const updatedPerson = { ...args, phone: args.phone };
+      const updatedPerson = { ...person, phoneNumber: args.phoneNumber };
+      console.log(`Updated person: ${updatedPerson}`);
+
       persons = persons.map((p) => (p.name === args.name ? updatedPerson : p));
       return updatedPerson;
     }

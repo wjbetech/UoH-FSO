@@ -4,7 +4,7 @@ import { ALL_PERSONS, CREATE_PERSON } from "../queries/queries";
 
 const PersonForm = ({ setError }) => {
   const [name, setName] = useState("");
-  const [phone, setPhone] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
   const [street, setStreet] = useState("");
   const [city, setCity] = useState("");
 
@@ -22,14 +22,14 @@ const PersonForm = ({ setError }) => {
     createPerson({
       variables: {
         name,
-        phone,
+        phoneNumber,
         street,
         city
       }
     });
 
     setName("");
-    setPhone("");
+    setPhoneNumber("");
     setStreet("");
     setCity("");
   };
@@ -42,7 +42,8 @@ const PersonForm = ({ setError }) => {
           Name: <input type="text" value={name} onChange={({ target }) => setName(target.value)} />
         </div>
         <div>
-          Phone: <input type="text" value={phone} onChange={({ target }) => setPhone(target.value)} />
+          Phone Number:{" "}
+          <input type="text" value={phoneNumber} onChange={({ target }) => setPhoneNumber(target.value)} />
         </div>
         <div>
           Street: <input type="text" value={street} onChange={({ target }) => setStreet(target.value)} />

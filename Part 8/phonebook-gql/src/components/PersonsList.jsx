@@ -9,7 +9,7 @@ const Person = ({ person, onClose }) => {
       <div>
         {person.address.street} {person.address.city}
       </div>
-      <div>{person.phone}</div>
+      <div>{person.phoneNumber}</div>
       <button onClick={onClose}>close</button>
     </div>
   );
@@ -31,8 +31,8 @@ const PersonsList = ({ persons }) => {
       <h2>Persons</h2>
       {persons.map((p) => (
         <div key={p.name}>
-          {p.name} {p.phone}
-          <button onClick={() => setNameToSearch(p.name)}>show address</button>
+          {p.name} {p.phoneNumber}
+          <button onClick={() => setNameToSearch(p.name)}>Show Address</button>
         </div>
       ))}
     </div>
