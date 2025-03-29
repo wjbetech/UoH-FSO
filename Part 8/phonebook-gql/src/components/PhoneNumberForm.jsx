@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useMutation } from "@apollo/client";
+import { useMutation, setError } from "@apollo/client";
 
 import { EDIT_PHONENUMBER } from "../queries/queries";
 
@@ -19,7 +19,7 @@ const PhoneNumberForm = () => {
 
   useEffect(() => {
     if (result.data && result.data.editPhoneNumber === null) {
-      SpeechSynthesisErrorEvent("That person was not found!");
+      setError("That person was not found!");
     }
   }, [result.data]);
 

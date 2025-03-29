@@ -99,3 +99,8 @@ select:focus {
 #bookCount {
   text-align: right;
 }
+
+#genres-label {
+  display: block;
+  font-weight: 500;
+}
