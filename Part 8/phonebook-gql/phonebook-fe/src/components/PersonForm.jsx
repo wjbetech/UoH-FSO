@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useMutation } from "@apollo/client";
 import { ALL_PERSONS, CREATE_PERSON } from "../queries/queries";
 
-const PersonForm = ({ setError }) => {
+const PersonForm = () => {
   const [name, setName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [street, setStreet] = useState("");
@@ -12,7 +12,7 @@ const PersonForm = ({ setError }) => {
     refetchQueries: [{ query: ALL_PERSONS }],
     onError: (error) => {
       const messages = error.graphQLErrors.map((e) => e.message).join("\n");
-      setError(messages);
+      console.log(messages);
     }
   });
 
