@@ -1,6 +1,21 @@
+// GraphQL & Apollo Client
 import { ApolloServer } from "@apollo/server";
 import { startStandaloneServer } from "@apollo/server/standalone";
 import { GraphQLError } from "graphql";
+
+// mongoose/mongo/dotenv
+import mongoose from "mongoose";
+import "dotenv/config";
+import PersonSchema from "./models/person.js"; // double check this import on errors
+const MONGODB_URI = process.env.MONGODB_URI;
+
+mongoose
+  .connect(MONGODB_URI)
+  .then(() => console.log("Connected to MongoDB libraryGQL!"))
+  .catch((error) => {
+    console.log("Error c onnecting to MongoDB libraryGQL DB: ", error.message);
+  });
+
 import { v4 as uuid } from "uuid";
 
 let authors = [
