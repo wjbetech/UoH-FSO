@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ADD_BOOK, ALL_BOOKS } from "../queries/queries";
+import { ADD_BOOK, ALL_AUTHORS, ALL_BOOKS } from "../queries/queries";
 import { useMutation } from "@apollo/client";
 import { useNavigate } from "react-router-dom";
 
@@ -13,7 +13,9 @@ const NewBook = () => {
   const navigate = useNavigate();
 
   const [addBook] = useMutation(ADD_BOOK, {
-    refetchQueries: [{ query: ALL_BOOKS }],
+    // refetch ALL_BOOKS if you want to refresh the actual list of books
+    // - refetching ADD_BOOK does nothing at all here
+    refetchQueries: [{ query: ALL_BOOKS }, { query: ALL_AUTHORS }],
     onError: (error) => {
       const messages = error.graphQLErrors.map((e) => e.message).join("\n");
       console.log(messages);

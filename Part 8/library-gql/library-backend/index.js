@@ -129,7 +129,7 @@ const typeDefs = `
       author: String!
       genres: [String!]!
     ): Book!
-    updateAuthor(
+    updateAuthorBorn(
       name: String
       id: String
       born: Int
@@ -189,7 +189,7 @@ const resolvers = {
 
       return newBook;
     },
-    updateAuthor: (root, args) => {
+    updateAuthorBorn: (root, args) => {
       const author = authors.find((a) => a.name === args.name);
 
       // handle errors
@@ -203,7 +203,7 @@ const resolvers = {
         });
       }
 
-      const updatedAuthor = { ...args, born: args.born };
+      const updatedAuthor = { ...author, born: args.born };
       authors = authors.map((author) => (author.name === args.name ? updatedAuthor : author));
       return updatedAuthor;
     }

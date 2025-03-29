@@ -71,6 +71,10 @@ select:focus {
   box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
 }
 
+select {
+  width: 100%;
+}
+
 .links {
   display: flex;
   flex-direction: row;
@@ -93,6 +97,10 @@ select:focus {
 
 .add-book-button {
   width: 100%;
+}
+
+.authors-date-form {
+  margin-top: 36px;
 }
 
 #published,
