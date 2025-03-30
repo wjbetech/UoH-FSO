@@ -6,14 +6,14 @@ import { GraphQLError } from "graphql";
 // mongoose/mongo/dotenv
 import mongoose from "mongoose";
 import "dotenv/config";
-import PersonSchema from "./models/person.js"; // double check this import on errors
+import PersonSchema from "./models/book.js"; // double check this import on errors
 const MONGODB_URI = process.env.MONGODB_URI;
 
 mongoose
   .connect(MONGODB_URI)
   .then(() => console.log("Connected to MongoDB libraryGQL!"))
   .catch((error) => {
-    console.log("Error c onnecting to MongoDB libraryGQL DB: ", error.message);
+    console.log("Error connecting to MongoDB libraryGQL DB: ", error.message);
   });
 
 import { v4 as uuid } from "uuid";
@@ -125,7 +125,7 @@ const typeDefs = `
   type Book {
     title: String!
     published: Int!
-    author: String!
+    author: Author!
     id: String!
     genres: [String!]!
   }
@@ -181,7 +181,7 @@ const resolvers = {
     addBook: (root, args) => {
       // check if the book already exists with the same title and author
       if (books.find((book) => book.title === args.title && book.author === args.author)) {
-        throw new GraphQLError("Books should have either a unique author or title!", {
+        throw new GraphQLError("A book with this title and author already exists!", {
           extensions: {
             code: "BAD_USER_INPUT",
             invalidArgs: { title: args.title, author: args.author }
