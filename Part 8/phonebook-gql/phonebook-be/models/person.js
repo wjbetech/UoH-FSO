@@ -22,6 +22,6 @@ const schema = new mongoose.Schema({
   }
 });
 
-const PersonSchema = mongoose.model("Person", schema);
+const Person = mongoose.model("Person", schema);
 
-export default PersonSchema;
+export default Person;
