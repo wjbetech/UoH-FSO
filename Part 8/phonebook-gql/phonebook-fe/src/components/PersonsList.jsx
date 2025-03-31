@@ -17,10 +17,14 @@ const Person = ({ person, onClose }) => {
 
 const PersonsList = ({ persons }) => {
   const [nameToSearch, setNameToSearch] = useState(null);
+
   const result = useQuery(FIND_PERSON, {
     variables: { nameToSearch },
-    skip: !nameToSearch
+    skip: !nameToSearch,
+    fetchPolicy: "network-only"
   });
+
+  console.log("PersonsList result: ", result);
 
   if (nameToSearch && result.data) {
     return <Person person={result.data.findPerson} onClose={() => setNameToSearch(null)} />;

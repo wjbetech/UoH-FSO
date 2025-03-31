@@ -6,7 +6,7 @@ const schema = new mongoose.Schema({
     required: true,
     minlength: 5
   },
-  phone: {
+  phoneNumber: {
     type: String,
     minlength: 5
   },

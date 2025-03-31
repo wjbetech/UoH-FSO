@@ -13,7 +13,7 @@ const App = () => {
   // pollInterval is one potential solution for updating the cache
   // when a new contact is created
   const result = useQuery(ALL_PERSONS, {
-    // pollInterval: 2000
+    pollInterval: 2000
   });
 
   if (result.loading) {
@@ -35,6 +35,8 @@ const App = () => {
     }
     return <div style={{ color: "red" }}>{errorMessage}</div>;
   };
+
+  console.log("ALL_PERSONS result: ", result);
 
   const persons = result.data.allPersons;
 

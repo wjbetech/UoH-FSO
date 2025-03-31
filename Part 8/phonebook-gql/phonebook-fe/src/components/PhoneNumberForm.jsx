@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { useMutation } from "@apollo/client";
 
-import { EDIT_PHONENUMBER } from "../queries/queries";
+import { ALL_PERSONS, EDIT_PHONENUMBER } from "../queries/queries";
 
 const PhoneNumberForm = () => {
   const [name, setName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
 
-  const [editPhoneNumber, result] = useMutation(EDIT_PHONENUMBER);
+  const [editPhoneNumber, result] = useMutation(EDIT_PHONENUMBER, {
+    refetchQueries: [{ query: ALL_PERSONS }]
+  });
 
   const handleSubmit = (event) => {
     event.preventDefault();
