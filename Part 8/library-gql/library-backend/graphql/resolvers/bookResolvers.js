@@ -1,10 +1,103 @@
-import Book from "../../models/book";
-import Author from "../../models/author";
+import Book from "../../models/book.js";
+import Author from "../../models/author.js";
 import { GraphQLError } from "graphql";
 
 const bookResolver = {
-  Query: {},
-  Mutation: {},
-}
+  Query: {
+    allBooks: async (root, args) => {
+      let books = await Book.find({});
 
-export default bookResolver
+      if (args.author) {
+        return books.filter((book) => book.author === args.author);
+      }
+
+      if (args.genre) {
+        return books.filter((book) => book.genres.includes(args.genre));
+      }
+
+      return books;
+    },
+    bookCount: async (root, args) => {
+      return await Book.countDocuments();
+    }
+  },
+  Mutation: {
+    addBook: async (root, args, context) => {
+      const currentUser = context.currentUser;
+
+      if (!currentUser) {
+        throw new GraphQLError("mutation addBook error - no user!", {
+          extensions: {
+            code: "BAD_USER_INPUT",
+            invalidArgs: context.currentUser
+          }
+        });
+      }
+
+      // check if the book already exists with the same title
+      if (await Book.findOne({ title: args.title })) {
+        throw new GraphQLError("A book with this title already exists!", {
+          extensions: {
+            code: "BAD_USER_INPUT",
+            invalidArgs: { title: args.title }
+          }
+        });
+      }
+
+      // ensure book title is over 5 chars long
+      if (args.title.length < 5) {
+        throw new GraphQLError("Book title must be equal or greater than 5 chars long!", {
+          extensions: {
+            code: "BAD_USER_INPUT",
+            invalidArgs: { title: args.title }
+          }
+        });
+      }
+
+      // ensure author name is over 4 chars long
+      if (args.author.length < 4) {
+        throw new GraphQLError("Author name must be equal or greater than 4 chars long!", {
+          extensions: {
+            code: "BAD_USER_INPUT",
+            invalidArgs: { author: args.author }
+          }
+        });
+      }
+
+      // check if author exists
+      let author = await Author.findOne({ name: args.author });
+
+      if (!author) {
+        // if !author, add them to the authors collection
+        author = new Author({ name: args.author });
+        await author.save();
+      }
+
+      let newBook;
+
+      try {
+        // create and add the new book
+        newBook = new Book({
+          title: args.title,
+          published: args.published,
+          author: author._id,
+          genres: args.genres
+        });
+
+        await newBook.save();
+      } catch (error) {
+        throw new GraphQLError(`mutation addBook error: ${error.message}`, {
+          extensions: {
+            code: "BAD_USER_INPUT",
+            invalidArgs: args,
+            error
+          }
+        });
+      }
+
+      return await newBook.populate("author");
+    }
+  }
+};
+
+export default bookResolver;

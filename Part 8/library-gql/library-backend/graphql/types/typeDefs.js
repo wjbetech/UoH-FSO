@@ -6,7 +6,7 @@ const typeDefs = gql`
     favoriteGenre: String!
     id: ID!
   }
-    
+
   type Token {
     value: String!
   }
@@ -17,7 +17,7 @@ const typeDefs = gql`
     born: Int
     authorBookCount: Int!
   }
-    
+
   type Book {
     title: String!
     published: Int!
@@ -33,30 +33,12 @@ const typeDefs = gql`
     allBooks(author: String, genre: String): [Book!]!
     allAuthors: [Author!]!
   }
-    
+
   type Mutation {
-    login(
-      username: String!
-      password: String!
-    ): Token
-    
-    createUser(
-      username: String!
-      favoriteGenre: String!
-    ): User
-    
-    addBook(
-      title: String!
-      published: Int!
-      author: String!
-      genres: [String!]!
-    ): Book!
-    
-    updateAuthorBorn(
-      name: String
-      id: String
-      born: Int
-    ): Author!  
+    login(username: String!, password: String!): Token
+    createUser(username: String!, favoriteGenre: String!): User
+    addBook(title: String!, published: Int!, author: String!, genres: [String!]!): Book!
+    updateAuthorBorn(name: String, id: String, born: Int): Author!
   }
 `;
 
