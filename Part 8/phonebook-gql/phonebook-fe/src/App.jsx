@@ -3,12 +3,14 @@ import { useQuery } from "@apollo/client";
 import { ALL_PERSONS } from "./queries/queries";
 
 // components
+import LoginForm from "./components/LoginForm";
 import PersonsList from "./components/PersonsList";
 import PersonForm from "./components/PersonForm";
 import PhoneNumberForm from "./components/PhoneNumberForm";
 
 const App = () => {
   const [errorMessage, setErrorMessage] = useState(null);
+  const [token, setToken] = useState(null);
 
   // pollInterval is one potential solution for updating the cache
   // when a new contact is created
@@ -19,6 +21,10 @@ const App = () => {
   if (result.loading) {
     return <div>Loading...</div>;
   }
+
+  console.log("ALL_PERSONS result: ", result);
+
+  const persons = result.data.allPersons;
 
   // setting the notification message
   const notify = (message) => {
@@ -36,9 +42,16 @@ const App = () => {
     return <div style={{ color: "red" }}>{errorMessage}</div>;
   };
 
-  console.log("ALL_PERSONS result: ", result);
-
-  const persons = result.data.allPersons;
+  // conditionally render the login form
+  if (!token) {
+    return (
+      <div>
+        <Notify errorMessage={errorMessage}></Notify>
+        <h2>Login</h2>
+        <LoginForm setToken={setToken} setError={notify}></LoginForm>
+      </div>
+    );
+  }
 
   return (
     <div>
