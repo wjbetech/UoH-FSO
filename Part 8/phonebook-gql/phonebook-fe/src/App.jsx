@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useQuery } from "@apollo/client";
+import { useApolloClient, useQuery } from "@apollo/client";
 import { ALL_PERSONS } from "./queries/queries";
 
 // components
@@ -11,6 +11,7 @@ import PhoneNumberForm from "./components/PhoneNumberForm";
 const App = () => {
   const [errorMessage, setErrorMessage] = useState(null);
   const [token, setToken] = useState(null);
+  const client = useApolloClient();
 
   // pollInterval is one potential solution for updating the cache
   // when a new contact is created
@@ -42,6 +43,12 @@ const App = () => {
     return <div style={{ color: "red" }}>{errorMessage}</div>;
   };
 
+  const logout = () => {
+    setToken(null);
+    localStorage.clear();
+    client.resetStore();
+  };
+
   // conditionally render the login form
   if (!token) {
     return (
@@ -58,6 +65,7 @@ const App = () => {
       <h1>Phonebook-gql</h1>
       <p>This is the demo GraphQL Phonebook app from the FullstackOpen course by UoH, Finland.</p>
       <Notify errorMessage={errorMessage} />
+      <button onClick={logout}>Logout</button>
       <PersonsList persons={persons} />
       <div>
         <PersonForm setError={notify} />
