@@ -13,6 +13,13 @@ const PersonForm = () => {
     onError: (error) => {
       const messages = error.graphQLErrors.map((e) => e.message).join("\n");
       console.log(messages);
+    },
+    update: (cache, response) => {
+      cache.updateQuery({ query: ALL_PERSONS }, ({ allPersons }) => {
+        return {
+          allPersons: allPersons.concat(response.data.addPErson)
+        };
+      });
     }
   });
 
@@ -22,7 +29,7 @@ const PersonForm = () => {
     createPerson({
       variables: {
         name,
-        phoneNumber,
+        phoneNumber: phoneNumber.length > 0 ? phoneNumber : undefined,
         street,
         city
       }

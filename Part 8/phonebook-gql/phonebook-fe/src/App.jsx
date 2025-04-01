@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useApolloClient, useQuery } from "@apollo/client";
 import { ALL_PERSONS } from "./queries/queries";
 
@@ -10,8 +10,15 @@ import PhoneNumberForm from "./components/PhoneNumberForm";
 
 const App = () => {
   const [errorMessage, setErrorMessage] = useState(null);
-  const [token, setToken] = useState(null);
+  const [token, setToken] = useState(() => localStorage.getItem("phonebook-user-token") || "");
   const client = useApolloClient();
+
+  useEffect(() => {
+    const savedToken = localStorage.getItem("phonebook-user-token");
+    if (savedToken) {
+      setToken(savedToken);
+    }
+  }, []);
 
   // pollInterval is one potential solution for updating the cache
   // when a new contact is created
@@ -55,7 +62,7 @@ const App = () => {
       <div>
         <Notify errorMessage={errorMessage}></Notify>
         <h2>Login</h2>
-        <LoginForm setToken={setToken} setError={notify}></LoginForm>
+        <LoginForm setToken={setToken} setError={notify} token={token}></LoginForm>
       </div>
     );
   }

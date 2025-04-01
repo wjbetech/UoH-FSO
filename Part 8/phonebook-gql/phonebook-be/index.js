@@ -167,11 +167,10 @@ const resolvers = {
         currentUser.friends = currentUser.friends.concat(person);
         await currentUser.save();
       } catch (error) {
-        throw new GraphQLError("Saving newPerson error: ", {
+        throw new GraphQLError("(POSSIBLE!) Saving newPerson error - empty value of phone!", {
           extensions: {
             code: "BAD_USER_INPUT",
-            invalidArgs: args.name,
-            error
+            invalidArgs: args.name
           }
         });
       }
