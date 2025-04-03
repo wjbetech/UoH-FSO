@@ -4,12 +4,13 @@ import { GraphQLError } from "graphql";
 
 const authorResolver = {
   Query: {
-    authorCount: () => authors.length,
+    authorCount: async () => await Author.countDocuments(),
     allAuthors: async () => await Author.find({})
   },
   Author: {
-    authorBookCount: (root) => {
-      return books.filter((book) => book.author === root.name).length;
+    authorBookCount: async (root) => {
+      const bookCount = await Book.countDocuments({ author: root._id });
+      return bookCount;
     }
   },
   Mutation: {

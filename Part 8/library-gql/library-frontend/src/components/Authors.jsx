@@ -42,10 +42,20 @@ const AuthorsBirthDate = ({ authors }) => {
 const Authors = () => {
   const result = useQuery(ALL_AUTHORS);
 
-  console.log("Authors component useQuery result: ", result)
+  console.log("Authors component useQuery result: ", result);
 
   if (result.loading) {
     return <div>Loading...</div>;
+  }
+
+  if (result.error) {
+    console.error("Error fetching authors!", result.error);
+    return <div>Error loading authors, details: {result.error.message}</div>;
+  }
+
+  if (!result.data || !result.data.allAuthors) {
+    console.error("No data received, and no error!", result);
+    return <div>No author data available.</div>;
   }
 
   const authors = result.data.allAuthors;
