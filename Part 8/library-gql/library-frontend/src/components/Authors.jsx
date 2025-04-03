@@ -42,12 +42,13 @@ const AuthorsBirthDate = ({ authors }) => {
 const Authors = () => {
   const result = useQuery(ALL_AUTHORS);
 
+  console.log("Authors component useQuery result: ", result)
+
   if (result.loading) {
     return <div>Loading...</div>;
   }
 
   const authors = result.data.allAuthors;
-  console.log(authors);
 
   return (
     <div>

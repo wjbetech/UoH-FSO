@@ -2,7 +2,11 @@ import { useQuery } from "@apollo/client";
 import { ALL_BOOKS } from "../queries/queries";
 
 const Books = () => {
-  const result = useQuery(ALL_BOOKS);
+  const result = useQuery(ALL_BOOKS, {
+    fetchPolicy: "network-only"
+  });
+
+  console.log("Books component useQuery result: ", result)
 
   if (result.loading) {
     return <div>Loading...</div>;
