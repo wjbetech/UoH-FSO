@@ -25,5 +25,18 @@ export const Login = () => {
     });
   };
 
-  return <div></div>;
+  return <div>
+    <h1>Login</h1>
+    <form onSubmit={handleSubmit}>
+      <div className="login-form username-input">
+        <label>Username:</label>
+        <input type="text" value={username} onChange={(event) => setUsername(event.target.value)} />
+      </div>
+      <div className="login-form password-input">
+        <label>Password:</label>
+        <input type="password" value={password} onChange={(event) => setPassword(event.target.value)} />
+      </div>
+      <button type="submit">Login</button>
+    </form>
+  </div>;
 };
