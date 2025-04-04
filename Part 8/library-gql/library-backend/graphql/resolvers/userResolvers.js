@@ -39,6 +39,8 @@ const userResolver = {
         id: user._id
       };
 
+      // bundle up the info needed to authenticate and
+      // pass it to 'value' as 'token'
       const token = jwt.sign(userToken, process.env.JWT_SECRET);
 
       return { value: token };
