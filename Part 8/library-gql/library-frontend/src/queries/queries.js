@@ -19,12 +19,29 @@ export const ALL_AUTHORS = gql`
   }
 `;
 
+// DEADGE gql code, will not work!
+// export const ALL_BOOKS = gql`
+//   query {
+//     allBooks {
+//       title
+//       published
+//       author
+//       id
+//       genres
+//     }
+//   }
+// `;
+
+// the fix:
 export const ALL_BOOKS = gql`
   query {
     allBooks {
       title
       published
-      author
+      author {
+        name
+        id
+      }
       id
       genres
     }

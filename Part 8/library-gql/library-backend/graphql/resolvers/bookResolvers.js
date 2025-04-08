@@ -5,20 +5,19 @@ import { GraphQLError } from "graphql";
 const bookResolver = {
   Query: {
     allBooks: async (root, args) => {
-      let books = await Book.find({});
+      let books = await Book.find({}).populate("author");
 
-      if (args.author) {
-        return books.filter((book) => book.author === args.author);
+      console.log("allBooks query found books: ", books);
+
+      if (args?.author) {
+        books = books.filter((book) => book.author.name === args.author);
       }
 
-      if (args.genre) {
-        return books.filter((book) => book.genres.includes(args.genre));
+      if (args?.genre) {
+        books = books.filter((book) => book.genres.includes(args.genre));
       }
 
       return books;
-    },
-    bookCount: async (root, args) => {
-      return await Book.countDocuments();
     }
   },
   Mutation: {
