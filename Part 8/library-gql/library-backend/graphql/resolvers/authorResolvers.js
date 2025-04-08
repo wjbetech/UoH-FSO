@@ -15,9 +15,6 @@ const authorResolver = {
   },
   Mutation: {
     updateAuthorBorn: async (root, args, { currentUser }) => {
-      const updateAuthor = Author.findById({ name: args.name });
-      updateAuthor.born = args.born;
-
       // ensure only a logged in user can update an author's born value
       if (!currentUser) {
         throw new GraphQLError("addPerson error - not authenticated!", {
@@ -26,6 +23,23 @@ const authorResolver = {
           }
         });
       }
+
+      const updateAuthor = await Author.findOneAndUpdate(
+        { name: args.name },
+        { born: args.born },
+        { new: true, runValidators: true, context: "query" }
+      );
+
+      if (!updateAuthor) {
+        throw new GraphQLError("Author not found", {
+          extensions: {
+            code: "BAD_USER_INPUT",
+            invalidArgs: args.name
+          }
+        });
+      }
+
+      updateAuthor.born = args.born;
 
       try {
         await updateAuthor.save();

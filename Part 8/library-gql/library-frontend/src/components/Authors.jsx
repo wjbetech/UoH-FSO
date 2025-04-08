@@ -16,7 +16,6 @@ const AuthorsBirthDate = ({ authors }) => {
 
     await updateAuthorBorn({ variables: { name, born: Number(born) } });
 
-    setName("");
     setBorn(null);
   };
 
