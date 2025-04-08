@@ -18,6 +18,12 @@ const bookResolver = {
       }
 
       return books;
+    },
+    recommendations: async (root, args, context) => {
+      const user = context.currentUser;
+      if (!user) throw new AuthenticationError("not authenticated");
+
+      return Book.find({ genres: user.favoriteGenres });
     }
   },
   Mutation: {

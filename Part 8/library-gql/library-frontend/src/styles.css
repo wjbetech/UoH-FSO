@@ -86,6 +86,10 @@ select::picker-icon {
   gap: 8px;
 }
 
+.container {
+  padding: 24px 0;
+}
+
 .genres-section {
   display: flex;
   flex-direction: row;

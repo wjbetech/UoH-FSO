@@ -67,3 +67,15 @@ export const UPDATE_AUTHOR_BORN = gql`
     }
   }
 `;
+
+export const GET_RECOMMENDATIONS = gql`
+  query {
+    recommendations {
+      title
+      author {
+        name
+      }
+      published
+    }
+  }
+`;

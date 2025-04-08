@@ -10,7 +10,7 @@ const userResolver = {
   },
   Mutation: {
     createUser: async (root, args) => {
-      const user = new User({ username: args.username });
+      const user = new User({ username: args.username, favoriteGenre: args.favoriteGenre });
       return user.save().catch((error) => {
         throw new GraphQLError("mutation createUser failed: ", {
           extensions: {

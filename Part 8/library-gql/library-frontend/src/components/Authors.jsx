@@ -44,23 +44,23 @@ const Authors = () => {
   console.log("Authors component useQuery result: ", result);
 
   if (result.loading) {
-    return <div>Loading...</div>;
+    return <div className="container">Loading...</div>;
   }
 
   if (result.error) {
     console.error("Error fetching authors!", result.error);
-    return <div>Error loading authors, details: {result.error.message}</div>;
+    return <div className="container">Error loading authors, details: {result.error.message}</div>;
   }
 
   if (!result.data || !result.data.allAuthors) {
     console.error("No data received, and no error!", result);
-    return <div>No author data available.</div>;
+    return <div className="container">No author data available.</div>;
   }
 
   const authors = result.data.allAuthors;
 
   return (
-    <div>
+    <div className="container">
       <h1>Authors</h1>
       <table>
         <tbody>

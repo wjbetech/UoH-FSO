@@ -6,6 +6,7 @@ import Books from "./components/Books";
 import NewBook from "./components/NewBook";
 import { Link, Routes, Route, useNavigate } from "react-router-dom";
 import { useApolloClient } from "@apollo/client";
+import { Recommendations } from "./components/Recommendations";
 
 const App = () => {
   const [token, setToken] = useState(() => localStorage.getItem("library-user-token") || "");
@@ -17,7 +18,7 @@ const App = () => {
     if (savedtoken) {
       try {
         setToken(savedtoken);
-        console.log("App component token set from localStorage: ", savedtoken);
+        console.log("Token set in App/useEffect!");
       } catch (error) {
         console.error("Error in App component useEffect setting token: ", error.message);
       }
@@ -52,6 +53,9 @@ const App = () => {
             <Link to="/addbook">
               <button>Add Book</button>
             </Link>
+            <Link to="/recommendations">
+              <button>Recommend</button>
+            </Link>
             <button onClick={logout}>Logout</button>
           </>
         ) : (
@@ -66,6 +70,7 @@ const App = () => {
         <Route path="/books" element={<Books />}></Route>
         <Route path="/addbook" element={<NewBook />}></Route>
         <Route path="/authors" element={<Authors />}></Route>
+        <Route path="/recommendations" element={<Recommendations />}></Route>
         <Route path="/login" element={<Login setToken={setToken} />}></Route>
       </Routes>
     </div>

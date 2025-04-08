@@ -43,7 +43,7 @@ const NewBook = () => {
   };
 
   return (
-    <div>
+    <div className="container">
       <h1>New Book Form</h1>
       <form onSubmit={handleSubmit}>
         <div>
