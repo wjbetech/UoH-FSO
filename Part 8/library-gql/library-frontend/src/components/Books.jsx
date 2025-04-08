@@ -3,9 +3,17 @@ import { useQuery, useMutation } from "@apollo/client";
 import { ALL_BOOKS } from "../queries/queries";
 
 const Books = () => {
+  const [genreFilter, setGenreFilter] = useState(null);
+
   const result = useQuery(ALL_BOOKS);
 
   console.log("Books component useQuery result: ", result);
+
+  // create a new Set from a flattened array containing all genres found
+  // flatMap creates a new array that contains all found elements (genres)
+  const genres = Array.from(new Set(result.data?.allBooks.flatMap((book) => book.genres)));
+
+  console.log("Unique genres: ", genres);
 
   if (result.loading) {
     return <div>Loading...</div>;
@@ -26,11 +34,17 @@ const Books = () => {
     return <div>No book data available.</div>;
   }
 
-  const books = result.data.allBooks;
+  // Apollo Client's result.data is read-only!
+  // simply sorting the books variable we created won't work, the app will scream
+  const books = [...result.data.allBooks].sort((a, b) => b.published - a.published);
+  const filteredBooks = genreFilter ? books.filter((book) => book.genres.includes(genreFilter)) : books;
 
   return (
     <div>
-      <h2>books</h2>
+      <h2>Books</h2>
+      <div style={{ height: "30px", fontStyle: "italic", color: "rgba(0, 0, 0, 0.5)" }}>
+        {genreFilter && <p>Currently filtering by: {genreFilter}</p>}
+      </div>
 
       <table>
         <tbody>
@@ -39,7 +53,7 @@ const Books = () => {
             <th>Author</th>
             <th>Published</th>
           </tr>
-          {books.map((a) => (
+          {filteredBooks.map((a) => (
             <tr key={a.title}>
               <td>{a.title}</td>
               <td>{a.author.name}</td>
@@ -48,6 +62,16 @@ const Books = () => {
           ))}
         </tbody>
       </table>
+
+      <h3>Sort by Genre</h3>
+      <select onChange={(e) => setGenreFilter(e.target.value)} value={genreFilter}>
+        <option value="">All genres</option>
+        {genres.map((genre) => (
+          <option key={genre} value={genre}>
+            {genre}
+          </option>
+        ))}
+      </select>
     </div>
   );
 };
