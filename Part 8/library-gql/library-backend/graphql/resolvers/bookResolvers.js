@@ -7,8 +7,6 @@ const bookResolver = {
     allBooks: async (root, args) => {
       let books = await Book.find({}).populate("author");
 
-      console.log("allBooks query found books: ", books);
-
       if (args?.author) {
         books = books.filter((book) => book.author.name === args.author);
       }
@@ -23,7 +21,16 @@ const bookResolver = {
       const user = context.currentUser;
       if (!user) throw new AuthenticationError("not authenticated");
 
-      return Book.find({ genres: user.favoriteGenres });
+      return Book.find({ genres: user.favoriteGenres }).populate("author");
+    },
+    allGenres: async () => {
+      const allGenresAggregation = await Book.aggregate([
+        { $unwind: "$genres" },
+        { $group: { _id: null, allGenres: { $addToSet: "$genres" } } },
+        { $project: { _id: 0, allGenres: 1 } }
+      ]);
+
+      return allGenresAggregation[0]?.allGenres || [];
     }
   },
   Mutation: {
@@ -100,7 +107,7 @@ const bookResolver = {
         });
       }
 
-      return await newBook.populate("author");
+      return newBook.populate("author");
     }
   }
 };

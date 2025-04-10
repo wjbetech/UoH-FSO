@@ -1,11 +1,19 @@
 import { useState } from "react";
 import { useQuery } from "@apollo/client";
-import { ALL_BOOKS } from "../queries/queries";
+import { ALL_BOOKS, ALL_GENRES, ADD_BOOK } from "../queries/queries";
 
 const Books = () => {
-  const [genreFilter, setGenreFilter] = useState(null);
+  const [genreFilter, setGenreFilter] = useState("");
 
-  const result = useQuery(ALL_BOOKS);
+  const { result } = useQuery(ALL_BOOKS, {
+    variables: { genre: genreFilter }
+  });
+
+  const { data } = useQuery(ALL_GENRES, {
+    refetchQueries: [{ query: ALL_BOOKS }, { query: ALL_GENRES }, { query: ADD_BOOK }]
+  });
+  const genreOptions = data ? data.allGenres : [];
+  console.log("genres found: ", genreOptions);
 
   console.log("Books component useQuery result: ", result);
 
@@ -30,12 +38,11 @@ const Books = () => {
 
   // create a new Set from a flattened array containing all genres found
   // flatMap creates a new array that contains all found elements (genres)
-  const genres = Array.from(new Set(result.data?.allBooks.flatMap((book) => book.genres)));
+  // const genres = Array.from(new Set(result.data?.allBooks.flatMap((book) => book.genres)));
 
   // Apollo Client's result.data is read-only!
   // simply sorting the books variable we created won't work, the app will scream
   const books = [...result.data.allBooks].sort((a, b) => b.published - a.published);
-  const filteredBooks = genreFilter ? books.filter((book) => book.genres.includes(genreFilter)) : books;
 
   return (
     <div className="container">
@@ -51,7 +58,7 @@ const Books = () => {
             <th>Author</th>
             <th>Published</th>
           </tr>
-          {filteredBooks.map((a) => (
+          {books.map((a) => (
             <tr key={a.title}>
               <td>{a.title}</td>
               <td>{a.author.name}</td>
@@ -64,7 +71,7 @@ const Books = () => {
       <h3>Sort by Genre</h3>
       <select onChange={(e) => setGenreFilter(e.target.value)} value={genreFilter}>
         <option value="">All genres</option>
-        {genres.map((genre) => (
+        {genreOptions.map((genre) => (
           <option key={genre} value={genre}>
             {genre}
           </option>

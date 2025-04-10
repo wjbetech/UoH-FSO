@@ -6,8 +6,8 @@ const userSchema = new mongoose.Schema({
     required: true,
     minlength: 3
   },
-  favoriteGenre: {
-    type: String
+  favoriteGenres: {
+    type: [{ type: String }]
   }
 });
 

@@ -3,7 +3,7 @@ import gql from "graphql-tag";
 const typeDefs = gql`
   type User {
     username: String!
-    favoriteGenre: String!
+    favoriteGenres: [String!]!
     id: ID!
   }
 
@@ -33,6 +33,7 @@ const typeDefs = gql`
     allBooks(author: String, genre: String): [Book!]!
     allAuthors: [Author!]!
     recommendations: [Book!]!
+    allGenres: [String!]!
   }
 
   type Mutation {

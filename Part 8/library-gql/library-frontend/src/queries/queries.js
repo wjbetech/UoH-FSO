@@ -34,8 +34,8 @@ export const ALL_AUTHORS = gql`
 
 // the fix:
 export const ALL_BOOKS = gql`
-  query {
-    allBooks {
+  query allBooks($genre: String) {
+    allBooks(genre: $genre) {
       title
       published
       author {
@@ -53,9 +53,18 @@ export const ADD_BOOK = gql`
     addBook(title: $title, published: $published, author: $author, genres: $genres) {
       title
       published
-      author
+      author {
+        name
+        id
+      }
       genres
     }
+  }
+`;
+
+export const ALL_GENRES = gql`
+  query {
+    allGenres
   }
 `;
 

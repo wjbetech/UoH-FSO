@@ -4,9 +4,9 @@ import Login from "./components/Login";
 import Authors from "./components/Authors";
 import Books from "./components/Books";
 import NewBook from "./components/NewBook";
+import Recommendations from "./components/Recommendations";
 import { Link, Routes, Route, useNavigate } from "react-router-dom";
 import { useApolloClient } from "@apollo/client";
-import { Recommendations } from "./components/Recommendations";
 
 const App = () => {
   const [token, setToken] = useState(() => localStorage.getItem("library-user-token") || "");
