@@ -8,28 +8,33 @@ export const LOGIN = gql`
   }
 `;
 
+export const PERSON_DETAILS = gql`
+  fragment PersonDetails on Person {
+    name
+    phoneNumber
+    address {
+      street
+      city
+    }
+  }
+`;
+
 export const ALL_PERSONS = gql`
   query {
     allPersons {
-      name
-      phoneNumber
-      id
+      ...PersonDetails
     }
   }
+  ${PERSON_DETAILS}
 `;
 
 export const FIND_PERSON = gql`
   query findPersonByName($nameToSearch: String!) {
     findPerson(name: $nameToSearch) {
-      name
-      phoneNumber
-      id
-      address {
-        street
-        city
-      }
+      ...PersonDetails
     }
   }
+  ${PERSON_DETAILS}
 `;
 
 export const CREATE_PERSON = gql`
