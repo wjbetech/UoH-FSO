@@ -5,17 +5,15 @@ import { ALL_BOOKS, ALL_GENRES, ADD_BOOK } from "../queries/queries";
 const Books = () => {
   const [genreFilter, setGenreFilter] = useState("");
 
-  const { result } = useQuery(ALL_BOOKS, {
+  const result = useQuery(ALL_BOOKS, {
     variables: { genre: genreFilter }
   });
 
   const { data } = useQuery(ALL_GENRES, {
     refetchQueries: [{ query: ALL_BOOKS }, { query: ALL_GENRES }, { query: ADD_BOOK }]
   });
-  const genreOptions = data ? data.allGenres : [];
-  console.log("genres found: ", genreOptions);
 
-  console.log("Books component useQuery result: ", result);
+  const genreOptions = data ? data.allGenres : [];
 
   if (result.loading) {
     return <div>Loading...</div>;
