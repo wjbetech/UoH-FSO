@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useQuery } from "@apollo/client";
 import { ALL_BOOKS, ALL_GENRES, ADD_BOOK } from "../queries/queries";
 
+// just adding a commit to push a new comment
+
 const Books = () => {
   const [genreFilter, setGenreFilter] = useState("");
 
