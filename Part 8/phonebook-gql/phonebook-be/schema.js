@@ -1,23 +1,12 @@
 const typeDefs = `
-
-  // subscribe to notify when a person is added
-  type Subscription {
-    personAdded: Person!
-  }
-
   type User {
     username: String!
     friends: [Person!]!
     id: ID!
   }
-  
+
   type Token {
     value: String!
-  }
-  
-  enum YesNo {
-    YES
-    NO
   }
 
   type Address {
@@ -27,14 +16,19 @@ const typeDefs = `
 
   type Person {
     name: String!
-    phoneNumber: String
+    phone: String
     address: Address!
     id: ID!
   }
 
+  enum YesNo {
+    YES
+    NO
+  }
+
   type Query {
     personCount: Int!
-    allPersons(phoneNumber: YesNo): [Person!]!
+    allPersons(phone: YesNo): [Person!]!
     findPerson(name: String!): Person
     me: User
   }
@@ -42,14 +36,18 @@ const typeDefs = `
   type Mutation {
     addPerson(
       name: String!
-      phoneNumber: String
+      phone: String
       street: String!
       city: String!
     ): Person
+    editPhoneNumber(name: String!, phone: String!): Person
     createUser(username: String!): User
     login(username: String!, password: String!): Token
-    editPhoneNumber(name: String!, phoneNumber: String!): Person
     addAsFriend(name: String!): User
+  }
+
+  type Subscription {
+    personAdded: Person!
   }
 `;
 
