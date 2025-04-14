@@ -1,3 +1,7 @@
+// WebSocket
+import { WebSocketServer } from "ws"
+import { useServer } from "graphql-ws/lib/use/ws"
+
 // graphql, apollo server
 import { ApolloServer } from "@apollo/server";
 import { GraphQLError } from "graphql";
@@ -22,32 +26,62 @@ import "dotenv/config";
 
 const MONGODB_URI = process.env.MONGODB_URI;
 
-mongoose
-  .connect(MONGODB_URI)
-  .then(() => {
-    console.log("Connecting to MongoDB phonebookgql...");
-  })
-  .catch((error) => {
-    console.log("error connecting to phonebookgql MongoDB: ", error.message);
-  });
-
 import { v4 as uuid } from "uuid";
 
-const server = new ApolloServer({
-  typeDefs,
-  resolvers
-});
+// mongoose server connection to MongoDB
+mongoose.connect(MONGODB_URI).then(() => {
+  console.log("Connected to MongoDB PhonebookQL App!")
+}).catch((error) => {
+  console.log("Error connecting to MongoDB PhonebookQL App: ", error.message)
+})
 
-startStandaloneServer(server, {
-  listen: { port: 4000 },
-  context: async ({ req, res }) => {
-    const auth = req ? req.headers.authorization : null;
-    if (auth && auth.startsWith("Bearer ")) {
-      const decodedToken = jwt.verify(auth.substring(7), process.env.JWT_SECRET);
-      const currentUser = await User.findById(decodedToken.id).populate("friends");
-      return { currentUser };
+const start = async () => {
+  const app = express()
+  const httpServer = http.createServer(app)
+
+  const wsServer = new WebSocketServer({
+    server: httpServer,
+    path: "/",
+  })
+
+  const schema = makeExecutableSchema({ typeDefs, resolvers })
+  const serverCleanup = useServer({ schema}, wsServer)
+
+  const server = new ApolloServer({
+    schema: makeExecutableSchema({ typeDefs, resolvers }),
+    plugins: [ApolloServerPluginDrainHttpServer({ httpServer }),
+      {
+        async serverWillStart() {
+          return {
+            async drainServer() {
+              await serverCleanup.dispose()
+            }
+          }
+        }
+      }
+    ],
+  })
+
+  await server.start()
+
+  app.use("/", cors(), express.json(), expressMiddleware(server, {
+    context: async ({ req, res }) => {
+      const auth = req ? req.headers.authorization : null;
+      if (auth && auth.startsWith("Bearer ")) {
+        const decodedToken = jwt.verify(auth.substring(7), process.env.JWT_SECRET);
+        const currentUser = await User.findById(decodedToken.id).populate("friends");
+        return { currentUser };
+      }
     }
-  }
-}).then(({ url }) => {
-  console.log(`Server online at ${url}`);
-});
+  }),
+  )
+
+  const PORT = 4000
+
+  httpServer.listen(PORT, () => {
+    console.log(`Server is now running @ http://localhost:${PORT}`)
+  })
+}
+
+
+

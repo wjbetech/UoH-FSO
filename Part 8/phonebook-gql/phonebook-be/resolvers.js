@@ -1,3 +1,6 @@
+import { PubSub } from "graphql-subscriptions"
+const pubsub = new PubSub()
+
 const resolvers = {
   Query: {
     me: (root, args, context) => {
@@ -85,6 +88,7 @@ const resolvers = {
           }
         });
       }
+      pubsub.publish("PERSON_ADDED", { personAdded: newPerson })
 
       return newPerson;
     },
@@ -125,7 +129,12 @@ const resolvers = {
       await currentUser.save();
 
       return currentUser;
-    }
+    },
+    Subscription: {
+      personAdded: {
+        subscribe: () => pubsub.asyncIterableIterator("PERSON_ADDED")
+      }
+    },
   }
 };
 

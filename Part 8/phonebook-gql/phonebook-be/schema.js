@@ -1,4 +1,10 @@
 const typeDefs = `
+
+  // subscribe to notify when a person is added
+  type Subscription {
+    personAdded: Person!
+  }
+
   type User {
     username: String!
     friends: [Person!]!
