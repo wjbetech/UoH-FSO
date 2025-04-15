@@ -50,6 +50,15 @@ export const CREATE_PERSON = gql`
   }
 `;
 
+export const PERSON_ADDED = gql`
+  subscription {
+    personAdded {
+      ...PersonDetails
+    }
+  }
+  ${PERSON_DETAILS}
+`;
+
 export const EDIT_PHONENUMBER = gql`
   mutation editPhoneNumber($name: String!, $phoneNumber: String!) {
     editPhoneNumber(name: $name, phoneNumber: $phoneNumber) {

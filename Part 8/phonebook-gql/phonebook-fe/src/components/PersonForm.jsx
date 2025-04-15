@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { useMutation } from "@apollo/client";
 import { ALL_PERSONS, CREATE_PERSON } from "../queries/queries";
 
+import updateCache from "../utils/updateCache";
+
 const PersonForm = () => {
   const [name, setName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -15,11 +17,7 @@ const PersonForm = () => {
       console.log(messages);
     },
     update: (cache, response) => {
-      cache.updateQuery({ query: ALL_PERSONS }, ({ allPersons }) => {
-        return {
-          allPersons: allPersons.concat(response.data.addPErson)
-        };
-      });
+      updateCache(cache, { query: ALL_PERSONS }, response.data.addPerson);
     }
   });
 

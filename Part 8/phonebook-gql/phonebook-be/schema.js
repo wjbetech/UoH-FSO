@@ -16,7 +16,7 @@ const typeDefs = `
 
   type Person {
     name: String!
-    phone: String
+    phoneNumber: String
     address: Address!
     id: ID!
   }
@@ -36,7 +36,7 @@ const typeDefs = `
   type Mutation {
     addPerson(
       name: String!
-      phone: String
+      phoneNumber: String
       street: String!
       city: String!
     ): Person

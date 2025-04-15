@@ -1,10 +1,10 @@
-import { PubSub } from "graphql-subscriptions"
-const pubsub = new PubSub()
+import { PubSub } from "graphql-subscriptions";
+const pubsub = new PubSub();
 import { GraphQLError } from "graphql";
 
 import Person from "./models/person.js";
 import User from "./models/user.js";
-import jwt from "jsonwebtoken"
+import jwt from "jsonwebtoken";
 
 const resolvers = {
   Query: {
@@ -93,7 +93,7 @@ const resolvers = {
           }
         });
       }
-      pubsub.publish("PERSON_ADDED", { personAdded: newPerson })
+      pubsub.publish("PERSON_ADDED", { personAdded: newPerson });
 
       return newPerson;
     },
@@ -134,13 +134,13 @@ const resolvers = {
       await currentUser.save();
 
       return currentUser;
-    },
+    }
   },
   Subscription: {
     personAdded: {
       subscribe: () => pubsub.asyncIterableIterator("PERSON_ADDED")
     }
-  },
+  }
 };
 
 export default resolvers;

@@ -6,8 +6,8 @@ import { setContext } from "@apollo/client/link/context";
 
 // access subscriptions on the FE React client
 import { getMainDefinition } from "@apollo/client/utilities";
-import { GraphQLWsLink } from "@apollo/client/link/subscriptions"
-import { createClient } from "graphql-ws"
+import { GraphQLWsLink } from "@apollo/client/link/subscriptions";
+import { createClient } from "graphql-ws";
 
 const authLink = setContext((_, { headers }) => {
   const token = localStorage.getItem("phonebook-user-token");
@@ -20,30 +20,28 @@ const authLink = setContext((_, { headers }) => {
 });
 
 const httpLink = createHttpLink({
-  uri: "http://localhost:4000"
+  uri: "http://localhost:4000/"
 });
 
 const wsLink = new GraphQLWsLink(
   createClient({
-    url: "ws://localhost:4000"
+    url: "ws://localhost:4000/"
   })
-)
+);
 
 const splitLink = split(
   ({ query }) => {
-    const definition = getMainDefinition(query)
-    return (
-      definition.kind === "OperationDefinition" && definition.operation === "subscription"
-    )
+    const definition = getMainDefinition(query);
+    return definition.kind === "OperationDefinition" && definition.operation === "subscription";
   },
   wsLink,
   authLink.concat(httpLink)
-)
+);
 
 const client = new ApolloClient({
   cache: new InMemoryCache(),
   link: splitLink,
-  uri: "http://localhost:4000/graphql",
+  uri: "http://localhost:4000/",
   headers: {
     authorization: localStorage.getItem("phonebook-user-token")
       ? `Bearer ${localStorage.getItem("phonebook-user-token")}`

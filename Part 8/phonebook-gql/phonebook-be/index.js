@@ -19,7 +19,7 @@ import User from "./models/user.js";
 
 const MONGODB_URI = process.env.MONGODB_URI;
 
-console.log("connecting to", MONGODB_URI);
+console.log("connecting to mongo DB phonebookQL...");
 
 mongoose
   .connect(MONGODB_URI)
@@ -42,9 +42,9 @@ const start = async () => {
   // Set up WebSocket server
   const wsServer = new WebSocketServer({
     server: httpServer,
-    path: "/graphql",
+    path: "/"
   });
-  
+
   // WebSocket server cleanup handler
   const serverCleanup = useServer({ schema }, wsServer);
 
@@ -58,11 +58,11 @@ const start = async () => {
           return {
             async drainServer() {
               await serverCleanup.dispose();
-            },
+            }
           };
-        },
-      },
-    ],
+        }
+      }
+    ]
   });
 
   // Start the Apollo Server first
@@ -71,35 +71,30 @@ const start = async () => {
   // Apply middleware - the key part is to apply all middleware
   // in a single app.use call for the /graphql route
   app.use(
-    "/graphql",
+    "/",
     cors(),
     bodyParser.json(),
     expressMiddleware(server, {
       context: async ({ req }) => {
         const auth = req ? req.headers.authorization : null;
         if (auth && auth.startsWith("Bearer ")) {
-          const decodedToken = jwt.verify(
-            auth.substring(7),
-            process.env.JWT_SECRET
-          );
-          const currentUser = await User.findById(decodedToken.id).populate(
-            "friends"
-          );
+          const decodedToken = jwt.verify(auth.substring(7), process.env.JWT_SECRET);
+          const currentUser = await User.findById(decodedToken.id).populate("friends");
           return { currentUser };
         }
-      },
+      }
     })
   );
 
   // Add a redirect from root to graphql endpoint
   app.get("/", (req, res) => {
-    res.redirect("/graphql");
+    res.redirect("/");
   });
 
   // Start the server
   const PORT = 4000;
   httpServer.listen(PORT, () => {
-    console.log(`Server ready at http://localhost:${PORT}/graphql`);
+    console.log(`Server ready at http://localhost:${PORT}`);
   });
 };
 

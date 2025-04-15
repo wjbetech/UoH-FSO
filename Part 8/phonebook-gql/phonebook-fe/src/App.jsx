@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { useApolloClient, useQuery } from "@apollo/client";
-import { ALL_PERSONS } from "./queries/queries";
+import { useApolloClient, useQuery, useSubscription } from "@apollo/client";
+import { ALL_PERSONS, PERSON_ADDED } from "./queries/queries";
 
 // components
 import LoginForm from "./components/LoginForm";
@@ -8,10 +8,27 @@ import PersonsList from "./components/PersonsList";
 import PersonForm from "./components/PersonForm";
 import PhoneNumberForm from "./components/PhoneNumberForm";
 
+import updateCache from "./utils/updateCache";
+
 const App = () => {
   const [errorMessage, setErrorMessage] = useState(null);
   const [token, setToken] = useState(() => localStorage.getItem("phonebook-user-token") || "");
   const client = useApolloClient();
+
+  useSubscription(PERSON_ADDED, {
+    onData: ({ data, client }) => {
+      const addedPerson = data.data.personAdded;
+      notify(`${addedPerson.name} has been added!`);
+      updateCache(client.cache, { query: ALL_PERSONS }, addedPerson);
+
+      client.cache.updateQuery({ query: ALL_PERSONS }, ({ allPersons }) => {
+        return {
+          allPersons: allPersons.concat(addedPerson)
+        };
+      });
+      console.log("PERSON_ADDED subscription triggered!: ", data);
+    }
+  });
 
   useEffect(() => {
     const savedToken = localStorage.getItem("phonebook-user-token");
