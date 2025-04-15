@@ -1,17 +1,19 @@
+import { PubSub } from "graphql-subscriptions"
+const pubsub = new PubSub()
 import { GraphQLError } from "graphql";
-import jwt from "jsonwebtoken";
-import { PubSub } from "graphql-subscriptions";
-const pubsub = new PubSub();
 
 import Person from "./models/person.js";
 import User from "./models/user.js";
+import jwt from "jsonwebtoken"
 
 const resolvers = {
   Query: {
     me: (root, args, context) => {
       return context.currentUser;
     },
-    personCount: async () => await Person.collection.countDocuments(),
+    personCount: async () => {
+      return (await Person.find({})).length;
+    },
     allPersons: async (root, args) => {
       if (!args.phone) {
         return await Person.find({});
@@ -81,7 +83,7 @@ const resolvers = {
 
       try {
         await newPerson.save();
-        currentUser.friends = currentUser.friends.concat(person);
+        currentUser.friends = currentUser.friends.concat(newPerson);
         await currentUser.save();
       } catch (error) {
         throw new GraphQLError("(POSSIBLE!) Saving newPerson error - empty value of phone!", {
@@ -91,7 +93,7 @@ const resolvers = {
           }
         });
       }
-      pubsub.publish("PERSON_ADDED", { personAdded: newPerson });
+      pubsub.publish("PERSON_ADDED", { personAdded: newPerson })
 
       return newPerson;
     },
@@ -132,13 +134,13 @@ const resolvers = {
       await currentUser.save();
 
       return currentUser;
-    }
+    },
   },
   Subscription: {
     personAdded: {
-      subscribe: (_, __, { pubsub }) => pubsub.asyncIterator("PERSON_ADDED")
+      subscribe: () => pubsub.asyncIterableIterator("PERSON_ADDED")
     }
-  }
+  },
 };
 
 export default resolvers;

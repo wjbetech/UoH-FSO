@@ -1,59 +1,54 @@
-// express
 import { ApolloServer } from "@apollo/server";
-import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHttpServer";
 import { expressMiddleware } from "@apollo/server/express4";
+import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHttpServer";
 import { makeExecutableSchema } from "@graphql-tools/schema";
-
-// WebSocket
 import { WebSocketServer } from "ws";
 import { useServer } from "graphql-ws/use/ws";
-
-// graphql, apollo server
-import http from "http";
 import express from "express";
-import bodyParser from "body-parser";
+import http from "http";
 import cors from "cors";
-
+import bodyParser from "body-parser";
 import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
-mongoose.set("strictQuery", false);
+import "dotenv/config";
 
-// mongoose, dotenv, jwt
+import typeDefs from "./schema.js";
+import resolvers from "./resolvers.js";
 import Person from "./models/person.js";
 import User from "./models/user.js";
 
-import { GraphQLError } from "graphql";
-import resolvers from "./resolvers.js";
-import typeDefs from "./schema.js";
-
-import "dotenv/config";
-import { v4 as uuid } from "uuid";
-
 const MONGODB_URI = process.env.MONGODB_URI;
 
-// mongoose server connection to MongoDB
+console.log("connecting to", MONGODB_URI);
+
 mongoose
   .connect(MONGODB_URI)
   .then(() => {
-    console.log("connected to phonebookQL MongoDB");
+    console.log("connected to MongoDB");
   })
   .catch((error) => {
     console.log("error connection to MongoDB:", error.message);
   });
 
-// setup is now within a function
+// Start the server
 const start = async () => {
+  // Create Express app and HTTP server
   const app = express();
   const httpServer = http.createServer(app);
 
+  // Create schema
+  const schema = makeExecutableSchema({ typeDefs, resolvers });
+
+  // Set up WebSocket server
   const wsServer = new WebSocketServer({
     server: httpServer,
-    path: "/"
+    path: "/graphql",
   });
-
-  const schema = makeExecutableSchema({ typeDefs, resolvers });
+  
+  // WebSocket server cleanup handler
   const serverCleanup = useServer({ schema }, wsServer);
 
+  // Create Apollo Server
   const server = new ApolloServer({
     schema,
     plugins: [
@@ -63,37 +58,50 @@ const start = async () => {
           return {
             async drainServer() {
               await serverCleanup.dispose();
-            }
+            },
           };
-        }
-      }
-    ]
+        },
+      },
+    ],
   });
 
+  // Start the Apollo Server first
   await server.start();
 
-  // Apply CORS and JSON parsing at the app level
-  app.use(cors());
-  app.use(express.json());
-
-  // Mount Apollo Server middleware
+  // Apply middleware - the key part is to apply all middleware
+  // in a single app.use call for the /graphql route
   app.use(
-    "/",
+    "/graphql",
+    cors(),
+    bodyParser.json(),
     expressMiddleware(server, {
       context: async ({ req }) => {
         const auth = req ? req.headers.authorization : null;
         if (auth && auth.startsWith("Bearer ")) {
-          const decodedToken = jwt.verify(auth.substring(7), process.env.JWT_SECRET);
-          const currentUser = await User.findById(decodedToken.id).populate("friends");
+          const decodedToken = jwt.verify(
+            auth.substring(7),
+            process.env.JWT_SECRET
+          );
+          const currentUser = await User.findById(decodedToken.id).populate(
+            "friends"
+          );
           return { currentUser };
         }
-      }
+      },
     })
   );
 
-  const PORT = 4000;
+  // Add a redirect from root to graphql endpoint
+  app.get("/", (req, res) => {
+    res.redirect("/graphql");
+  });
 
-  httpServer.listen(PORT, () => console.log(`Server is now running on http://localhost:${PORT}`));
+  // Start the server
+  const PORT = 4000;
+  httpServer.listen(PORT, () => {
+    console.log(`Server ready at http://localhost:${PORT}/graphql`);
+  });
 };
 
+// Execute the start function
 start();
