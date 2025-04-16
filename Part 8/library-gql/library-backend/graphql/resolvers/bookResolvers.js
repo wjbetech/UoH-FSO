@@ -1,3 +1,7 @@
+// graphql subscriptions - import into any resolver file that handles a sub!
+import { PubSub } from "graphql-subscriptions";
+const pubsub = new PubSub();
+
 import Book from "../../models/book.js";
 import Author from "../../models/author.js";
 import { GraphQLError } from "graphql";
@@ -97,6 +101,11 @@ const bookResolver = {
         });
 
         await newBook.save();
+        const populatedBook = await newBook.populate("author");
+
+        pubsub.publish("BOOK_ADDED", { bookAdded: newBook });
+
+        return populatedBook;
       } catch (error) {
         throw new GraphQLError(`mutation addBook error: ${error.message}`, {
           extensions: {
@@ -106,8 +115,11 @@ const bookResolver = {
           }
         });
       }
-
-      return newBook.populate("author");
+    }
+  },
+  Subscription: {
+    bookAdded: {
+      subscribe: () => pubsub.asyncIterableIterator(["BOOK_ADDED"])
     }
   }
 };

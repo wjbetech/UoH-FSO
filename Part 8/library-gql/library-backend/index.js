@@ -6,6 +6,10 @@ import { makeExecutableSchema } from "@graphql-tools/schema";
 import { startStandaloneServer } from "@apollo/server/standalone";
 import { GraphQLError } from "graphql";
 
+// WebSocket
+import { WebSocketServer } from "ws";
+import { useServer } from "graphql-ws/use/ws";
+
 // express, cors
 import express from "express";
 import http from "http";
@@ -38,9 +42,29 @@ const start = async () => {
   const app = express();
   const httpServer = http.createServer(app);
 
+  // build websocket server
+  const wsServer = new WebSocketServer({
+    server: httpServer,
+    path: "/"
+  });
+
+  const schema = makeExecutableSchema({ typeDefs, resolvers });
+  const serverCleanup = useServer({ schema }, wsServer);
+
   const server = new ApolloServer({
-    schema: makeExecutableSchema({ typeDefs, resolvers }),
-    plugins: [ApolloServerPluginDrainHttpServer({ httpServer })]
+    schema,
+    plugins: [
+      ApolloServerPluginDrainHttpServer({ httpServer }),
+      {
+        async serverWillStart() {
+          return {
+            async drainServer() {
+              await serverCleanup.dispose();
+            }
+          };
+        }
+      }
+    ]
   });
 
   await server.start();
