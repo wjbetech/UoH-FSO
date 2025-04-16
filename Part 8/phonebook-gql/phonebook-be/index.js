@@ -30,7 +30,8 @@ mongoose
     console.log("error connection to MongoDB:", error.message);
   });
 
-mongoose.set("debug", true);
+// turn this on for debugging, warning: spam!
+// mongoose.set("debug", true);
 
 // Start the server
 const start = async () => {
