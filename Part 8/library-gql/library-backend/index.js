@@ -1,7 +1,15 @@
 // GraphQL & Apollo Client
 import { ApolloServer } from "@apollo/server";
+import { expressMiddleware } from "@apollo/server/express4";
+import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHttpServer";
+import { makeExecutableSchema } from "@graphql-tools/schema";
 import { startStandaloneServer } from "@apollo/server/standalone";
 import { GraphQLError } from "graphql";
+
+// express, cors
+import express from "express";
+import http from "http";
+import cors from "cors";
 
 // import gql related files
 import typeDefs from "./graphql/types/typeDefs.js";
@@ -26,21 +34,38 @@ mongoose
 
 import { v4 as uuid } from "uuid";
 
-const server = new ApolloServer({
-  typeDefs,
-  resolvers
-});
+const start = async () => {
+  const app = express();
+  const httpServer = http.createServer(app);
 
-startStandaloneServer(server, {
-  listen: { port: 4000 },
-  context: async ({ req, res }) => {
-    const auth = req ? req.headers.authorization : null;
-    if (auth && auth.startsWith("Bearer ")) {
-      const decodedToken = jwt.verify(auth.substring(7), process.env.JWT_SECRET);
-      const currentUser = await User.findById(decodedToken.id);
-      return { currentUser };
-    }
-  }
-}).then(({ url }) => {
-  console.log(`Server ready at ${url}`);
-});
+  const server = new ApolloServer({
+    schema: makeExecutableSchema({ typeDefs, resolvers }),
+    plugins: [ApolloServerPluginDrainHttpServer({ httpServer })]
+  });
+
+  await server.start();
+
+  app.use(
+    "/",
+    cors(),
+    express.json(),
+    expressMiddleware(server, {
+      context: async ({ req }) => {
+        const auth = req ? req.headers.authorization : null;
+        if (auth && auth.startsWith("Bearer ")) {
+          const decodedToken = jwt.verify(auth.substring(7), process.env.JWT_SECRET);
+          const currentUser = await User.findById(decodedToken.id).populate("favoriteGenres");
+          return { currentUser };
+        }
+      }
+    })
+  );
+
+  const PORT = process.env.PORT || 4000;
+
+  httpServer.listen(PORT, () => {
+    console.log(`Server ready at http://localhost:${PORT}`);
+  });
+};
+
+start();
