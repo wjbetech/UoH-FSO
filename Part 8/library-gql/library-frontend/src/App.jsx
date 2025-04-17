@@ -6,7 +6,9 @@ import Books from "./components/Books";
 import NewBook from "./components/NewBook";
 import Recommendations from "./components/Recommendations";
 import { Link, Routes, Route, useNavigate } from "react-router-dom";
-import { useApolloClient } from "@apollo/client";
+import { useApolloClient, useSubscription } from "@apollo/client";
+import { BOOK_ADDED, ALL_BOOKS } from "./queries/queries";
+import updateCache from "./utils/updateCache";
 
 const App = () => {
   const [token, setToken] = useState(() => localStorage.getItem("library-user-token") || "");
@@ -24,6 +26,20 @@ const App = () => {
       }
     }
   }, []);
+
+  useSubscription(BOOK_ADDED, {
+    onData: ({ data, client }) => {
+      const addedBook = data.data.bookAdded;
+      window.alert(`New book added: ${addedBook.title} by ${addedBook.author.name}`);
+      updateCache(client.cache, { query: ALL_BOOKS }, addedBook);
+
+      client.cache.updateQuery({ query: ALL_BOOKS }, ({ allBooks }) => {
+        return {
+          allBooks: allBooks.concat(addedBook)
+        };
+      });
+    }
+  });
 
   const logout = () => {
     setToken(null);

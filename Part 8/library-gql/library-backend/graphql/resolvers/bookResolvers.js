@@ -101,11 +101,15 @@ const bookResolver = {
         });
 
         await newBook.save();
-        const populatedBook = await newBook.populate("author");
 
+        // populate the author field in the new book and trigger subscription
+        const populatedBook = await newBook.populate("author");
         pubsub.publish("BOOK_ADDED", { bookAdded: newBook });
 
+        // return populatedBook, not newBook!
         return populatedBook;
+
+        // error block
       } catch (error) {
         throw new GraphQLError(`mutation addBook error: ${error.message}`, {
           extensions: {

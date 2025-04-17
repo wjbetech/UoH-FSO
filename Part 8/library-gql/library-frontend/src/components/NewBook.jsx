@@ -3,6 +3,8 @@ import { ADD_BOOK, ALL_AUTHORS, ALL_BOOKS } from "../queries/queries";
 import { useMutation } from "@apollo/client";
 import { useNavigate } from "react-router-dom";
 
+import updateCache from "../utils/updateCache";
+
 const NewBook = () => {
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");

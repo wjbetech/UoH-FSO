@@ -32,20 +32,27 @@ export const ALL_AUTHORS = gql`
 //   }
 // `;
 
+export const BOOK_DETAILS = gql`
+  fragment BookDetails on Book {
+    title
+    published
+    author {
+      name
+      id
+    }
+    id
+    genres
+  }
+`;
+
 // the fix:
 export const ALL_BOOKS = gql`
   query allBooks($genre: String) {
     allBooks(genre: $genre) {
-      title
-      published
-      author {
-        name
-        id
-      }
-      id
-      genres
+      ...BookDetails
     }
   }
+  ${BOOK_DETAILS}
 `;
 
 export const ADD_BOOK = gql`
@@ -60,6 +67,15 @@ export const ADD_BOOK = gql`
       genres
     }
   }
+`;
+
+export const BOOK_ADDED = gql`
+  subscription {
+    bookAdded {
+      ...BookDetails
+    }
+  }
+  ${BOOK_DETAILS}
 `;
 
 export const ALL_GENRES = gql`
