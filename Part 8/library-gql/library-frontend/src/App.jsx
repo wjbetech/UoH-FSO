@@ -7,7 +7,7 @@ import NewBook from "./components/NewBook";
 import Recommendations from "./components/Recommendations";
 import { Link, Routes, Route, useNavigate } from "react-router-dom";
 import { useApolloClient, useSubscription } from "@apollo/client";
-import { BOOK_ADDED, ALL_BOOKS } from "./queries/queries";
+import { BOOK_ADDED, ALL_BOOKS, ALL_GENRES } from "./queries/queries";
 import updateCache from "./utils/updateCache";
 
 const App = () => {
@@ -30,17 +30,14 @@ const App = () => {
   useSubscription(BOOK_ADDED, {
     onData: ({ data, client }) => {
       const addedBook = data.data.bookAdded;
-      window.alert(`New book added: ${addedBook.title} by ${addedBook.author.name}`);
       updateCache(client.cache, { query: ALL_BOOKS }, addedBook);
 
-      client.cache.updateQuery({ query: ALL_BOOKS }, ({ allBooks }) => {
-        return {
-          allBooks: allBooks.concat(addedBook)
-        };
-      });
+      // Update ALL_GENRES query
+      client.cache.updateQuery({ query: ALL_GENRES }, (data) => ({
+        allGenres: [...new Set([...(data?.allGenres || []), ...addedBook.genres])]
+      }));
     }
   });
-
   const logout = () => {
     setToken(null);
     localStorage.clear();

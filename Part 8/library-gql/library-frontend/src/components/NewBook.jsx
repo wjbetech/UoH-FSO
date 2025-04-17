@@ -1,9 +1,7 @@
 import { useState } from "react";
-import { ADD_BOOK, ALL_AUTHORS, ALL_BOOKS } from "../queries/queries";
+import { ADD_BOOK, ALL_AUTHORS, ALL_BOOKS, ALL_GENRES } from "../queries/queries";
 import { useMutation } from "@apollo/client";
 import { useNavigate } from "react-router-dom";
-
-import updateCache from "../utils/updateCache";
 
 const NewBook = () => {
   const [title, setTitle] = useState("");
@@ -15,13 +13,13 @@ const NewBook = () => {
   const navigate = useNavigate();
 
   const [addBook] = useMutation(ADD_BOOK, {
-    // refetch ALL_BOOKS if you want to refresh the actual list of books
-    // - refetching ADD_BOOK does nothing at all here
-    refetchQueries: [{ query: ALL_BOOKS }, { query: ALL_AUTHORS }],
+    refetchQueries: [{ query: ALL_BOOKS }, { query: ALL_AUTHORS }, { query: ALL_GENRES }],
     onError: (error) => {
       const messages = error.graphQLErrors.map((e) => e.message).join("\n");
       console.log(messages);
     }
+
+    // took updateCache out of here, was just causing bugs that seemed to go on forever
   });
 
   const handleSubmit = async (event) => {

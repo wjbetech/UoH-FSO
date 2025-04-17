@@ -8,7 +8,7 @@ const Books = () => {
   const [genreFilter, setGenreFilter] = useState("");
 
   const result = useQuery(ALL_BOOKS, {
-    variables: { genre: genreFilter }
+    variables: { genre: genreFilter || null } // normalize empty string to null
   });
 
   const { data } = useQuery(ALL_GENRES, {
