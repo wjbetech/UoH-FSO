@@ -1,6 +1,10 @@
 import gql from "graphql-tag";
 
 const typeDefs = gql`
+  type Subscription {
+    bookAdded: Book!
+  }
+
   type User {
     username: String!
     favoriteGenres: [String!]!
@@ -13,7 +17,7 @@ const typeDefs = gql`
 
   type Author {
     name: String!
-    id: String
+    id: ID!
     born: Int
     authorBookCount: Int!
   }

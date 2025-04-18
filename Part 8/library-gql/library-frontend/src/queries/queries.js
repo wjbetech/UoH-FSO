@@ -32,17 +32,30 @@ export const ALL_AUTHORS = gql`
 //   }
 // `;
 
+export const BOOK_DETAILS = gql`
+  fragment BookDetails on Book {
+    id
+    title
+    published
+    author {
+      name
+      id
+    }
+    genres
+  }
+`;
+
 // the fix:
 export const ALL_BOOKS = gql`
   query allBooks($genre: String) {
     allBooks(genre: $genre) {
+      id
       title
       published
       author {
-        name
         id
+        name
       }
-      id
       genres
     }
   }
@@ -51,15 +64,19 @@ export const ALL_BOOKS = gql`
 export const ADD_BOOK = gql`
   mutation createBook($title: String!, $published: Int!, $author: String!, $genres: [String!]!) {
     addBook(title: $title, published: $published, author: $author, genres: $genres) {
-      title
-      published
-      author {
-        name
-        id
-      }
-      genres
+      ...BookDetails
     }
   }
+  ${BOOK_DETAILS}
+`;
+
+export const BOOK_ADDED = gql`
+  subscription {
+    bookAdded {
+      ...BookDetails
+    }
+  }
+  ${BOOK_DETAILS}
 `;
 
 export const ALL_GENRES = gql`

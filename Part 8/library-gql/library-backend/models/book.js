@@ -17,6 +17,8 @@ const bookSchema = new mongoose.Schema({
   genres: [{ type: String }]
 });
 
+bookSchema.index({ author: 1 });
+
 const Book = mongoose.model("Book", bookSchema);
 
 export default Book;
