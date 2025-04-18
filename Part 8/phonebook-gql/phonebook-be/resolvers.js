@@ -24,7 +24,7 @@ const resolvers = {
       });
     },
     findPerson: async (root, args) => {
-      return await Person.findOne({ name: args.name });
+      return (await Person.findOne({ name: args.name })).populate("friendOf");
     }
   },
   Person: {
@@ -34,15 +34,7 @@ const resolvers = {
         city: root.city
       };
     },
-    friendOf: async (root) => {
-      const friends = await User.find({
-        friends: {
-          $in: [root._id]
-        }
-      })
-
-      return friends
-    }
+     
   },
   Mutation: {
     createUser: async (root, args) => {
