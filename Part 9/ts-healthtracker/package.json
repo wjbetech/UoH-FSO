@@ -1,0 +1,17 @@
+{
+  "name": "ts-healthtracker",
+  "version": "1.0.0",
+  "description": "UoH-FSO Part 9 exercises",
+  "main": "bmiCalculator.ts",
+  "scripts": {
+    "ts-node": "ts-node",
+    "calculateBmi": "ts-node bmiCalculator.ts",
+    "exerciseCalculator": "ts-node exerciseCalculator.ts"
+  },
+  "devDependencies": {
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
+  },
+  "author": "",
+  "license": "ISC"
+}
