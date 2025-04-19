@@ -4,7 +4,7 @@ interface BmiValues {
 }
 
 // pass args as string[] because Node.js provides the args array as a set of strings!
-const parseArgs = (args: string[]): BmiValues => {
+const parseBmiArgs = (args: string[]): BmiValues => {
   if (args.length < 4) throw new Error("Not enough arguments in calculateBmi!");
   if (args.length > 4) throw new Error("Too many arguments in calculateBmi!");
 
@@ -33,7 +33,7 @@ const calculateBmi = (height: number, weight: number) => {
 };
 
 try {
-  const { value1, value2 } = parseArgs(process.argv);
+  const { value1, value2 } = parseBmiArgs(process.argv);
   calculateBmi(value1, value2);
 } catch (error: unknown) {
   let errorMessage = "You provided some invalid statistics in calculateBmi()!";
