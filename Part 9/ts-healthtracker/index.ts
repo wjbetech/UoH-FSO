@@ -6,6 +6,8 @@ app.get("/hello", (_req, res) => {
   res.send("Hello Full Stack!");
 });
 
+app.get("/bmi", (_req, res) => {});
+
 const PORT = 3005;
 
 app.listen(PORT, () => {
