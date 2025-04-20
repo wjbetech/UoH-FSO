@@ -1,5 +1,5 @@
 import express from "express";
-import { calculate } from "./lib/calculator";
+import { calculate, Operation } from "./lib/calculator";
 // import multiply from "./lib/multiply";
 
 const app = express();
@@ -10,9 +10,17 @@ app.get("/ping", (_req, res) => {
 });
 
 app.post("/calculate", (req, res) => {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const { value1, value2, operation } = req.body;
 
-  const result = calculate(value1, value2, operation);
+  if (!value1 || isNaN(Number(value1))) {
+    return res.status(400).send({
+      error: "value1 is missing or not a number in calculate()"
+    });
+  }
+
+  const result = calculate(Number(value1), Number(value2), operation as Operation);
+
   res.send({ result });
 });
 
