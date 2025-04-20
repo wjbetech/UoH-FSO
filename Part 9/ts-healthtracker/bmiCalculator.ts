@@ -18,17 +18,17 @@ const parseBmiArgs = (args: string[]): BmiValues => {
 };
 
 // height in cm, weight in kg!
-const calculateBmi = (height: number, weight: number) => {
+export const calculateBmi = (height: number, weight: number) => {
   const heightInMeters = height / 100;
   const bmi = Number((weight / (heightInMeters * heightInMeters)).toFixed(2));
   if (bmi < 18.5) {
-    console.log(`Your BMI is ${bmi}. You are underweight.`);
+    return `Your BMI is ${bmi}. You are underweight.`;
   } else if (bmi >= 18.5 && bmi < 24.9) {
-    console.log(`Your BMI is ${bmi}. You are normal weight.`);
+    return `Your BMI is ${bmi}. You are normal weight.`;
   } else if (bmi >= 25 && bmi < 29.9) {
-    console.log(`Your BMI is ${bmi}. You are overweight.`);
+    return `Your BMI is ${bmi}. You are overweight.`;
   } else {
-    console.log(`Your BMI is ${bmi}. You are obese.`);
+    return `Your BMI is ${bmi}. You are obese.`;
   }
 };
 
@@ -44,5 +44,3 @@ try {
   }
   console.log(errorMessage);
 }
-
-export default { calculateBmi };
