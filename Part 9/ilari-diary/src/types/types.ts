@@ -2,13 +2,13 @@ export type Weather = "sunny" | "rainy" | "cloudy" | "stormy" | "windy" | "snowy
 
 export type Visibility = "excellent" | "good" | "ok" | "poor" | "very poor";
 
-export interface DiaryEntry {
-  id: number;
+export interface FlightLogEntry {
+  id: string;
   date: string;
   weather: Weather;
   visibility: Visibility;
   comment: string;
 }
 
-export type NonSensitiveDiaryEntry = Omit<DiaryEntry, "comment">;
-
+export type NonSensitiveLogEntry = Omit<FlightLogEntry, "comment">;
+export type NewFlightLogEntry = Omit<FlightLogEntry, "id">;
