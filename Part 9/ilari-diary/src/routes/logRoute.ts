@@ -1,6 +1,7 @@
 import express, { Response } from "express";
 import flightLogService from "../services/flightLogService";
-import { NonSensitiveLogEntry, FlightLogEntry, NewFlightLogEntry } from "../types/types";
+import { NonSensitiveLogEntry } from "../types/types";
+import toNewFlightLogEntry from "../utils/utils";
 
 const router = express.Router();
 
@@ -21,9 +22,17 @@ router.get("/:id", (req, res) => {
 });
 
 router.post("/", (req, res) => {
-  const { date, weather, visibility, comment } = req.body;
-  const newLogEntry = flightLogService.addFlightLog({ date, weather, visibility, comment });
-  res.json(newLogEntry);
+  try {
+    const newFlightLogEntry = toNewFlightLogEntry(req.body);
+    const addedFlightLogEntry = flightLogService.addFlightLog(newFlightLogEntry);
+    res.json(addedFlightLogEntry);
+  } catch (error: unknown) {
+    let errorMessage = "Posting a new flight log went wrong!";
+    if (error instanceof Error) {
+      errorMessage += ` Error: ${error.message}`;
+    }
+    res.status(400).send(errorMessage);
+  }
 });
 
 export default router;
