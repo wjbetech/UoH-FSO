@@ -1,7 +1,7 @@
 import express from "express";
 
 // routes
-import diaryRouter from "./routes/diaries";
+import diaryRouter from "./routes/logRoute";
 
 const app = express();
 app.use(express.json());
