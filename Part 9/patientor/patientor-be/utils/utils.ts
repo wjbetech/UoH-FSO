@@ -1,17 +1,24 @@
 import { NewPatientEntry } from "./../types/types";
+import { parseDate, parseGender, parseName, parseOccupation, parseSsn } from "./typeGuards";
 
 const toNewPatientEntry = (object: unknown): NewPatientEntry => {
-  console.log(object);
+  if (!object || typeof object !== "object") {
+    throw new Error("Incorrect or missing data: " + object);
+  }
 
-  const newPatient: NewPatientEntry = {
-    name: "Val Hippitainen",
-    dateOfBirth: "1990-01-01",
-    ssn: "123-45-6789",
-    gender: "female",
-    occupation: "Software Engineer"
-  };
+  if ("dateOfBirth" in object && "name" in object && "ssn" in object && "occupation" in object && "gender" in object) {
+    const newPatient: NewPatientEntry = {
+      name: parseName(object.name),
+      dateOfBirth: parseDate(object.dateOfBirth),
+      ssn: parseSsn(object.ssn),
+      gender: parseGender(object.gender),
+      occupation: parseOccupation(object.occupation)
+    };
 
-  return newPatient;
+    return newPatient;
+  }
+
+  throw new Error("Incorrect data passed in utils/toNewPatiententry func!");
 };
 
 export default toNewPatientEntry;
