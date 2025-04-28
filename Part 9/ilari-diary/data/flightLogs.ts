@@ -1,11 +1,7 @@
-<<<<<<< HEAD:Part 9/ilari-diary/data/entries.ts
-import { DiaryEntry } from "../src/types/types";
-import toNewFlightLogEntry from @
-=======
 import { FlightLogEntry } from "../src/types/types";
->>>>>>> 32914abd0dddd9ec3afb4d50735d20579ed8b2a6:Part 9/ilari-diary/data/flightLogs.ts
+import toNewFlightLogEntry from "../src/utils/utils";
 
-const flightLogEntries: FlightLogEntry[] = [
+const data = [
   {
     id: "01000001",
     date: "2017-01-01",
@@ -36,4 +32,10 @@ const flightLogEntries: FlightLogEntry[] = [
   }
 ];
 
-export default flightLogEntries;
+const flightData: FlightLogEntry[] = data.map(object => {
+  const ob = toNewFlightLogEntry(object) as FlightLogEntry;
+  ob.id = object.id;
+  return ob;
+});
+
+export default flightData;

@@ -23,8 +23,8 @@ const parseDate = (date: unknown): string => {
   return date;
 };
 
-const isWeather = (str: string): str is Weather => {
-  return ["sunny", "rainy", "cloudy", "stormy", "windy", "snowy"].includes(str);
+const isWeather = (param: string): param is Weather => {
+  return Object.values(Weather).map(v => v.toString()).includes(param);
 };
 
 const parseWeather = (weather: unknown): Weather => {

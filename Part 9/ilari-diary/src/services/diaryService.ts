@@ -1,18 +1,14 @@
-import diaries from "../../data/entries";
-import { NonSensitiveDiaryEntry, Weather } from "../types/types";
+import flightEntries from "../../data/flightLogs"
+import { NonSensitiveLogEntry, Weather } from "../types/types";
 
-import { DiaryEntry } from "../types/types";
+import { FlightLogEntry } from "../types/types";
 
-const getEntries = (): DiaryEntry[] => {
-  return diaries;
+const getEntries = (): FlightLogEntry[] => {
+  return flightEntries;
 };
 
-const isWeather = (param: string): param is Weather => {
-  return Object.values(Weather).map(v => v.toString()).includes(param);
-};
-
-const getNonSensitiveEntries = (): NonSensitiveDiaryEntry[] => {
-  return diaries.map(({
+const getNonSensitiveEntries = (): NonSensitiveLogEntry[] => {
+  return flightEntries.map(({
     id, date, weather, visibility
   }) => ({
     id,
@@ -30,5 +26,4 @@ export default {
   getEntries,
   addDiary,
   getNonSensitiveEntries,
-  isWeather
 };
