@@ -1,5 +1,5 @@
-import flightEntries from "../../data/flightLogs"
-import { NonSensitiveLogEntry, Weather } from "../types/types";
+import flightEntries from "../../data/flightLogs";
+import { NonSensitiveLogEntry } from "../types/types";
 
 import { FlightLogEntry } from "../types/types";
 
@@ -8,13 +8,11 @@ const getEntries = (): FlightLogEntry[] => {
 };
 
 const getNonSensitiveEntries = (): NonSensitiveLogEntry[] => {
-  return flightEntries.map(({
-    id, date, weather, visibility
-  }) => ({
+  return flightEntries.map(({ id, date, weather, visibility }) => ({
     id,
     date,
-    weather, 
-    visibility,
+    weather,
+    visibility
   }));
 };
 
@@ -25,5 +23,5 @@ const addDiary = () => {
 export default {
   getEntries,
   addDiary,
-  getNonSensitiveEntries,
+  getNonSensitiveEntries
 };
