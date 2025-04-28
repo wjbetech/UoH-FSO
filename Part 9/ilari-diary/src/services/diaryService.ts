@@ -1,10 +1,14 @@
 import diaries from "../../data/entries";
-import { NonSensitiveDiaryEntry } from "../types/types";
+import { NonSensitiveDiaryEntry, Weather } from "../types/types";
 
 import { DiaryEntry } from "../types/types";
 
 const getEntries = (): DiaryEntry[] => {
   return diaries;
+};
+
+const isWeather = (param: string): param is Weather => {
+  return Object.values(Weather).map(v => v.toString()).includes(param);
 };
 
 const getNonSensitiveEntries = (): NonSensitiveDiaryEntry[] => {
@@ -25,5 +29,6 @@ const addDiary = () => {
 export default {
   getEntries,
   addDiary,
-  getNonSensitiveEntries
+  getNonSensitiveEntries,
+  isWeather
 };

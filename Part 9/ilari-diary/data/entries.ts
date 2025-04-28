@@ -1,4 +1,5 @@
 import { DiaryEntry } from "../src/types/types";
+import toNewFlightLogEntry from @
 
 const diaryEntries: DiaryEntry[] = [
   {
