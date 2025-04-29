@@ -1,54 +1,56 @@
-import { Gender } from "../types/types";
+// this file is largely redundant after implementing Zod
 
-const isString = (text: unknown): text is string => {
-  return typeof text === "string" || text instanceof String;
-};
+// import { Gender } from "../types/types";
 
-export const parseName = (name: unknown): string => {
-  if (!name || !isString(name)) {
-    throw new Error("Incorrect or missing name: " + name);
-  }
+// const isString = (text: unknown): text is string => {
+//   return typeof text === "string" || text instanceof String;
+// };
 
-  return name;
-};
+// export const parseName = (name: unknown): string => {
+//   if (!name || !isString(name)) {
+//     throw new Error("Incorrect or missing name: " + name);
+//   }
 
-const isDate = (date: string): boolean => {
-  return Boolean(Date.parse(date));
-};
+//   return name;
+// };
 
-export const parseDate = (date: unknown): string => {
-  if (!date || !isString(date) || !isDate(date)) {
-    throw new Error("Incorrect or missing date detected via parseDate type guard!");
-  }
-  return date;
-};
+// const isDate = (date: string): boolean => {
+//   return Boolean(Date.parse(date));
+// };
 
-export const parseSsn = (ssn: unknown): string => {
-  if (!ssn || !isString(ssn)) {
-    throw new Error("Incorrect or missing ssn: " + ssn);
-  }
+// export const parseDate = (date: unknown): string => {
+//   if (!date || !isString(date) || !isDate(date)) {
+//     throw new Error("Incorrect or missing date detected via parseDate type guard!");
+//   }
+//   return date;
+// };
 
-  return ssn;
-};
+// export const parseSsn = (ssn: unknown): string => {
+//   if (!ssn || !isString(ssn)) {
+//     throw new Error("Incorrect or missing ssn: " + ssn);
+//   }
 
-const isGender = (param: string): param is Gender => {
-  return Object.values(Gender)
-    .map((v) => v.toString())
-    .includes(param);
-};
+//   return ssn;
+// };
 
-export const parseGender = (gender: unknown): Gender => {
-  if (!isString(gender) || !isGender(gender)) {
-    throw new Error("Incorrect or missing gender provided: " + gender);
-  }
+// const isGender = (param: string): param is Gender => {
+//   return Object.values(Gender)
+//     .map((v) => v.toString())
+//     .includes(param);
+// };
 
-  return gender;
-};
+// export const parseGender = (gender: unknown): Gender => {
+//   if (!isString(gender) || !isGender(gender)) {
+//     throw new Error("Incorrect or missing gender provided: " + gender);
+//   }
 
-export const parseOccupation = (occupation: unknown): string => {
-  if (!occupation || !isString(occupation)) {
-    throw new Error("Incorrect or missing occupation provided: " + occupation);
-  }
+//   return gender;
+// };
 
-  return occupation;
-};
+// export const parseOccupation = (occupation: unknown): string => {
+//   if (!occupation || !isString(occupation)) {
+//     throw new Error("Incorrect or missing occupation provided: " + occupation);
+//   }
+
+//   return occupation;
+// };

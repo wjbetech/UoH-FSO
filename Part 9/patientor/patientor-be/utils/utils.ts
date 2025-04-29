@@ -1,24 +1,17 @@
-import { NewPatientEntry } from "./../types/types";
-import { parseDate, parseGender, parseName, parseOccupation, parseSsn } from "./typeGuards";
+import { Gender, NewPatientEntry } from "./../types/types";
+import { z } from "zod";
 
-const toNewPatientEntry = (object: unknown): NewPatientEntry => {
-  if (!object || typeof object !== "object") {
-    throw new Error("Incorrect or missing data: " + object);
-  }
+// these imports are redundant with Zod taking over
+// import { parseDate, parseGender, parseName, parseOccupation, parseSsn } from "./typeGuards";
 
-  if ("dateOfBirth" in object && "name" in object && "ssn" in object && "occupation" in object && "gender" in object) {
-    const newPatient: NewPatientEntry = {
-      name: parseName(object.name),
-      dateOfBirth: parseDate(object.dateOfBirth),
-      ssn: parseSsn(object.ssn),
-      gender: parseGender(object.gender),
-      occupation: parseOccupation(object.occupation)
-    };
+export const NewPatientSchema = z.object({
+  name: z.string(),
+  dateOfBirth: z.string().date(),
+  ssn: z.string(),
+  gender: z.nativeEnum(Gender),
+  occupation: z.string()
+});
 
-    return newPatient;
-  }
-
-  throw new Error("Incorrect data passed in utils/toNewPatiententry func!");
+export const toNewPatientEntry = (object: unknown): NewPatientEntry => {
+  return NewPatientSchema.parse(object);
 };
-
-export default toNewPatientEntry;
