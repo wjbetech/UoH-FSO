@@ -1,5 +1,7 @@
 import { NewFlightLogEntry } from "../types/types";
-import { parseComment, parseDate, parseWeather, parseVisibility } from "./typeGuards";
+import { Weather, Visibility } from "../types/types";
+import { z } from "zod";
+// removed imports: parseComment, parseDate, parseWeather, parseVisibility
 
 const toNewFlightLogEntry = (object: unknown): NewFlightLogEntry => {
   if (!object || typeof object !== "object") {
@@ -8,10 +10,10 @@ const toNewFlightLogEntry = (object: unknown): NewFlightLogEntry => {
 
   if ("comment" in object && "date" in object && "weather" in object && "visibility" in object) {
     const newFlightLog: NewFlightLogEntry = {
-      weather: parseWeather(object.weather),
-      visibility: parseVisibility(object.visibility),
-      date: parseDate(object.date),
-      comment: parseComment(object.comment)
+      weather: z.nativeEnum(Weather).parse(object.weather),
+      visibility: z.nativeEnum(Visibility).parse(object.visibility),
+      date: z.string().date().parse(object.date),
+      comment: z.string().parse(object.comment)
     };
 
     return newFlightLog;

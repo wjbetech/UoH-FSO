@@ -20,7 +20,7 @@ export interface FlightLogEntry {
   date: string;
   weather: Weather;
   visibility: Visibility;
-  comment: string;
+  comment?: string;
 }
 
 export type NonSensitiveLogEntry = Omit<FlightLogEntry, "comment">;
