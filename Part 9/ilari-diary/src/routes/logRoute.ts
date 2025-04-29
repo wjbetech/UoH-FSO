@@ -1,7 +1,8 @@
 import express, { Response } from "express";
 import flightLogService from "../services/flightLogService";
 import { NonSensitiveLogEntry } from "../types/types";
-import toNewFlightLogEntry from "../utils/utils";
+import { z } from "zod";
+import { newEntrySchema } from "../utils/utils";
 
 const router = express.Router();
 
@@ -23,15 +24,19 @@ router.get("/:id", (req, res) => {
 
 router.post("/", (req, res) => {
   try {
-    const newFlightLogEntry = toNewFlightLogEntry(req.body);
+    const newFlightLogEntry = newEntrySchema.parse(req.body);
     const addedFlightLogEntry = flightLogService.addFlightLog(newFlightLogEntry);
     res.json(addedFlightLogEntry);
   } catch (error: unknown) {
-    let errorMessage = "Posting a new flight log went wrong!";
-    if (error instanceof Error) {
-      errorMessage += ` Error: ${error.message}`;
+    if (error instanceof z.ZodError) {
+      res.status(400).send({
+        error: error.issues
+      });
+    } else {
+      res.status(400).send({
+        error: "unknown error in the logRouter POST!"
+      });
     }
-    res.status(400).send(errorMessage);
   }
 });
 

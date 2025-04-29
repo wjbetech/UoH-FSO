@@ -1,3 +1,6 @@
+import { z } from "zod";
+import { newEntrySchema } from "../utils/utils";
+
 export enum Weather {
   Sunny = "sunny",
   Rainy = "rainy",
@@ -24,4 +27,9 @@ export interface FlightLogEntry {
 }
 
 export type NonSensitiveLogEntry = Omit<FlightLogEntry, "comment">;
-export type NewFlightLogEntry = Omit<FlightLogEntry, "id">;
+
+export type NewFlightLogEntry = z.infer<typeof newEntrySchema>;
+
+export interface FlightLogEntry extends NewFlightLogEntry {
+  id: string;
+};
