@@ -1,8 +1,8 @@
-import express, { Response } from "express";
+import express, { Request, Response } from "express";
 import flightLogService from "../services/flightLogService";
-import { NonSensitiveLogEntry } from "../types/types";
-import { z } from "zod";
-import { newEntrySchema } from "../utils/utils";
+import { FlightLogEntry, NewFlightLogEntry, NonSensitiveLogEntry } from "../types/types";
+import newFlightLogParser from "../middleware/parser";
+import { errorMiddleware } from "../middleware/errors";
 
 const router = express.Router();
 
@@ -22,22 +22,15 @@ router.get("/:id", (req, res) => {
   }
 });
 
-router.post("/", (req, res) => {
-  try {
-    const newFlightLogEntry = newEntrySchema.parse(req.body);
-    const addedFlightLogEntry = flightLogService.addFlightLog(newFlightLogEntry);
-    res.json(addedFlightLogEntry);
-  } catch (error: unknown) {
-    if (error instanceof z.ZodError) {
-      res.status(400).send({
-        error: error.issues
-      });
-    } else {
-      res.status(400).send({
-        error: "unknown error in the logRouter POST!"
-      });
-    }
+router.post(
+  "/",
+  newFlightLogParser,
+  (req: Request<unknown, unknown, NewFlightLogEntry>, res: Response<FlightLogEntry>) => {
+    const addedFlightLog = flightLogService.addFlightLog(req.body);
+    res.json(addedFlightLog);
   }
-});
+);
+
+router.use(errorMiddleware);
 
 export default router;
