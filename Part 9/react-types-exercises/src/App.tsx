@@ -1,3 +1,9 @@
+import Content from "./components/Content";
+import Header from "./components/Header";
+import Total from "./components/Total";
+
+
+
 const App = () => {
   const courseName = "Half Stack application development";
   const courseParts = [
@@ -19,7 +25,7 @@ const App = () => {
 
   return (
     <div className="container">
-      <h1>{courseName}</h1>
+      <Header courseName={courseName} />
       <p>
         {courseParts[0].name} {courseParts[0].exerciseCount}
       </p>
