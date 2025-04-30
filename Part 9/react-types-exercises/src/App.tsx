@@ -5,7 +5,7 @@ import { CoursePartUnion } from "./types/coursePartTypes";
 import { assertNever } from "./utils/assertNever";
 
 const App = () => {
-  const courseName = "Half Stack application development";
+  const courseName = "Half Stack Application Development";
   const courseParts: CoursePartUnion[] = [
     {
       name: "Fundamentals",
@@ -37,6 +37,13 @@ const App = () => {
       exerciseCount: 10,
       description: "a hard part",
       kind: "basic"
+    },
+    {
+      name: "Backend development",
+      exerciseCount: 21,
+      description: "Typing the backend",
+      requirements: ["nodejs", "jest"],
+      kind: "special"
     }
   ];
   const totalExercises = courseParts.reduce((sum, part) => sum + part.exerciseCount, 0);
@@ -49,9 +56,12 @@ const App = () => {
       case "group":
         console.log(part.name, part.exerciseCount, part.groupProjectCount);
         break;
-      // case "background":
-      //   console.log(part.name, part.backgroundMaterial, part.description);
-      //   break;
+      case "background":
+        console.log(part.name, part.backgroundMaterial, part.description);
+        break;
+      case "special":
+        console.log(part.name, part.requirements, part.description);
+        break;
       default:
         return assertNever(part);
     }

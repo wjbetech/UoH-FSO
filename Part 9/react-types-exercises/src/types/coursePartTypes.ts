@@ -22,4 +22,9 @@ export interface CoursePartWithBackground extends CoursePartBase, CourseDescript
   kind: "background";
 }
 
-export type CoursePartUnion = CoursePartBasic | CoursePartWithBackground | CoursePartWithGroups;
+export interface CoursePartWithSpecial extends CoursePartBase, CourseDescriptor {
+  requirements: string[];
+  kind: "special";
+}
+
+export type CoursePartUnion = CoursePartBasic | CoursePartWithBackground | CoursePartWithGroups | CoursePartWithSpecial;

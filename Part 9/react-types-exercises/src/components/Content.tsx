@@ -1,24 +1,16 @@
-type CoursePart = {
-  name: string;
-  exerciseCount: number;
-};
+import Part from "./Part";
+import { CoursePartUnion } from "../types/coursePartTypes";
 
 type ContentProps = {
-  courseParts: CoursePart[];
+  courseParts: CoursePartUnion[];
 };
 
 export default function Content({ courseParts }: ContentProps) {
   return (
     <>
-      <p>
-        {courseParts[0].name} {courseParts[0].exerciseCount}
-      </p>
-      <p>
-        {courseParts[1].name} {courseParts[1].exerciseCount}
-      </p>
-      <p>
-        {courseParts[2].name} {courseParts[2].exerciseCount}
-      </p>
+      {courseParts.map((part) => {
+        return <Part key={part.name} partData={part} />;
+      })}
     </>
   );
 }
