@@ -1,9 +1,7 @@
-import React from 'react'
+type TotalProps = {
+  totalExercises: number;
+};
 
-type Props = {}
-
-export default function Total({}: Props) {
-  return (
-    <div>Total</div>
-  )
+export default function Total({ totalExercises }: TotalProps) {
+  return <p>Number of exercises {totalExercises}</p>;
 }

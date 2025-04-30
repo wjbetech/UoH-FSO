@@ -1,9 +1,7 @@
-import React from 'react'
+type HeaderProps = {
+  courseName: string;
+};
 
-type Props = {}
-
-export default function Header({}: Props) {
-  return (
-    <div>Header</div>
-  )
+export default function Header({ courseName }: HeaderProps) {
+  return <h1>{courseName}</h1>;
 }
