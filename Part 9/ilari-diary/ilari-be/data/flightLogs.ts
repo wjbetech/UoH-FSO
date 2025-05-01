@@ -1,5 +1,5 @@
 import { FlightLogEntry } from "../src/types/types";
-import toNewFlightLogEntry from "../src/utils/utils";
+import { toNewFlightLogEntry } from "../src/utils/utils";
 
 const data = [
   {
@@ -32,7 +32,7 @@ const data = [
   }
 ];
 
-const flightData: FlightLogEntry[] = data.map(object => {
+const flightData: FlightLogEntry[] = data.map((object) => {
   const ob = toNewFlightLogEntry(object) as FlightLogEntry;
   ob.id = object.id;
   return ob;

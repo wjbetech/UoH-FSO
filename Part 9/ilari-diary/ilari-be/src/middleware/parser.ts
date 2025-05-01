@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { newEntrySchema } from "../utils/utils";
+import newEntrySchema from "../utils/utils";
 
 const newFlightLogParser = (req: Request, _res: Response, next: NextFunction) => {
   try {

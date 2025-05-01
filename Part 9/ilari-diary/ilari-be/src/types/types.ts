@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { newEntrySchema } from "../utils/utils";
+import newEntrySchema from "../utils/utils";
 
 export enum Weather {
   Sunny = "sunny",
@@ -32,4 +32,4 @@ export type NewFlightLogEntry = z.infer<typeof newEntrySchema>;
 
 export interface FlightLogEntry extends NewFlightLogEntry {
   id: string;
-};
+}
