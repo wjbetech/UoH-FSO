@@ -4,6 +4,10 @@ export interface FlightLogTypes {
   weather: string;
   visibility: string;
   comment: string;
-}
+};
+
+export interface FlightLogs {
+  flightLogs: FlightLogTypes[];
+};
 
 export type NewFlightLog = Omit<FlightLogTypes, "id">;

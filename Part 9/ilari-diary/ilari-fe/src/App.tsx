@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
-import { FlightLogTypes } from "../types/types";
-import { getAllFlightLogs } from "../services/logService";
+import { FlightLogTypes } from "./types/types";
+import { getAllFlightLogs } from "./services/logService";
+import FlightLogList from "./components/FlightLogList";
 
 function App() {
   const [flightLogs, setFlightLogs] = useState<FlightLogTypes[]>([]);
@@ -14,6 +15,7 @@ function App() {
   return (
     <div className="container">
       <h1>Ilari's Flight Log</h1>
+      <FlightLogList logs={flightLogs} />
     </div>
   );
 }
