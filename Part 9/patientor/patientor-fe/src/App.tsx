@@ -3,22 +3,29 @@ import axios from "axios";
 import { BrowserRouter as Router, Route, Link, Routes } from "react-router-dom";
 import { Button, Divider, Container, Typography } from "@mui/material";
 
-import { apiBaseUrl } from "../utils/constants";
-import { Patient } from "../types/types";
+import { apiBaseUrl } from "./utils/constants";
+import { Patient } from "./types/types";
 
 import patientService from "./services/patients";
 import PatientListPage from "./components/PatientListPage";
+import PatientInfo from "./components/PatientInfo/PatientInfo";
 
 const App = () => {
   const [patients, setPatients] = useState<Patient[]>([]);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     void axios.get<void>(`${apiBaseUrl}/ping`);
 
     const fetchPatientList = async () => {
-      const patients = await patientService.getAll();
-      setPatients(patients);
+      try {
+        const patients = await patientService.getAll();
+        setPatients(patients);
+      } catch (e) {
+        setError("Failed to fetch patient list");
+      }
     };
+
     void fetchPatientList();
   }, []);
 
@@ -33,8 +40,10 @@ const App = () => {
             Home
           </Button>
           <Divider hidden />
+          {error && <div style={{ color: "red" }}>{error}</div>}
           <Routes>
             <Route path="/" element={<PatientListPage patients={patients} setPatients={setPatients} />} />
+            <Route path="/patients/:id" element={<PatientInfo />} />
           </Routes>
         </Container>
       </Router>
