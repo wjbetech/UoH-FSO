@@ -24,6 +24,7 @@ export default function PatientInfo() {
     const fetchPatient = async () => {
       try {
         const patientData = await patients.getPatient(id);
+        console.log(patientData);
         setPatient(patientData);
       } catch (e) {
         setError("Failed to fetch patient data");
@@ -63,6 +64,22 @@ export default function PatientInfo() {
       </h3>
       <p>SSN: {patient.ssn}</p>
       <p>Occupation: {patient.occupation}</p>
+      <div className="entries">
+        <h3>Entries:</h3>
+        {patient.entries?.map((entry) => {
+          return (
+            <div>
+              <h5>{entry.date}</h5>
+              <p>{entry.description}</p>
+              {entry.diagnosisCodes?.map((c) => (
+                <ul>
+                  <li>{c}</li>
+                </ul>
+              ))}
+            </div>
+          );
+        })}
+      </div>
       <Button component={Link} to="/" variant="contained" color="primary" sx={{ marginTop: "1rem" }}>
         Back
       </Button>
