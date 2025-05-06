@@ -97,9 +97,14 @@ export default function PatientInfo() {
         )}
       </Box>
 
-      <Button component={Link} to="/" variant="contained" color="primary" sx={{ mt: 4, fontWeight: "bold" }}>
-        Back
-      </Button>
+      <Box sx={{ display: "flex", gap: "1rem" }}>
+        <Button variant="contained" color="primary" sx={{ mt: 4, fontWeight: "bold" }}>
+          Add New Entry
+        </Button>
+        <Button component={Link} to="/" variant="contained" color="primary" sx={{ mt: 4, fontWeight: "bold" }}>
+          Back
+        </Button>
+      </Box>
     </Box>
   );
 }

@@ -56,9 +56,13 @@ const EntryDetails = ({ entry, diagnosesData }: { entry: Entry; diagnosesData: D
           switch (entry.type) {
             case "HealthCheck":
               return (
-                <Box sx={{ mt: 1 }}>
-                  <FavoriteIcon sx={{ color: healthCheckColor(entry.healthCheckRating) }} />
-                </Box>
+                <>
+                  <Typography>Standard Health Checkup</Typography>
+                  <Box sx={{ display: "flex", mt: 1 }}>
+                    <Typography>Status: </Typography>
+                    <FavoriteIcon sx={{ color: healthCheckColor(entry.healthCheckRating) }} />
+                  </Box>
+                </>
               );
             case "Hospital":
               return (
