@@ -8,7 +8,7 @@ import MaleIcon from "@mui/icons-material/Male";
 import FemaleIcon from "@mui/icons-material/Female";
 import TransgenderIcon from "@mui/icons-material/Transgender";
 import QuestionMarkIcon from "@mui/icons-material/QuestionMark";
-import { Button } from "@mui/material";
+import { Box, Button, List, ListItem, Paper, Typography } from "@mui/material";
 
 export default function PatientInfo() {
   const { id } = useParams<{ id: string }>();
@@ -53,36 +53,57 @@ export default function PatientInfo() {
       case "transgender":
         return <TransgenderIcon sx={{ color: "purple" }} />;
       default:
-        return <QuestionMarkIcon color="disabled" />;
+        return <QuestionMarkIcon sx={{ color: "#eee" }} />;
     }
   };
 
   return (
-    <div>
-      <h3>
-        {patient.name} - <span>{genderIcon(patient.gender)}</span>
-      </h3>
-      <p>SSN: {patient.ssn}</p>
-      <p>Occupation: {patient.occupation}</p>
-      <div className="entries">
-        <h3>Entries:</h3>
-        {patient.entries?.map((entry) => {
-          return (
-            <div>
-              <h5>{entry.date}</h5>
-              <p>{entry.description}</p>
-              {entry.diagnosisCodes?.map((c) => (
-                <ul>
-                  <li>{c}</li>
-                </ul>
-              ))}
-            </div>
-          );
-        })}
-      </div>
-      <Button component={Link} to="/" variant="contained" color="primary" sx={{ marginTop: "1rem" }}>
+    <Box sx={{ marginTop: "2rem" }}>
+      <Typography variant="h4" sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+        {patient.name} {genderIcon(patient.gender)}
+      </Typography>
+
+      <Typography variant="body1" sx={{ mt: 1 }}>
+        <strong>SSN:</strong> {patient.ssn}
+      </Typography>
+      <Typography variant="body1">
+        <strong>Occupation:</strong> {patient.occupation}
+      </Typography>
+
+      <Box sx={{ mt: 4 }}>
+        {patient.entries && patient.entries.length > 0 ? (
+          <>
+            <Typography variant="h5" gutterBottom>
+              Entries:
+            </Typography>
+            {patient.entries.map((entry) => (
+              <Paper key={entry.id} elevation={2} sx={{ mb: 2, padding: 2, backgroundColor: "#eee" }}>
+                <Typography variant="subtitle1" sx={{ fontWeight: "bold" }}>
+                  {entry.date}
+                </Typography>
+                <Typography variant="body2" sx={{ mb: 1 }}>
+                  {entry.description}
+                </Typography>
+                {entry.diagnosisCodes && (
+                  <List dense sx={{ pl: 2 }}>
+                    {entry.diagnosisCodes.map((code) => (
+                      <ListItem key={code} sx={{ display: "list-item", pl: 1 }}>
+                        {code}
+                      </ListItem>
+                    ))}
+                  </List>
+                )}
+              </Paper>
+            ))}
+          </>
+        ) : (
+          <Typography>No entries for this patient.</Typography>
+        )}
+      </Box>
+
+      <Button component={Link} to="/" variant="contained" color="primary" sx={{ mt: 4, fontWeight: "bold" }}>
         Back
       </Button>
-    </div>
+    </Box>
   );
 }

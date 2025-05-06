@@ -49,18 +49,18 @@ const PatientListPage = ({ patients, setPatients }: Props) => {
 
   return (
     <div className="App">
-      <Box>
-        <Typography align="center" variant="h6">
+      <Box sx={{ margin: "2rem 0" }}>
+        <Typography align="center" variant="h5" sx={{ fontWeight: "bold" }}>
           Patient list
         </Typography>
       </Box>
       <Table style={{ marginBottom: "1em" }}>
         <TableHead>
           <TableRow>
-            <TableCell>Name</TableCell>
-            <TableCell>Gender</TableCell>
-            <TableCell>Occupation</TableCell>
-            <TableCell>Health Rating</TableCell>
+            <TableCell sx={{ fontWeight: "bold", color: "#fff" }}>Name</TableCell>
+            <TableCell sx={{ fontWeight: "bold", color: "#fff" }}>Gender</TableCell>
+            <TableCell sx={{ fontWeight: "bold", color: "#fff" }}>Occupation</TableCell>
+            <TableCell sx={{ fontWeight: "bold", color: "#fff" }}>Health Rating</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -69,8 +69,8 @@ const PatientListPage = ({ patients, setPatients }: Props) => {
               <TableCell>
                 <Link to={`/patients/${patient.id}`}>{patient.name}</Link>
               </TableCell>
-              <TableCell>{patient.gender}</TableCell>
-              <TableCell>{patient.occupation}</TableCell>
+              <TableCell sx={{ color: "#fff" }}>{patient.gender}</TableCell>
+              <TableCell sx={{ color: "#fff" }}>{patient.occupation}</TableCell>
               <TableCell>
                 <HealthRatingBar showText={false} rating={1} />
               </TableCell>
@@ -79,7 +79,7 @@ const PatientListPage = ({ patients, setPatients }: Props) => {
         </TableBody>
       </Table>
       <AddPatientModal modalOpen={modalOpen} onSubmit={submitNewPatient} error={error} onClose={closeModal} />
-      <Button variant="contained" onClick={() => openModal()}>
+      <Button variant="contained" sx={{ fontWeight: "bold" }} onClick={() => openModal()}>
         Add New Patient
       </Button>
     </div>
@@ -87,3 +87,6 @@ const PatientListPage = ({ patients, setPatients }: Props) => {
 };
 
 export default PatientListPage;
+
+// notes:
+// it would be better to refactor the styles, probably using { styled } from mUI

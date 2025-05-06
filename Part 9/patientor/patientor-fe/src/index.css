@@ -4,8 +4,8 @@
   font-weight: 500;
 
   color-scheme: light dark;
-  color: rgba(17, 17, 17, 0.87);
-  background-color: #bbbbbb;
+  color: rgb(216, 216, 216);
+  background-color: #333333;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -15,7 +15,7 @@
 }
 
 a {
-  font-weight: 500;
+  font-weight: 600;
   color: #646cff;
   text-decoration: inherit;
 }
@@ -29,6 +29,7 @@ body {
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
+  color: rgb(216, 216, 216);
 }
 
 h1 {
