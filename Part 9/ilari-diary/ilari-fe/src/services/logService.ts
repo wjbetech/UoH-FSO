@@ -1,5 +1,6 @@
 import axios from "axios";
 import { FlightLogTypes, NewFlightLog } from "../types/types";
+
 const baseUrl = "http://localhost:3005/api/flightlogs";
 
 export const getAllFlightLogs = async () => {
