@@ -20,7 +20,7 @@ function App() {
       <NewFlightLogForm
         onSubmit={async (newLog) => {
           const created = await createFlightLog(newLog);
-          setFlightLogs([...flightLogs, created]);
+          setFlightLogs((prev) => [...prev, created]);
         }}
       />
       <FlightLogList logs={flightLogs} />

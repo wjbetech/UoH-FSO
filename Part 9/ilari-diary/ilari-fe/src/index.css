@@ -113,6 +113,12 @@ button[type="submit"]:hover {
   }
 }
 
+.error-div {
+  color: red;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+}
+
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
