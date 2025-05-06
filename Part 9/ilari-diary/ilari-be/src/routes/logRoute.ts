@@ -9,7 +9,7 @@ const router = express.Router();
 router.get("/", (_req, res: Response<NonSensitiveLogEntry[]>) => {
   console.log("Fetching all diary entries on the route: / ");
 
-  res.send(flightLogService.getNonSensitiveEntries());
+  res.send(flightLogService.getEntries());
 });
 
 router.get("/:id", (req, res) => {

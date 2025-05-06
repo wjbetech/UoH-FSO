@@ -59,6 +59,16 @@ button:focus-visible {
   margin: auto;
 }
 
+.flight-log {
+  margin-bottom: 2rem;
+  padding-left: 8px;
+  border-left: 2px solid cyan;
+
+  & i {
+    font-size: 0.9rem;
+  }
+}
+
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;

@@ -1,4 +1,4 @@
-import { FlightLogTypes } from "../types/types"
+import { FlightLogTypes } from "../types/types";
 
 interface FlightLogListProps {
   logs: FlightLogTypes[];
@@ -7,9 +7,13 @@ interface FlightLogListProps {
 export default function FlightLogList({ logs }: FlightLogListProps) {
   return (
     <div>
+      <h3>Flight Logs:</h3>
       {logs.map((log) => (
-        <div key={log.id}>
-          <p>{log.date}</p>
+        <div className="flight-log" key={log.id}>
+          <i>{log.date}</i>
+          <p>Visibility: {log.visibility}</p>
+          <p>Weather: {log.weather}</p>
+          <p>{log.comment}</p>
         </div>
       ))}
     </div>

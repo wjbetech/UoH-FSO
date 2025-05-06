@@ -1,9 +1,12 @@
 import express from "express";
+import cors from "cors";
 
 // routes
 import diaryRouter from "./routes/logRoute";
 
 const app = express();
+// eslint-disable-next-line @typescript-eslint/no-unsafe-call
+app.use(cors());
 app.use(express.json());
 
 const PORT = process.env.PORT || 3005;
