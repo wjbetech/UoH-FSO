@@ -1,4 +1,4 @@
-import { Gender, NewPatientEntry } from "./../types/types";
+import { Gender, NewPatientEntry } from "../types/types";
 import { z } from "zod";
 
 // these imports are redundant with Zod taking over

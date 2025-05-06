@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import patients from "../../services/patients";
 import { useEffect, useState } from "react";
 import { Patient } from "../../types/types";
@@ -8,6 +8,7 @@ import MaleIcon from "@mui/icons-material/Male";
 import FemaleIcon from "@mui/icons-material/Female";
 import TransgenderIcon from "@mui/icons-material/Transgender";
 import QuestionMarkIcon from "@mui/icons-material/QuestionMark";
+import { Button } from "@mui/material";
 
 export default function PatientInfo() {
   const { id } = useParams<{ id: string }>();
@@ -62,6 +63,9 @@ export default function PatientInfo() {
       </h3>
       <p>SSN: {patient.ssn}</p>
       <p>Occupation: {patient.occupation}</p>
+      <Button component={Link} to="/" variant="contained" color="primary" sx={{ marginTop: "1rem" }}>
+        Back
+      </Button>
     </div>
   );
 }
