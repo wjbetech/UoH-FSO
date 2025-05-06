@@ -10,7 +10,10 @@ import MaleIcon from "@mui/icons-material/Male";
 import FemaleIcon from "@mui/icons-material/Female";
 import TransgenderIcon from "@mui/icons-material/Transgender";
 import QuestionMarkIcon from "@mui/icons-material/QuestionMark";
-import { Box, Button, List, ListItem, Paper, Typography } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
+
+// sub-component
+import EntryDetails from "./EntryDetails";
 
 export default function PatientInfo() {
   const { id } = useParams<{ id: string }>();
@@ -86,35 +89,7 @@ export default function PatientInfo() {
               Entries:
             </Typography>
             {patient.entries.map((entry) => (
-              <Paper key={entry.id} elevation={2} sx={{ mb: 2, padding: 2, backgroundColor: "#eee" }}>
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    alignItems: "baseline"
-                  }}>
-                  <Typography variant="subtitle1" sx={{ fontWeight: "bold" }}>
-                    {entry.date}
-                  </Typography>
-                  <Typography>Specialist: {entry.specialist}</Typography>
-                </Box>
-                <Typography>Healthcare: {entry.type}</Typography>
-                <Typography variant="body2" sx={{ mb: 1 }}>
-                  {entry.description}
-                </Typography>
-                {entry.diagnosisCodes && (
-                  <>
-                    <List dense sx={{ pl: 2 }}>
-                      {entry.diagnosisCodes.map((code) => (
-                        <ListItem key={code} sx={{ display: "list-item", pl: 1 }}>
-                          {`${code} - ${diagnosesData.find((d) => d.code === code)?.name || "Unknown diagnosis"}`}
-                        </ListItem>
-                      ))}
-                    </List>
-                  </>
-                )}
-              </Paper>
+              <EntryDetails key={entry.id} entry={entry} diagnosesData={diagnosesData} />
             ))}
           </>
         ) : (
