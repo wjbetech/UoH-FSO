@@ -7,12 +7,22 @@ import errorMiddleware from "../middleware/errors";
 
 const patientsRouter = express.Router();
 
+// get all patient info
 patientsRouter.get("/", (_req, res: Response<NonSensitivePatientData[]>) => {
   console.log("Fetching patients on the router: / ");
 
   res.send(ssnService.getNonSensitivePatients());
 });
 
+// get specific patient info
+patientsRouter.get("/:id", (req, res: Response<NonSensitivePatientData>) => {
+  const id = req.params.id;
+  console.log(`Fetching patient of id: ${id}`);
+
+  res.send(ssnService.getNonSensitivePatient(id));
+});
+
+// add a new patient
 patientsRouter.post(
   "/",
   newPatientParser,

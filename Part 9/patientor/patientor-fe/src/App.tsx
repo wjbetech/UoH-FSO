@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { BrowserRouter as Router, Route, Link, Routes } from "react-router-dom";
-import { Button, Divider, Container, Typography } from '@mui/material';
+import { Button, Divider, Container, Typography } from "@mui/material";
 
-import { apiBaseUrl } from "./constants";
-import { Patient } from "./types";
+import { apiBaseUrl } from "../utils/constants";
+import { Patient } from "../types/types";
 
 import patientService from "./services/patients";
 import PatientListPage from "./components/PatientListPage";
@@ -21,7 +21,7 @@ const App = () => {
     };
     void fetchPatientList();
   }, []);
-  
+
   return (
     <div className="App">
       <Router>

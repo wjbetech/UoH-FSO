@@ -13,24 +13,23 @@ export interface Diagnosis {
   latin?: string;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+export interface Entry {}
+
 export interface Patient {
   name: string;
   dateOfBirth: string;
   ssn: string;
   gender: Gender;
   occupation: string;
+  entries?: Entry[];
 }
 
-export interface PatientEntry {
+export interface PatientEntry extends NewPatientEntry {
   id: string;
-  name: string;
-  dateOfBirth: string;
-  ssn: string;
-  gender: Gender;
-  occupation: string;
 }
 
-export type NonSensitivePatientData = Omit<Patient, "ssn">;
+export type NonSensitivePatientData = Omit<Patient, "ssn" | "entries">;
 export type NewPatientEntry = z.infer<typeof NewPatientSchema>;
 
 export interface PatientEntry extends NewPatientEntry {
