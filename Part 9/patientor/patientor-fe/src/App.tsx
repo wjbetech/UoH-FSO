@@ -1,9 +1,6 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
 import { BrowserRouter as Router, Route, Link, Routes } from "react-router-dom";
 import { Button, Divider, Container, Typography } from "@mui/material";
-
-import { apiBaseUrl } from "./utils/constants";
 import { Patient } from "./types/types";
 
 import patientService from "./services/patients";
@@ -15,8 +12,6 @@ const App = () => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    void axios.get<void>(`${apiBaseUrl}/ping`);
-
     const fetchPatientList = async () => {
       try {
         const patients = await patientService.getAll();

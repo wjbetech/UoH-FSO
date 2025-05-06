@@ -2,6 +2,8 @@ import { Link, useParams } from "react-router-dom";
 import patients from "../../services/patients";
 import { useEffect, useState } from "react";
 import { Patient } from "../../types/types";
+import { Diagnosis } from "../../types/types";
+import { getAllDiagnoses } from "../../services/diagnoses";
 
 // mUI icons for gender
 import MaleIcon from "@mui/icons-material/Male";
@@ -14,6 +16,7 @@ export default function PatientInfo() {
   const { id } = useParams<{ id: string }>();
   const [patient, setPatient] = useState<Patient | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [diagnosesData, setDiagnosesData] = useState<Diagnosis[]>([]);
 
   useEffect(() => {
     if (!id) {
@@ -31,7 +34,13 @@ export default function PatientInfo() {
       }
     };
 
+    const fetchDiagnoses = async () => {
+      const diagnosesData = await getAllDiagnoses();
+      setDiagnosesData(diagnosesData);
+    };
+
     void fetchPatient();
+    void fetchDiagnoses();
   }, [id]);
 
   // handle errors
@@ -88,7 +97,7 @@ export default function PatientInfo() {
                   <List dense sx={{ pl: 2 }}>
                     {entry.diagnosisCodes.map((code) => (
                       <ListItem key={code} sx={{ display: "list-item", pl: 1 }}>
-                        {code}
+                        {`${code} - ${diagnosesData.find((d) => d.code === code)?.name || "Unknown diagnosis"}`}
                       </ListItem>
                     ))}
                   </List>
