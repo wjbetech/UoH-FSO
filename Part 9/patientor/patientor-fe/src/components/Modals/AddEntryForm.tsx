@@ -103,9 +103,9 @@ const AddEntryDialog = ({ open, onCancel, onSubmit }: Props) => {
 
   return (
     <Dialog open={open} onClose={onCancel} fullWidth maxWidth="sm">
-      <DialogTitle>Add New Entry</DialogTitle>
+      <DialogTitle sx={{ backgroundColor: "#3f51b5", color: "white" }}>Add New Entry</DialogTitle>
       <form onSubmit={addEntry}>
-        <DialogContent dividers>
+        <DialogContent dividers sx={{ backgroundColor: "#999" }}>
           <TextField
             label="Description"
             fullWidth

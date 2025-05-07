@@ -14,7 +14,7 @@ import QuestionMarkIcon from "@mui/icons-material/QuestionMark";
 import { Box, Button, Typography } from "@mui/material";
 
 import EntryDetails from "./EntryDetails"; // sub-component
-import AddEntryDialog from "../AddPatientModal/AddEntryForm";
+import AddEntryDialog from "../Modals/AddEntryForm";
 
 export default function PatientInfo() {
   const [modalOpen, setModalOpen] = useState<boolean>(false);

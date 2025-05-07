@@ -3,7 +3,7 @@ import { Box, Table, Button, TableHead, Typography, TableCell, TableRow, TableBo
 import axios from "axios";
 
 import { PatientFormValues, Patient } from "../../types/types";
-import AddPatientModal from "../AddPatientModal";
+import AddPatientModal from "../Modals";
 
 import HealthRatingBar from "../HealthRatingBar";
 
