@@ -1,8 +1,7 @@
 import express, { Request, Response } from "express";
 import ssnService from "../services/ssnService";
 import patientService from "../services/patientService";
-import { NewPatientEntry, NonSensitivePatientData, PatientEntry } from "../types/types";
-import newPatientParser from "../middleware/parser";
+import { NonSensitivePatientData, NewEntry, Entry } from "../types/types";
 import errorMiddleware from "../middleware/errors";
 
 const patientsRouter = express.Router();
@@ -24,13 +23,23 @@ patientsRouter.get("/:id", (req, res: Response<NonSensitivePatientData>) => {
 
 // add a new patient
 patientsRouter.post(
-  "/",
-  newPatientParser,
-  (req: Request<unknown, unknown, NewPatientEntry>, res: Response<PatientEntry>) => {
-    console.log("attempting to add a new patient: ", req.body);
+  "/:id/entries",
+  (req: Request<{ id: string }, unknown, NewEntry>, res: Response<Entry | { error: string }>) => {
+    const patientId = req.params.id;
+    const newEntry = req.body;
 
-    const addedPatient = patientService.addPatient(req.body);
-    res.json(addedPatient);
+    console.log("Attempting to add a new entry:", newEntry);
+
+    try {
+      const addedEntry = patientService.addEntry(patientId, newEntry);
+      res.json(addedEntry);
+    } catch (error: unknown) {
+      let errorMessage = "Something went wrong.";
+      if (error instanceof Error) {
+        errorMessage += " Error: " + error.message;
+      }
+      res.status(400).send({ error: errorMessage });
+    }
   }
 );
 

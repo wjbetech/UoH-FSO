@@ -66,7 +66,6 @@ export interface PatientEntry extends NewPatientEntry {
 
 export type NonSensitivePatientData = Omit<Patient, "ssn" | "entries">;
 export type NewPatientEntry = z.infer<typeof NewPatientSchema>;
-export interface PatientEntry extends NewPatientEntry {
-  id: string;
-}
+
 export type Entry = HospitalEntry | OccupationalHealthcareEntry | HealthCheckEntry;
+export type NewEntry = Omit<Entry, "id">;

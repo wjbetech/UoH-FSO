@@ -1,21 +1,23 @@
+// PatientInfo.tsx
+
 import { Link, useParams } from "react-router-dom";
 import patients from "../../services/patients";
 import { useEffect, useState } from "react";
-import { Patient } from "../../types/types";
+import { NewEntry, Patient } from "../../types/types";
 import { Diagnosis } from "../../types/types";
 import { getAllDiagnoses } from "../../services/diagnoses";
 
-// mUI icons for gender
 import MaleIcon from "@mui/icons-material/Male";
 import FemaleIcon from "@mui/icons-material/Female";
 import TransgenderIcon from "@mui/icons-material/Transgender";
 import QuestionMarkIcon from "@mui/icons-material/QuestionMark";
 import { Box, Button, Typography } from "@mui/material";
 
-// sub-component
-import EntryDetails from "./EntryDetails";
+import EntryDetails from "./EntryDetails"; // sub-component
+import AddEntryDialog from "../AddPatientModal/AddEntryForm";
 
 export default function PatientInfo() {
+  const [modalOpen, setModalOpen] = useState<boolean>(false);
   const { id } = useParams<{ id: string }>();
   const [patient, setPatient] = useState<Patient | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -30,7 +32,6 @@ export default function PatientInfo() {
     const fetchPatient = async () => {
       try {
         const patientData = await patients.getPatient(id);
-        console.log(patientData);
         setPatient(patientData);
       } catch (e) {
         setError("Failed to fetch patient data");
@@ -46,6 +47,12 @@ export default function PatientInfo() {
     void fetchDiagnoses();
   }, [id]);
 
+  const openModal = (): void => setModalOpen(true);
+  const closeModal = (): void => {
+    setModalOpen(false);
+    setError(null);
+  };
+
   // handle errors
   if (error) {
     return <div>{error}</div>;
@@ -55,6 +62,29 @@ export default function PatientInfo() {
   if (!patient) {
     return <div>Loading...</div>;
   }
+
+  const submitNewEntry = async (values: NewEntry) => {
+    if (!id) {
+      setError("No patient ID found!");
+      return;
+    }
+
+    try {
+      const newEntry = await patients.addEntry(id, values);
+
+      setPatient((prevPatient) => {
+        if (!prevPatient) return prevPatient;
+        return {
+          ...prevPatient,
+          entries: [...(prevPatient.entries ?? []), newEntry]
+        };
+      });
+
+      closeModal();
+    } catch (error) {
+      setError("Failed to add entry");
+    }
+  };
 
   const genderIcon = (gender: Patient["gender"]) => {
     switch (gender) {
@@ -98,13 +128,15 @@ export default function PatientInfo() {
       </Box>
 
       <Box sx={{ display: "flex", gap: "1rem" }}>
-        <Button variant="contained" color="primary" sx={{ mt: 4, fontWeight: "bold" }}>
+        <Button variant="contained" color="primary" sx={{ mt: 4, fontWeight: "bold" }} onClick={openModal}>
           Add New Entry
         </Button>
         <Button component={Link} to="/" variant="contained" color="primary" sx={{ mt: 4, fontWeight: "bold" }}>
           Back
         </Button>
       </Box>
+
+      {modalOpen && <AddEntryDialog open={modalOpen} onCancel={() => setModalOpen(false)} onSubmit={submitNewEntry} />}
     </Box>
   );
 }
