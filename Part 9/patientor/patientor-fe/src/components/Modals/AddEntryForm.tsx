@@ -81,6 +81,15 @@ const AddEntryDialog = ({ open, onCancel, onSubmit, setError, errorToast, setErr
     if (value !== "OccupationalHealthcare") setEmployerName("");
   };
 
+  const getHealthCheckRatingOptions = () => {
+    return Object.keys(HealthCheckRating)
+      .filter((key) => isNaN(Number(key))) // filters out "0", "1", etc.
+      .map((key) => ({
+        value: HealthCheckRating[key as keyof typeof HealthCheckRating],
+        label: key.replace(/([a-z])([A-Z])/g, "$1 $2") // "LowRisk" → "Low Risk"
+      }));
+  };
+
   const onHealthCheckRatingChange = (event: SelectChangeEvent<number>) => {
     setHealthCheckRating(event.target.value as HealthCheckRating);
   };
@@ -151,10 +160,10 @@ const AddEntryDialog = ({ open, onCancel, onSubmit, setError, errorToast, setErr
           {entryType === "HealthCheck" && (
             <FormControl fullWidth margin="normal">
               <InputLabel>Health Check Rating</InputLabel>
-              <Select value={healthCheckRating} onChange={onHealthCheckRatingChange}>
-                {Object.values(HealthCheckRating).map((rating) => (
-                  <MenuItem key={rating} value={rating}>
-                    {rating}
+              <Select value={healthCheckRating} label="Health Check Rating" onChange={onHealthCheckRatingChange}>
+                {getHealthCheckRatingOptions().map(({ value, label }) => (
+                  <MenuItem key={value} value={value}>
+                    {label}
                   </MenuItem>
                 ))}
               </Select>
