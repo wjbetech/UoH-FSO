@@ -58,6 +58,11 @@ export interface OccupationalHealthcareEntry extends BaseEntry {
   };
 }
 
+export interface ErrorToastProps {
+  error: string | null;
+  setError: (error: string | null) => void;
+}
+
 export type PatientFormValues = Omit<Patient, "id" | "entries">;
 export type Entry = HospitalEntry | OccupationalHealthcareEntry | HealthCheckEntry;
 export type NewEntry = Omit<Entry, "id">;

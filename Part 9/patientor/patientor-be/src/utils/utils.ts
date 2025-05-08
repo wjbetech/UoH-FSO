@@ -1,50 +1,38 @@
-import { Gender, NewPatientEntry, Entry, HealthCheckRating } from "../types/types";
+import { Gender, NewPatientEntry, HealthCheckRating } from "../types/types";
 import { z } from "zod";
 import { isValidDateString } from "./dateValidator";
 
 export const NewPatientSchema = z.object({
-  name: z.string(),
+  name: z.string().min(5),
   dateOfBirth: isValidDateString,
   ssn: z.string(),
   gender: z.nativeEnum(Gender),
-  occupation: z.string()
+  occupation: z.string().min(3)
 });
 
-const BaseEntrySchema = z.object({
-  id: z.string(),
+const NewBaseEntrySchema = z.object({
   date: isValidDateString,
-  specialist: z.string(),
-  description: z.string(),
+  specialist: z.string().min(5),
+  description: z.string().min(15),
   diagnosisCodes: z.array(z.string()).optional()
 });
 
-const HealthCheckEntrySchema = BaseEntrySchema.extend({
+const NewHealthCheckEntrySchema = NewBaseEntrySchema.extend({
   type: z.literal("HealthCheck"),
-  healthCheckRating: z.number().min(0).max(3)
-});
-
-export const NewHealthCheckEntrySchema = z.object({
-  type: z.literal("HealthCheck"),
-  description: z.string(),
-  date: isValidDateString,
-  specialist: z.string(),
-  diagnosisCodes: z.array(z.string()).optional(),
   healthCheckRating: z.nativeEnum(HealthCheckRating)
 });
 
-export type NewHealthCheckEntry = z.infer<typeof NewHealthCheckEntrySchema>;
-
-const HospitalEntrySchema = BaseEntrySchema.extend({
+const NewHospitalEntrySchema = NewBaseEntrySchema.extend({
   type: z.literal("Hospital"),
   discharge: z.object({
     date: isValidDateString,
-    criteria: z.string()
+    criteria: z.string().min(8)
   })
 });
 
-const OccupationalHealthcareEntrySchema = BaseEntrySchema.extend({
+const NewOccupationalHealthcareEntrySchema = NewBaseEntrySchema.extend({
   type: z.literal("OccupationalHealthcare"),
-  employerName: z.string(),
+  employerName: z.string().min(3),
   sickLeave: z
     .object({
       startDate: isValidDateString,
@@ -54,15 +42,32 @@ const OccupationalHealthcareEntrySchema = BaseEntrySchema.extend({
 });
 
 export const NewEntrySchema = z.discriminatedUnion("type", [
-  HealthCheckEntrySchema,
-  HospitalEntrySchema,
-  OccupationalHealthcareEntrySchema
+  NewHealthCheckEntrySchema,
+  NewHospitalEntrySchema,
+  NewOccupationalHealthcareEntrySchema
 ]);
+
+export type NewHealthCheckEntry = z.infer<typeof NewHealthCheckEntrySchema>;
+export type NewEntry = z.infer<typeof NewEntrySchema>;
 
 export const toNewPatientEntry = (object: unknown): NewPatientEntry => {
   return NewPatientSchema.parse(object);
 };
 
-export const toNewEntry = (object: unknown): Entry => {
+export const toNewEntry = (object: unknown): NewEntry => {
   return NewEntrySchema.parse(object);
+};
+
+// might be redundant now we are using discriminatedUnion
+export const validateEntry = (entry: unknown): NewEntry => {
+  try {
+    return NewEntrySchema.parse(entry);
+  } catch (error: unknown) {
+    if (error instanceof z.ZodError) {
+      console.error("Validation failed:", error.errors);
+    } else {
+      console.error("Unknown validation error occurred!", error);
+    }
+    throw error;
+  }
 };

@@ -1,4 +1,4 @@
-import { useState, useEffect, SyntheticEvent } from "react";
+import React, { useState, useEffect, SyntheticEvent } from "react";
 import {
   Dialog,
   DialogTitle,
@@ -26,14 +26,18 @@ import {
   Diagnosis
 } from "../../types/types";
 import getAllDiagnoses from "../../services/diagnoses";
+import ErrorToast from "../ErrorToast/ErrorToast";
 
 interface Props {
   open: boolean;
   onCancel: () => void;
   onSubmit: (values: NewEntry) => void;
+  setError: React.Dispatch<React.SetStateAction<string | null>>;
+  errorToast: string | null;
+  setErrorToast: (error: string | null) => void;
 }
 
-const AddEntryDialog = ({ open, onCancel, onSubmit }: Props) => {
+const AddEntryDialog = ({ open, onCancel, onSubmit, setError, errorToast, setErrorToast }: Props) => {
   const [description, setDescription] = useState("");
   const [date, setDate] = useState("");
   const [specialist, setSpecialist] = useState("");
@@ -92,6 +96,11 @@ const AddEntryDialog = ({ open, onCancel, onSubmit }: Props) => {
       type: entryType
     };
 
+    if (!description || !date || !specialist) {
+      setError("Please fill in all required fields.");
+      return;
+    }
+
     if (entryType === "HealthCheck") {
       onSubmit({ ...entry, healthCheckRating } as HealthCheckEntry);
     } else if (entryType === "Hospital") {
@@ -103,9 +112,10 @@ const AddEntryDialog = ({ open, onCancel, onSubmit }: Props) => {
 
   return (
     <Dialog open={open} onClose={onCancel} fullWidth maxWidth="sm">
+      {errorToast && <ErrorToast error={errorToast} setError={setErrorToast} />}
       <DialogTitle sx={{ backgroundColor: "#3f51b5", color: "white" }}>Add New Entry</DialogTitle>
       <form onSubmit={addEntry}>
-        <DialogContent dividers sx={{ backgroundColor: "#999" }}>
+        <DialogContent dividers>
           <TextField
             label="Description"
             fullWidth
@@ -188,6 +198,7 @@ const AddEntryDialog = ({ open, onCancel, onSubmit }: Props) => {
               multiple
               value={diagnosisCodes}
               onChange={handleDiagnosisCodesChange}
+              variant="outlined"
               renderValue={(selected) => selected.join(", ")}>
               {loadingDiagnoses ? (
                 <MenuItem disabled>Loading...</MenuItem>
@@ -204,7 +215,7 @@ const AddEntryDialog = ({ open, onCancel, onSubmit }: Props) => {
         </DialogContent>
 
         <DialogActions>
-          <Button onClick={onCancel} color="secondary" variant="outlined">
+          <Button onClick={onCancel} color="secondary" variant="contained">
             Cancel
           </Button>
           <Button type="submit" variant="contained">

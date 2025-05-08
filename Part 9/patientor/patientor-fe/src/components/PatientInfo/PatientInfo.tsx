@@ -13,14 +13,17 @@ import TransgenderIcon from "@mui/icons-material/Transgender";
 import QuestionMarkIcon from "@mui/icons-material/QuestionMark";
 import { Box, Button, Typography } from "@mui/material";
 
+import ErrorToast from "../ErrorToast/ErrorToast"; // import error toast
 import EntryDetails from "./EntryDetails"; // sub-component
 import AddEntryDialog from "../Modals/AddEntryForm";
+import axios from "axios";
 
 export default function PatientInfo() {
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   const { id } = useParams<{ id: string }>();
   const [patient, setPatient] = useState<Patient | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [errorToast, setErrorToast] = useState<string | null>(null);
   const [diagnosesData, setDiagnosesData] = useState<Diagnosis[]>([]);
 
   useEffect(() => {
@@ -81,8 +84,19 @@ export default function PatientInfo() {
       });
 
       closeModal();
-    } catch (error) {
-      setError("Failed to add entry");
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        const messageData = error.response?.data?.error;
+        if (Array.isArray(messageData)) {
+          setErrorToast(messageData.join(", "));
+        } else if (typeof messageData === "string") {
+          setErrorToast(messageData);
+        } else {
+          setErrorToast("An unknown error occurred");
+        }
+      } else {
+        setErrorToast("Failed to add entry");
+      }
     }
   };
 
@@ -100,43 +114,55 @@ export default function PatientInfo() {
   };
 
   return (
-    <Box sx={{ marginTop: "2rem" }}>
-      <Typography variant="h4" sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-        {patient.name} {genderIcon(patient.gender)}
-      </Typography>
+    <>
+      {errorToast && <ErrorToast error={errorToast} setError={setErrorToast} />}
+      <Box sx={{ marginTop: "2rem" }}>
+        <Typography variant="h4" sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+          {patient.name} {genderIcon(patient.gender)}
+        </Typography>
 
-      <Typography variant="body1" sx={{ mt: 1 }}>
-        <strong>SSN:</strong> {patient.ssn}
-      </Typography>
-      <Typography variant="body1">
-        <strong>Occupation:</strong> {patient.occupation}
-      </Typography>
+        <Typography variant="body1" sx={{ mt: 1 }}>
+          <strong>SSN:</strong> {patient.ssn}
+        </Typography>
+        <Typography variant="body1">
+          <strong>Occupation:</strong> {patient.occupation}
+        </Typography>
 
-      <Box sx={{ mt: 4 }}>
-        {patient.entries && patient.entries.length > 0 ? (
-          <>
-            <Typography variant="h5" gutterBottom>
-              Entries:
-            </Typography>
-            {patient.entries.map((entry) => (
-              <EntryDetails key={entry.id} entry={entry} diagnosesData={diagnosesData} />
-            ))}
-          </>
-        ) : (
-          <Typography>No entries for this patient.</Typography>
+        <Box sx={{ mt: 4 }}>
+          {patient.entries && patient.entries.length > 0 ? (
+            <>
+              <Typography variant="h5" gutterBottom>
+                Entries:
+              </Typography>
+              {patient.entries.map((entry) => (
+                <EntryDetails key={entry.id} entry={entry} diagnosesData={diagnosesData} />
+              ))}
+            </>
+          ) : (
+            <Typography>No entries for this patient.</Typography>
+          )}
+        </Box>
+
+        <Box sx={{ display: "flex", gap: "1rem" }}>
+          <Button variant="contained" color="primary" sx={{ mt: 4, fontWeight: "bold" }} onClick={openModal}>
+            Add New Entry
+          </Button>
+          <Button component={Link} to="/" variant="contained" color="primary" sx={{ mt: 4, fontWeight: "bold" }}>
+            Back
+          </Button>
+        </Box>
+
+        {modalOpen && (
+          <AddEntryDialog
+            setError={setError}
+            open={modalOpen}
+            onCancel={closeModal}
+            onSubmit={submitNewEntry}
+            errorToast={errorToast}
+            setErrorToast={setErrorToast}
+          />
         )}
       </Box>
-
-      <Box sx={{ display: "flex", gap: "1rem" }}>
-        <Button variant="contained" color="primary" sx={{ mt: 4, fontWeight: "bold" }} onClick={openModal}>
-          Add New Entry
-        </Button>
-        <Button component={Link} to="/" variant="contained" color="primary" sx={{ mt: 4, fontWeight: "bold" }}>
-          Back
-        </Button>
-      </Box>
-
-      {modalOpen && <AddEntryDialog open={modalOpen} onCancel={() => setModalOpen(false)} onSubmit={submitNewEntry} />}
-    </Box>
+    </>
   );
 }

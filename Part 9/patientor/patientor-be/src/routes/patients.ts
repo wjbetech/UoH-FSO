@@ -1,8 +1,10 @@
 import express, { Request, Response } from "express";
 import ssnService from "../services/ssnService";
 import patientService from "../services/patientService";
-import { NonSensitivePatientData, NewEntry, Entry } from "../types/types";
+import { NonSensitivePatientData, Entry } from "../types/types";
+import { NewEntry, toNewEntry } from "../utils/utils";
 import errorMiddleware from "../middleware/errors";
+import { z } from "zod";
 
 const patientsRouter = express.Router();
 
@@ -22,23 +24,31 @@ patientsRouter.get("/:id", (req, res: Response<NonSensitivePatientData>) => {
 });
 
 // add a new patient
-patientsRouter.post(
+patientsRouter.post<{ id: string }, Entry | { error: string }>(
   "/:id/entries",
-  (req: Request<{ id: string }, unknown, NewEntry>, res: Response<Entry | { error: string }>) => {
+  (req: Request<{ id: string }>, res: Response<Entry | { error: string }>) => {
     const patientId = req.params.id;
-    const newEntry = req.body;
-
-    console.log("Attempting to add a new entry:", newEntry);
+    console.log(`Adding entry for patient id: ${patientId}`);
 
     try {
+      const newEntry: NewEntry = toNewEntry(req.body);
+
       const addedEntry = patientService.addEntry(patientId, newEntry);
       res.json(addedEntry);
     } catch (error: unknown) {
+      if (error instanceof z.ZodError) {
+        console.error("Validation failed:", error.issues);
+        res.status(400).json({
+          error: error.issues.map((issue) => issue.message).join(", ")
+        });
+        return;
+      }
+
       let errorMessage = "Something went wrong.";
       if (error instanceof Error) {
         errorMessage += " Error: " + error.message;
       }
-      res.status(400).send({ error: errorMessage });
+      res.status(400).json({ error: errorMessage });
     }
   }
 );

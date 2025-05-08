@@ -56,6 +56,11 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
+input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(1); /* Invert the color for visibility on a white background */
+  cursor: pointer;
+}
+
 .entries {
   margin: 3rem 0;
 }
